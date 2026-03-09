@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard CN/EPCAr — 1º Dia · 28/02/2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f7fa;--white:#ffffff;--border:#e5e9f0;
+  --text:#1a2332;--text2:#4b5a6e;--text3:#8b99ab;
+  --navy:#1e3a5f;--navy2:#2d5282;
+  --blue:#3b82f6;--blue-soft:#eff6ff;
+  --green:#16a34a;--green-soft:#f0fdf4;
+  --red:#dc2626;--red-soft:#fef2f2;
+  --gold:#d97706;--gold-soft:#fffbeb;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;}
+.page-wrap{max-width:1320px;margin:0 auto;padding:28px 20px;}
+.site-header{background:var(--white);border-bottom:2px solid var(--border);padding:0 24px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.site-header-inner{max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:24px;height:64px;flex-wrap:wrap;}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:18px;color:var(--navy);letter-spacing:-.3px;flex-shrink:0;}
+.logo-badge{width:36px;height:36px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-sub{font-size:12px;font-weight:600;color:var(--text3);display:block;}
+.main-nav{display:flex;gap:6px;flex:1;justify-content:center;flex-wrap:wrap;}
+.nav-btn{padding:8px 20px;background:transparent;border:1px solid transparent;border-radius:8px;font-size:14px;font-weight:700;color:var(--text2);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px;}
+.nav-btn:hover{background:var(--bg);color:var(--navy);}
+.nav-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.section{display:none;}.section.active{display:block;}
+.page-intro{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.page-intro h1{font-size:26px;font-weight:900;color:var(--navy);margin-bottom:4px;}
+.page-intro p{font-size:14px;color:var(--text2);max-width:640px;}
+.legend-box{background:#f0f6ff;border:1px solid #c3d9f5;border-left:4px solid var(--blue);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--text2);display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;}
+.legend-box strong{color:var(--navy);}
+.legend-item{display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:20px;}
+.card-head{margin-bottom:4px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.card-head h2{font-size:18px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.card-sub{font-size:13px;color:var(--text3);margin-bottom:18px;font-weight:500;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px;margin:16px 0;}
+.stat-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;transition:box-shadow .2s;}
+.stat-item:hover{box-shadow:var(--shadow);}
+.stat-item .s-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.stat-item .s-val{font-size:34px;font-weight:900;color:var(--text);line-height:1;margin-bottom:4px;}
+.stat-item .s-hint{font-size:11px;color:var(--text3);font-weight:600;}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800;white-space:nowrap;}
+.chip-aprov{background:#dcfce7;color:#15803d;border:1px solid #86efac;}
+.chip-reprov{background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;}
+.badge{padding:3px 9px;border-radius:6px;font-size:12px;font-weight:800;display:inline-block;}
+.b-ex{background:#dcfce7;color:#15803d;}
+.b-bo{background:#dbeafe;color:#1d4ed8;}
+.b-re{background:#fef9c3;color:#a16207;}
+.b-ru{background:#fee2e2;color:#b91c1c;}
+.pos-badge{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;font-size:18px;font-weight:900;color:white;background:#94a3b8;}
+.pos-badge.g1{background:linear-gradient(135deg,#fbbf24,#f59e0b);font-size:22px;box-shadow:0 3px 10px rgba(251,191,36,.4);}
+.pos-badge.g2{background:linear-gradient(135deg,#94a3b8,#64748b);font-size:20px;}
+.pos-badge.g3{background:linear-gradient(135deg,#f97316,#ea580c);font-size:20px;}
+.ranking-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);}
+.ranking-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.filter-btn{padding:8px 16px;border:1.5px solid var(--border);background:var(--white);border-radius:8px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;flex-direction:column;}
+.filter-btn:hover{border-color:var(--navy);color:var(--navy);background:var(--bg);}
+.filter-btn.active{background:var(--navy);color:white;border-color:var(--navy);}
+.fb-desc{font-size:10px;font-weight:500;opacity:.75;}
+.search-input{width:100%;max-width:400px;padding:10px 16px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:500;outline:none;transition:border-color .2s;background:var(--bg);margin-bottom:14px;display:block;}
+.search-input:focus{border-color:var(--navy);background:var(--white);}
+.ranking-table{width:100%;border-collapse:separate;border-spacing:0 6px;}
+.ranking-table thead th{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:0 12px 8px;border-bottom:1.5px solid var(--border);}
+.ranking-row{cursor:pointer;transition:all .2s;}
+.ranking-row td{padding:12px;background:var(--bg);border-top:1px solid transparent;border-bottom:1px solid transparent;}
+.ranking-row td:first-child{border-radius:10px 0 0 10px;border-left:1px solid transparent;}
+.ranking-row td:last-child{border-radius:0 10px 10px 0;border-right:1px solid transparent;}
+.ranking-row:hover td{background:#edf2fb;border-color:#c3d9f5;}
+.ranking-row.top3 td{background:#fffbeb;border-top:1px solid #fde68a;border-bottom:1px solid #fde68a;}
+.ranking-row.top3 td:first-child{border-left:3px solid #fbbf24;border-radius:10px 0 0 10px;}
+.ranking-row.top3:hover td{background:#fef3c7;}
+.aluno-nome{font-size:14px;font-weight:800;color:var(--navy);display:block;}
+.aluno-meta{font-size:11px;color:var(--text3);font-weight:500;}
+.busca-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow);max-width:580px;margin:0 auto;}
+.busca-card h2{font-size:22px;font-weight:900;color:var(--navy);margin-bottom:6px;}
+.field-label{display:block;font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;}
+.field-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:15px;font-weight:500;outline:none;transition:border-color .2s;background:var(--bg);}
+.field-input:focus{border-color:var(--navy);background:var(--white);}
+.sug-item{padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-top:5px;cursor:pointer;font-weight:700;font-size:13px;color:var(--text);transition:all .15s;}
+.sug-item:hover{background:var(--blue-soft);border-color:var(--blue);color:var(--navy);}
+.btn-search{width:100%;padding:14px;background:var(--navy);color:white;border:none;border-radius:9px;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;margin-top:4px;}
+.btn-search:hover{background:var(--navy2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(30,58,95,.3);}
+#dashboard{display:none;}
+.dash-topbar{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 24px;position:sticky;top:64px;z-index:90;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.dash-topbar-inner{max-width:1320px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px;flex-wrap:wrap;}
+.dash-aluno-info h3{font-size:17px;font-weight:900;color:var(--navy);}
+.dash-aluno-info p{font-size:12px;color:var(--text3);font-weight:600;}
+.rank-pill{background:var(--gold-soft);border:1.5px solid #fde68a;color:var(--gold);padding:8px 16px;border-radius:8px;font-weight:900;font-size:14px;}
+.btn-back{padding:8px 18px;background:var(--red-soft);border:1px solid #fca5a5;color:var(--red);border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;}
+.btn-back:hover{background:#fee2e2;}
+.tabs-bar{background:var(--white);border-bottom:1.5px solid var(--border);padding:0 24px;position:sticky;top:124px;z-index:80;}
+.tabs-bar-inner{max-width:1320px;margin:0 auto;display:flex;gap:0;}
+.tab-btn{padding:14px 20px;border:none;background:transparent;font-size:13px;font-weight:700;color:var(--text3);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;}
+.tab-btn:hover{color:var(--navy);}
+.tab-btn.active{color:var(--navy);border-bottom-color:var(--navy);}
+.tab-pane{display:none;}.tab-pane.active{display:block;}
+.disc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:16px 0;}
+.disc-card{border-radius:12px;padding:16px;text-align:center;border:2px solid transparent;}
+.disc-card .dc-name{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;}
+.disc-card .dc-val{font-size:42px;font-weight:900;line-height:1;margin-bottom:4px;}
+.disc-card .dc-max{font-size:11px;color:var(--text3);margin-bottom:8px;}
+.disc-card.pass{background:#f0fdf4;border-color:#86efac;}
+.disc-card.fail{background:#fef2f2;border-color:#fca5a5;}
+.disc-card.pass .dc-val{color:#16a34a;}
+.disc-card.fail .dc-val{color:#dc2626;}
+.dtable{width:100%;border-collapse:collapse;border-radius:10px;overflow:hidden;border:1px solid var(--border);margin:14px 0;}
+.dtable th{background:var(--bg);font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;padding:11px 12px;border-bottom:1.5px solid var(--border);text-align:center;}
+.dtable th:first-child{text-align:left;}
+.dtable td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;text-align:center;}
+.dtable td:first-child{text-align:left;font-weight:700;}
+.dtable tbody tr:last-child td{border-bottom:none;}
+.dtable tbody tr:hover td{background:#f8fafc;}
+.info-box{background:#f0f6ff;border:1px solid #bdd3f3;border-left:4px solid var(--blue);border-radius:10px;padding:16px 18px;margin:14px 0;}
+.info-box h5{font-size:13px;font-weight:800;color:#1e3a8a;margin-bottom:8px;}
+.info-box ul{margin-left:18px;line-height:1.9;color:var(--text2);font-size:13px;}
+.warn-box{background:#fffbeb;border:1px solid #fde68a;border-left:4px solid var(--gold);border-radius:10px;padding:16px 18px;margin:14px 0;}
+.warn-box h5{font-size:13px;font-weight:800;color:#78350f;margin-bottom:8px;}
+.warn-box ul{margin-left:18px;line-height:1.9;color:#92400e;font-size:13px;}
+.chart-wrap{height:340px;background:var(--bg);border-radius:10px;border:1px solid var(--border);padding:16px;margin:12px 0;}
+.plan-tbl{width:100%;border-collapse:collapse;border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow);}
+.plan-tbl thead th{background:var(--navy);color:white;padding:12px 10px;font-size:12px;font-weight:800;text-align:center;}
+.plan-tbl thead th:first-child{text-align:left;padding-left:18px;}
+.plan-tbl tbody td{padding:11px 10px;border-bottom:1px solid var(--border);text-align:center;font-size:13px;vertical-align:middle;}
+.plan-tbl tbody td:first-child{font-weight:800;color:var(--navy);text-align:left;padding-left:18px;}
+.plan-tbl tfoot td{background:#f0fdf4;font-weight:900;color:#14532d;padding:12px 10px;text-align:center;font-size:13px;border-top:2px solid #86efac;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .3s ease;}
+@media(max-width:700px){
+  .site-header-inner{height:auto;padding:12px 0;}
+  .disc-grid{grid-template-columns:1fr 1fr;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="logo">
+      <div class="logo-badge">⚓</div>
+      <div>Dashboard CN/EPCAr — 1º Dia
+        <span class="logo-sub">Simulado 28/02/2026 · Matemática + Inglês · Matriz Educação</span>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <button class="nav-btn active" id="navEm" onclick="goSec('em',this)">📚 Ranking Ensino Médio</button>
+      <button class="nav-btn" id="nav9mil" onclick="goSec('9mil',this)">🎓 Ranking 9MIL</button>
+      <button class="nav-btn" id="navBusca" onclick="goSec('busca',this)">🔍 Buscar Aluno</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══ RANKING 9MIL ═══ -->
+<div id="9milSection" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>🎓 Ranking 9MIL — Simulado 1º Dia · 28/02/2026</h1>
+      <p>Classificação dos alunos do 9º ano militar no simulado de Matemática e Inglês. Clique no aluno para ver o relatório individual.</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado = ≥10 em Mat <strong>e</strong> ≥10 em Inglês</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado = abaixo do mínimo em ao menos 1</div>
+      <div class="legend-item">📌 Aprovados primeiro, depois reprovados — ambos por pontuação</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">9MIL — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="total9mil">0</span> · Aprovados: <span id="aprov9mil" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprov9mil" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="search9mil" placeholder="🔍 Buscar pelo nome..." oninput="render9mil()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setF9mil('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setF9mil('aprov',this)">✅ Aprovados<span class="fb-desc">Passaram em tudo</span></button>
+        <button class="filter-btn" onclick="setF9mil('reprov',this)">❌ Reprovados<span class="fb-desc">Precisam melhorar</span></button>
+        <button class="filter-btn" onclick="setF9mil('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrap9mil" style="display:none;margin-bottom:14px">
+        <select id="uniSel9mil" onchange="render9mil()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>Matemática <span style="font-weight:500;font-size:10px">(mín. 10/20)</span></th>
+          <th>Inglês <span style="font-weight:500;font-size:10px">(mín. 10/20)</span></th>
+          <th>Total <span style="font-weight:500;font-size:10px">(de 40)</span></th>
+          <th>Status</th>
+        </tr></thead>
+        <tbody id="body9mil"></tbody>
+      </table>
+      <div class="stat-grid" id="stats9mil" style="margin-top:20px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING EM ═══ -->
+<div id="emSection" class="section active">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>📚 Ranking Ensino Médio — Simulado 1º Dia · 28/02/2026</h1>
+      <p>Classificação dos alunos do Ensino Médio no simulado de Matemática e Inglês. Clique no aluno para ver o relatório individual.</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado = ≥10 em Mat <strong>e</strong> ≥10 em Inglês</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado = abaixo do mínimo em ao menos 1</div>
+      <div class="legend-item">📌 Aprovados primeiro, depois reprovados — ambos por pontuação</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">EM — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="totalEm">0</span> · Aprovados: <span id="aprovEm" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprovEm" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="searchEm" placeholder="🔍 Buscar pelo nome..." oninput="renderEm()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setFEm('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setFEm('aprov',this)">✅ Aprovados<span class="fb-desc">Passaram em tudo</span></button>
+        <button class="filter-btn" onclick="setFEm('reprov',this)">❌ Reprovados<span class="fb-desc">Precisam melhorar</span></button>
+        <button class="filter-btn" onclick="setFEm('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrapEm" style="display:none;margin-bottom:14px">
+        <select id="uniSelEm" onchange="renderEm()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>Matemática <span style="font-weight:500;font-size:10px">(mín. 10/20)</span></th>
+          <th>Inglês <span style="font-weight:500;font-size:10px">(mín. 10/20)</span></th>
+          <th>Total <span style="font-weight:500;font-size:10px">(de 40)</span></th>
+          <th>Status</th>
+        </tr></thead>
+        <tbody id="bodyEm"></tbody>
+      </table>
+      <div class="stat-grid" id="statsEm" style="margin-top:20px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BUSCA ═══ -->
+<div id="buscaSection" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>🔍 Buscar Aluno</h1>
+      <p>Pesquise pelo nome do aluno para ver o relatório individual de desempenho.</p>
+    </div>
+    <div class="busca-card">
+      <h2>Consultar Desempenho</h2>
+      <p style="font-size:13px;color:var(--text3);margin-bottom:22px">Digite pelo menos 2 letras para ver sugestões automáticas.</p>
+      <div style="margin-bottom:16px">
+        <label class="field-label">Nome do Aluno</label>
+        <input type="text" class="field-input" id="nomeInput" placeholder="Ex: Pedro, Davi, Ana…" oninput="showSug()" onkeydown="if(event.key==='Enter')buscar()">
+        <div id="sugDiv" style="margin-top:6px"></div>
+      </div>
+      <button class="btn-search" onclick="buscar()">🔍 Ver Relatório Completo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD INDIVIDUAL ═══ -->
+<div id="dashboard">
+  <div class="dash-topbar">
+    <div class="dash-topbar-inner">
+      <div class="dash-aluno-info">
+        <h3 id="dashNome">—</h3>
+        <p id="dashInfo">—</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div id="destDiv" style="display:none"><span class="rank-pill">⭐ <span id="destText"></span></span></div>
+        <button class="btn-back" onclick="voltar()">← Voltar ao Ranking</button>
+      </div>
+    </div>
+  </div>
+  <div class="tabs-bar">
+    <div class="tabs-bar-inner">
+      <button class="tab-btn active" onclick="goTab('pNotas',this)">📊 Desempenho</button>
+      <button class="tab-btn" onclick="goTab('pGrafico',this)">📈 Gráfico</button>
+      <button class="tab-btn" onclick="goTab('pIndicadores',this)">🧮 Indicadores</button>
+    </div>
+  </div>
+  <div class="page-wrap">
+    <div id="pNotas" class="tab-pane active"></div>
+    <div id="pGrafico" class="tab-pane"></div>
+    <div id="pIndicadores" class="tab-pane"></div>
+  </div>
+</div>
+
+<script>
+const DATA_9MIL = [{"nome": "MARIANA SILVA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-9MIL11", "serie": "9A", "ra": "MT24153777", "mat": 16, "ing": 12, "turmaLabel": "9MIL"}, {"nome": "NILTON PEREIRA", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT24145419", "mat": 10, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "NICOLAS NASCIMENTO", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-9MIL11", "serie": "9A", "ra": "MT23123730", "mat": 10, "ing": 10, "turmaLabel": "9MIL"}, {"nome": "JOAO MENEZES", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25156944", "mat": 8, "ing": 20, "turmaLabel": "9MIL"}, {"nome": "JULIA SOUZA", "unidade": "TAQUARA", "turma": "-", "serie": "9A", "ra": "MT22085856", "mat": 7, "ing": 19, "turmaLabel": "9MIL"}, {"nome": "ARTHUR PINTO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT24165334", "mat": 9, "ing": 17, "turmaLabel": "9MIL"}, {"nome": "CECÍLIA OLIVEIRA", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT25177122", "mat": 9, "ing": 17, "turmaLabel": "9MIL"}, {"nome": "ALÍCIA ARAUJO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-9MIL11", "serie": "9A", "ra": "MT24147118", "mat": 6, "ing": 19, "turmaLabel": "9MIL"}, {"nome": "SOPHIA ALMEIDA", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT23121478", "mat": 9, "ing": 16, "turmaLabel": "9MIL"}, {"nome": "PEDRO BARRETO", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25178112", "mat": 8, "ing": 16, "turmaLabel": "9MIL"}, {"nome": "VITOR SANTOS", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25178716", "mat": 6, "ing": 18, "turmaLabel": "9MIL"}, {"nome": "SOFIA MAGNANI", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT22097901", "mat": 7, "ing": 17, "turmaLabel": "9MIL"}, {"nome": "FELIPE COELHO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT22096317", "mat": 7, "ing": 17, "turmaLabel": "9MIL"}, {"nome": "CLARISSE COSTA", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "9A", "ra": "MT24156697", "mat": 6, "ing": 18, "turmaLabel": "9MIL"}, {"nome": "FERNANDA OLIVEIRA", "unidade": "NOVA IGUACU", "turma": "NI-9MIL11", "serie": "9A", "ra": "MT25177924", "mat": 4, "ing": 20, "turmaLabel": "9MIL"}, {"nome": "MARIA COSTA", "unidade": "NOVA IGUACU", "turma": "NI-9MIL11", "serie": "9A", "ra": "MT25193442", "mat": 6, "ing": 18, "turmaLabel": "9MIL"}, {"nome": "MARIANA MONTEIRO", "unidade": "TIJUCA", "turma": "TJ-9MIL11", "serie": "9A", "ra": "MT25189358", "mat": 7, "ing": 17, "turmaLabel": "9MIL"}, {"nome": "PEDRO MONDAINI", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT23118169", "mat": 7, "ing": 16, "turmaLabel": "9MIL"}, {"nome": "DAVI CHAVES", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT23126949", "mat": 7, "ing": 16, "turmaLabel": "9MIL"}, {"nome": "MARIA SOUZA", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT22064646", "mat": 8, "ing": 15, "turmaLabel": "9MIL"}, {"nome": "YASMIN RODRIGUES", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT21070990", "mat": 8, "ing": 14, "turmaLabel": "9MIL"}, {"nome": "JULIA MACHADO", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT22095483", "mat": 7, "ing": 15, "turmaLabel": "9MIL"}, {"nome": "ALEXANDRE SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT22100119", "mat": 5, "ing": 17, "turmaLabel": "9MIL"}, {"nome": "HEITOR VILLAS", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT25182932", "mat": 6, "ing": 16, "turmaLabel": "9MIL"}, {"nome": "CARLOS NAZARETH", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT21053574", "mat": 8, "ing": 14, "turmaLabel": "9MIL"}, {"nome": "SAMUEL PASSOS", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT23118086", "mat": 7, "ing": 14, "turmaLabel": "9MIL"}, {"nome": "DAVI PUPPIM", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT25180423", "mat": 6, "ing": 15, "turmaLabel": "9MIL"}, {"nome": "OTÁVIO SILVA", "unidade": "TIJUCA", "turma": "TJ-9MIL11", "serie": "9A", "ra": "MT25200296", "mat": 5, "ing": 16, "turmaLabel": "9MIL"}, {"nome": "BERNARDO ANJOS", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT25199696", "mat": 8, "ing": 13, "turmaLabel": "9MIL"}, {"nome": "ARTHUR MARINS", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25178815", "mat": 6, "ing": 14, "turmaLabel": "9MIL"}, {"nome": "ENRIQUE CUNHA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25152380", "mat": 3, "ing": 17, "turmaLabel": "9MIL"}, {"nome": "CARLOS MARQUES", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25182239", "mat": 7, "ing": 13, "turmaLabel": "9MIL"}, {"nome": "GUILHERME GONÇALVES", "unidade": "BANGU", "turma": "-", "serie": "9A", "ra": "MT21074489", "mat": 4, "ing": 16, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2449999", "mat": 8, "ing": 12, "turmaLabel": "9MIL"}, {"nome": "BERNARDO MACHADO", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT24161887", "mat": 5, "ing": 15, "turmaLabel": "9MIL"}, {"nome": "HEITOR SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT22096010", "mat": 6, "ing": 14, "turmaLabel": "9MIL"}, {"nome": "GABRIEL FRAZÃO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT23122120", "mat": 6, "ing": 13, "turmaLabel": "9MIL"}, {"nome": "JOÃO MOURA", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT25181991", "mat": 7, "ing": 12, "turmaLabel": "9MIL"}, {"nome": "NICOLAS ROMÃO", "unidade": "BANGU", "turma": "-", "serie": "9A", "ra": "MT23127517", "mat": 4, "ing": 15, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT15178310", "mat": 8, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "MARINA SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT23119480", "mat": 4, "ing": 15, "turmaLabel": "9MIL"}, {"nome": "ÍCARO QUEIROZ", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "9A", "ra": "MT23106255", "mat": 3, "ing": 16, "turmaLabel": "9MIL"}, {"nome": "GUSTAVO CHAVES", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT22058242", "mat": 4, "ing": 15, "turmaLabel": "9MIL"}, {"nome": "ESTER SOUZA", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT24159527", "mat": 3, "ing": 16, "turmaLabel": "9MIL"}, {"nome": "MARIA COSTA", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT24160533", "mat": 7, "ing": 12, "turmaLabel": "9MIL"}, {"nome": "GIOVANNA BATISTA", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT25177155", "mat": 7, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "GUILHERME HOLLANDA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25151333", "mat": 6, "ing": 12, "turmaLabel": "9MIL"}, {"nome": "LAURA PEREIRA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25156134", "mat": 4, "ing": 14, "turmaLabel": "9MIL"}, {"nome": "LUCAS CALDAS", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT22100036", "mat": 6, "ing": 12, "turmaLabel": "9MIL"}, {"nome": "WALLACE SILVA", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-9MIL11", "serie": "9A", "ra": "MT22100234", "mat": 12, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "ARTHUR SILVA", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-9MIL11", "serie": "9A", "ra": "MT21064761", "mat": 7, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "BRUNNO MENDONÇA", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT25180001", "mat": 8, "ing": 10, "turmaLabel": "9MIL"}, {"nome": "ANA SILVA", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT23129695", "mat": 6, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "EMILLY GALLO", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT22100242", "mat": 9, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "ANDREY SILVA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25191610", "mat": 5, "ing": 12, "turmaLabel": "9MIL"}, {"nome": "CALEBE DRUMOND", "unidade": "BANGU", "turma": "-", "serie": "9A", "ra": "MT23119407", "mat": 6, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "GABRIEL SANTOS", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25194077", "mat": 3, "ing": 14, "turmaLabel": "9MIL"}, {"nome": "GIOVANNA SILVEIRA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25186917", "mat": 6, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "ICARO ASSIS", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT22097950", "mat": 5, "ing": 12, "turmaLabel": "9MIL"}, {"nome": "THIAGO SANTANA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25181256", "mat": 5, "ing": 12, "turmaLabel": "9MIL"}, {"nome": "JORGE CRUZ", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT22095491", "mat": 9, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "ARTHUR RIBEIRO", "unidade": "NOVA IGUACU", "turma": "NI-9MIL11", "serie": "9A", "ra": "MT22095467", "mat": 4, "ing": 13, "turmaLabel": "9MIL"}, {"nome": "LUCAS LIMA", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-9MIL11", "serie": "9A", "ra": "MT25187055", "mat": 6, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "VICTOR ALBUQUERQUE", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT25180712", "mat": 5, "ing": 12, "turmaLabel": "9MIL"}, {"nome": "ALICE COSTA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT24162729", "mat": 3, "ing": 13, "turmaLabel": "9MIL"}, {"nome": "LUAN SÁ", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT23107352", "mat": 5, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "ANA OLIVEIRA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT22103568", "mat": 9, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2370", "mat": 6, "ing": 10, "turmaLabel": "9MIL"}, {"nome": "ESTER COUTO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25183781", "mat": 5, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "ISAAC ARAUJO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT24153116", "mat": 5, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "JOAO LOPES", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25183013", "mat": 7, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "JULIA REIS", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT24160020", "mat": 9, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "LUCAS SILVA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT24155558", "mat": 7, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "NATHAN SOUZA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25184086", "mat": 6, "ing": 10, "turmaLabel": "9MIL"}, {"nome": "GIULIA VIANA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-9MIL11", "serie": "9A", "ra": "MT24155251", "mat": 2, "ing": 14, "turmaLabel": "9MIL"}, {"nome": "DIOGO MIRANDA", "unidade": "ROCHA MIRANDA", "turma": "-", "serie": "9A", "ra": "MT23128895", "mat": 4, "ing": 12, "turmaLabel": "9MIL"}, {"nome": "EMANUEL MIRANDA", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT22090724", "mat": 7, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "JOÃO MATTOS", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT24160830", "mat": 5, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "MARIANNA OLIVEIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT22095319", "mat": 6, "ing": 10, "turmaLabel": "9MIL"}, {"nome": "PEDRO ALMEIDA", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT22059869", "mat": 6, "ing": 10, "turmaLabel": "9MIL"}, {"nome": "ANA PACHECO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT26203489", "mat": 8, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "NATHAN SANT'ANNA", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT24154395", "mat": 7, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "BERNARDO LIMA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT24138091", "mat": 7, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "DAVI CARVALHO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25177916", "mat": 6, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "MIGUEL ARAUJO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25197559", "mat": 8, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "NINA PESSANHA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT24150203", "mat": 7, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "RAFAELA OLIMPIO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT22097612", "mat": 6, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "SOPHIA SANTOS", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25191701", "mat": 7, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "GUILHERME BENJOINO", "unidade": "CAMPO GRANDE", "turma": "CG-9VES12", "serie": "9A", "ra": "MT23123359", "mat": 7, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "ARTHUR NETTO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-9MIL11", "serie": "9A", "ra": "MT24158669", "mat": 6, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "ARTHUR SOUZA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-9MIL11", "serie": "9A", "ra": "MT24155061", "mat": 8, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "VITÓRIA GOMES", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT24157802", "mat": 7, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "ALICE MACEDO", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT25177833", "mat": 8, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "BERNARDO ALEXANDRE", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT25186214", "mat": 5, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "BRENO RODRIGUES", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT25177882", "mat": 7, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "GUSTAVO DIAS", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT24149577", "mat": 3, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "NATHAN FRANCISCO", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT25195330", "mat": 6, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "GUSTAVO AVILA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT24147829", "mat": 5, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "HENRIQUE FERNANDES", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25174806", "mat": 3, "ing": 11, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2209975", "mat": 4, "ing": 10, "turmaLabel": "9MIL"}, {"nome": "GABRIEL FERNANDES", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "9A", "ra": "MT22102024", "mat": 6, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "GUILHERME ASSIS", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "9A", "ra": "MT24158685", "mat": 4, "ing": 10, "turmaLabel": "9MIL"}, {"nome": "ALEXIA NASCIMENTO", "unidade": "ROCHA MIRANDA", "turma": "RM-912", "serie": "9A", "ra": "MT22061790", "mat": 6, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "GABRIEL GOMES", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT23122625", "mat": 7, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "LUIZA FERNANDES", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT24134496", "mat": 4, "ing": 10, "turmaLabel": "9MIL"}, {"nome": "NICOLLAS OLIVEIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT25188285", "mat": 5, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "TALITA GALATI", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT22093512", "mat": 7, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "JOÃO PEREIRA", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT25199712", "mat": 5, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "JULIA BARROS", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25173329", "mat": 7, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2583542", "mat": 5, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "EVELLYN ROCHA", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT25190174", "mat": 3, "ing": 10, "turmaLabel": "9MIL"}, {"nome": "BRENNA MACEDO", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT22097570", "mat": 6, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "CARLOS SANTOS", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "9A", "ra": "MT23124910", "mat": 6, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "DANIEL SANTOS", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "9A", "ra": "MT25165457", "mat": 8, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "JONATAN MACEDO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-9MIL11", "serie": "9A", "ra": "MT24153322", "mat": 8, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "VINÍCIUS CORREA", "unidade": "NOVA IGUACU", "turma": "NI-9MIL11", "serie": "9A", "ra": "MT24148603", "mat": 6, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "PEDRO MOREIRA", "unidade": "NOVA IGUACU", "turma": "NI-9MIL11", "serie": "9A", "ra": "MT24142705", "mat": 6, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2311856", "mat": 6, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "ISABELA MACHADO", "unidade": "ROCHA MIRANDA", "turma": "-", "serie": "9A", "ra": "MT22093504", "mat": 5, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "JOÃO BORGES", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT24155996", "mat": 5, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "MIGUEL PAULA", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT22094262", "mat": 8, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "PEDRO TALINA", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT24148397", "mat": 5, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT182650", "mat": 5, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT15171646", "mat": 4, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "SOFIA LUZ", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT25186883", "mat": 6, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "BRYAN PAULA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25181835", "mat": 6, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "JOAO ALMEIDA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25179102", "mat": 3, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "JULIA SILVA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT24154692", "mat": 3, "ing": 9, "turmaLabel": "9MIL"}, {"nome": "NICOLAS NASCIMENTO", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT25189614", "mat": 6, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "DANIELA BRAGA", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT23108483", "mat": 4, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "STEFANY SANTANA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-9MIL11", "serie": "9A", "ra": "MT24161747", "mat": 4, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "MARIA DIAS", "unidade": "DUQUE DE CAXIAS", "turma": "-", "serie": "9A", "ra": "MT25181181", "mat": 4, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "FELIPE SANTOS", "unidade": "NOVA IGUACU", "turma": "NI-9MIL11", "serie": "9A", "ra": "MT23107303", "mat": 5, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "MARIANA NEVES", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-9MIL11", "serie": "9A", "ra": "MT25194374", "mat": 4, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "ERICK SILVA", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-9MIL11", "serie": "9A", "ra": "MT25185083", "mat": 4, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT5156227", "mat": 9, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "ARTHUR ROCHA", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT23113962", "mat": 9, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "MARIANA LIRA", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT23108749", "mat": 4, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT5183369", "mat": 6, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "BIANCA MACIEL", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25152679", "mat": 6, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "DAVI PIMENTA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25194994", "mat": 5, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "HENRY JULIANELLI", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25194531", "mat": 5, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "LUIZ LEMOS", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25172495", "mat": 5, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "KRYKON FICKELSCHERER", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT25193079", "mat": 8, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "MIGUEL XISTO", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT22090377", "mat": 4, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "ANA RODRIGUES", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT21069836", "mat": 5, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "GUSTAVO VIEIRA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25201377", "mat": 8, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "RAPHAEL JÚNIOR", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT24164477", "mat": 6, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "MARIA SOARES", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT25179417", "mat": 7, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "JOÃO MOTTA", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT25184797", "mat": 5, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "ARTUR SANTOS", "unidade": "DUQUE DE CAXIAS", "turma": "-", "serie": "9A", "ra": "MT25188301", "mat": 3, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "JUAN COUTO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-9MIL11", "serie": "9A", "ra": "MT23126006", "mat": 4, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT12", "mat": 6, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "MARIANA MOTTA", "unidade": "NOVA IGUACU", "turma": "NI-9MIL11", "serie": "9A", "ra": "MT25193848", "mat": 5, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "DAVI NEVES", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT25173808", "mat": 6, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "SOFIA TRINDADE", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT25197922", "mat": 6, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "ANA SOUSA", "unidade": "TAQUARA", "turma": "-", "serie": "9A", "ra": "MT24155194", "mat": 5, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "JOÃO MARQUES", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT25166778", "mat": 6, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "JOÃO MACHADO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25180928", "mat": 4, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "MATHEUS CARVALHO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25199191", "mat": 5, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "LUDMILA GOMES", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT25190471", "mat": 4, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "NATHALY SILVA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-9MIL11", "serie": "9A", "ra": "MT24156754", "mat": 4, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "ANNA MENDES", "unidade": "NOVA IGUACU", "turma": "NI-9MIL11", "serie": "9A", "ra": "MT25199753", "mat": 4, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "MATHEUS CAVALCANTI", "unidade": "NOVA IGUACU", "turma": "NI-9MIL11", "serie": "9A", "ra": "MT24164501", "mat": 4, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "GUILHERME NASCIMENTO", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT23132111", "mat": 4, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "HELLEN SOUZA", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-9MIL11", "serie": "9A", "ra": "MT21035258", "mat": 3, "ing": 7, "turmaLabel": "9MIL"}, {"nome": "PEDRO BENICÁ", "unidade": "TIJUCA", "turma": "TJ-9MIL11", "serie": "9A", "ra": "MT25189739", "mat": 3, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "DAVI MAIA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25187196", "mat": 6, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "RAFAELLA BARROS", "unidade": "TAQUARA", "turma": "TQ-9MIL11", "serie": "9A", "ra": "MT25185588", "mat": 4, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "RAFAELLA FERREIRA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT23109242", "mat": 4, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "ISABELLA JUVENAL", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT25188848", "mat": 3, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "GEOVANNA OLIVEIRA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-9MIL11", "serie": "9A", "ra": "MT25170598", "mat": 5, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "JOÃO CORREA", "unidade": "DUQUE DE CAXIAS", "turma": "-", "serie": "9A", "ra": "MT23125263", "mat": 5, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "BERNARDO MANES", "unidade": "NOVA IGUACU", "turma": "NI-9MIL11", "serie": "9A", "ra": "MT25179078", "mat": 5, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "ARTHUR LIMA", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT25184987", "mat": 3, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "RAIAN OLIVEIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT25168527", "mat": 5, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "GABRIEL ALMEIDA", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-9MIL11", "serie": "9A", "ra": "MT24143406", "mat": 1, "ing": 8, "turmaLabel": "9MIL"}, {"nome": "MIGUEL BELMIRO", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-9MIL11", "serie": "9A", "ra": "MT21048822", "mat": 3, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "GABRIEL BARBOSA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT24140261", "mat": 3, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT25", "mat": 4, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2518398", "mat": 5, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "ALLICE MACEDO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25193574", "mat": 5, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2514887", "mat": 5, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "MARIA THIAGO", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25182080", "mat": 4, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "MARIA OLIVEIRA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25194135", "mat": 3, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "PAULO NASCIMENTO", "unidade": "BANGU", "turma": "-", "serie": "EF2", "ra": "MT25177106", "mat": 2, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "PEDRO COSTA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT23118367", "mat": 6, "ing": 2, "turmaLabel": "9MIL"}, {"nome": "MATEUS SANTANA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT22099998", "mat": 3, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2312965", "mat": 3, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "MARIA LUZ", "unidade": "NOVA IGUACU", "turma": "NI-9MIL11", "serie": "9A", "ra": "MT25198342", "mat": 2, "ing": 6, "turmaLabel": "9MIL"}, {"nome": "MIGUEL DURADE", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT23111883", "mat": 4, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "HELOISA OLIVEIRA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-9MIL11", "serie": "9A", "ra": "MT25174533", "mat": 2, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "BENÍCIO MORAES", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT25179565", "mat": 3, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "ARYELLA KISNER", "unidade": "TAQUARA", "turma": "-", "serie": "9A", "ra": "MT25198482", "mat": 4, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "CAIO SOARES", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT25182270", "mat": 2, "ing": 5, "turmaLabel": "9MIL"}, {"nome": "JULIA LIMA", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT25200163", "mat": 4, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "MATHEUS SILVA", "unidade": "ROCHA MIRANDA", "turma": "-", "serie": "EM", "ra": "MT25189556", "mat": 3, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "LUNA FERREIRA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT22102156", "mat": 2, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "LARA RODRIGUES", "unidade": "CAMPO GRANDE", "turma": "CG-9MIL11", "serie": "9A", "ra": "MT25185794", "mat": 3, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "FABRICIO SANTOS", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT25190455", "mat": 2, "ing": 4, "turmaLabel": "9MIL"}, {"nome": "SOFIA CAEIRO", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT26202770", "mat": 3, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "BRUNO FERREIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-911", "serie": "9A", "ra": "MT22078661", "mat": 2, "ing": 3, "turmaLabel": "9MIL"}, {"nome": "LUÍSA SILVA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25174053", "mat": 2, "ing": 2, "turmaLabel": "9MIL"}, {"nome": "MIGUEL GONÇALVES", "unidade": "ROCHA MIRANDA", "turma": "RM-912", "serie": "9A", "ra": "MT22076202", "mat": 1, "ing": 2, "turmaLabel": "9MIL"}, {"nome": "JOÃO SILVA", "unidade": "MADUREIRA", "turma": "MD-9MIL11", "serie": "9A", "ra": "MT23111073", "mat": 1, "ing": 1, "turmaLabel": "9MIL"}, {"nome": "MIGUEL SANTOS", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-9MIL11", "serie": "9A", "ra": "MT25191321", "mat": 0, "ing": 1, "turmaLabel": "9MIL"}];
+const DATA_EM = [{"nome": "ANTHONY NUNES", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT25191438", "mat": 20, "ing": 19, "turmaLabel": "EM"}, {"nome": "PIETRO FERREIRA", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT25173550", "mat": 20, "ing": 18, "turmaLabel": "EM"}, {"nome": "PEDRO ALVES", "unidade": "BANGU", "turma": "-", "serie": "9A", "ra": "MT24146615", "mat": 18, "ing": 20, "turmaLabel": "EM"}, {"nome": "MARIO PEREIRA", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT24161861", "mat": 19, "ing": 18, "turmaLabel": "EM"}, {"nome": "ROGER SANTOS", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT24154213", "mat": 18, "ing": 18, "turmaLabel": "EM"}, {"nome": "GABRIEL OLIVEIRA", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT24157190", "mat": 18, "ing": 18, "turmaLabel": "EM"}, {"nome": "ANA JARDES", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24138455", "mat": 16, "ing": 19, "turmaLabel": "EM"}, {"nome": "BLENDOW OLIVEIRA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT24159667", "mat": 16, "ing": 19, "turmaLabel": "EM"}, {"nome": "GABRIEL MACIEL", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT25180134", "mat": 16, "ing": 19, "turmaLabel": "EM"}, {"nome": "LUIZ RAMOS", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT25151143", "mat": 16, "ing": 19, "turmaLabel": "EM"}, {"nome": "ARTHUR OLIVEIRA", "unidade": "BANGU", "turma": "BG-PCNE21", "serie": "CNE", "ra": "MT26203711", "mat": 16, "ing": 18, "turmaLabel": "EM"}, {"nome": "CAUÃ SOBRINHO", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25194036", "mat": 15, "ing": 19, "turmaLabel": "EM"}, {"nome": "MIGUEL CASTRO", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24153173", "mat": 15, "ing": 19, "turmaLabel": "EM"}, {"nome": "BRUNO ROCHA", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT23128523", "mat": 14, "ing": 20, "turmaLabel": "EM"}, {"nome": "KAIQUE AMARAL", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT24148231", "mat": 14, "ing": 19, "turmaLabel": "EM"}, {"nome": "GUILHERME RODRIGUES", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "1S", "ra": "MT24148348", "mat": 13, "ing": 20, "turmaLabel": "EM"}, {"nome": "LUCAS TAVARES", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT24164741", "mat": 13, "ing": 20, "turmaLabel": "EM"}, {"nome": "DAVI SOUZA", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT24148447", "mat": 15, "ing": 18, "turmaLabel": "EM"}, {"nome": "MÁRCIO TEIXEIRA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT24164329", "mat": 16, "ing": 16, "turmaLabel": "EM"}, {"nome": "KALEL QUEIROZ", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT23105349", "mat": 14, "ing": 18, "turmaLabel": "EM"}, {"nome": "PEDRO PINGARILHO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT21057781", "mat": 16, "ing": 16, "turmaLabel": "EM"}, {"nome": "DAVI SILVA", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT25173113", "mat": 13, "ing": 19, "turmaLabel": "EM"}, {"nome": "GABRIEL CARPINELLI", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT25189143", "mat": 17, "ing": 15, "turmaLabel": "EM"}, {"nome": "MIGUEL VARGAS", "unidade": "MADUREIRA", "turma": "MD-1JR21", "serie": "1S", "ra": "MT24142275", "mat": 13, "ing": 19, "turmaLabel": "EM"}, {"nome": "SUCK LAN", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT22057798", "mat": 12, "ing": 20, "turmaLabel": "EM"}, {"nome": "LUCAS SENA", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT24148421", "mat": 12, "ing": 19, "turmaLabel": "EM"}, {"nome": "CAIO CARDOSO", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-1MIL11", "serie": "1S", "ra": "MT23119555", "mat": 11, "ing": 20, "turmaLabel": "EM"}, {"nome": "PEDRO ALBUQUERQUE", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT24138794", "mat": 14, "ing": 17, "turmaLabel": "EM"}, {"nome": "CÁSSIO COSTA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25182569", "mat": 11, "ing": 19, "turmaLabel": "EM"}, {"nome": "SAMUEL FARIAS", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25194010", "mat": 11, "ing": 19, "turmaLabel": "EM"}, {"nome": "MARIANA SILVA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT24154569", "mat": 15, "ing": 15, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT26305425", "mat": 12, "ing": 18, "turmaLabel": "EM"}, {"nome": "ISAAC LAPROVITA", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT25159286", "mat": 14, "ing": 16, "turmaLabel": "EM"}, {"nome": "EDUARDO CHAVANTE", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT22091961", "mat": 14, "ing": 16, "turmaLabel": "EM"}, {"nome": "ENZO BARBOSA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT23122286", "mat": 15, "ing": 14, "turmaLabel": "EM"}, {"nome": "MARCELLY BUZZI", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25194044", "mat": 12, "ing": 17, "turmaLabel": "EM"}, {"nome": "CAUÃ RODRIGUES", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24153330", "mat": 10, "ing": 19, "turmaLabel": "EM"}, {"nome": "PEDRO SANTANA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25172735", "mat": 13, "ing": 16, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2319498", "mat": 11, "ing": 18, "turmaLabel": "EM"}, {"nome": "MARCOS SANTOS", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT23119746", "mat": 14, "ing": 15, "turmaLabel": "EM"}, {"nome": "ALÍCIA PANTOJA", "unidade": "MADUREIRA", "turma": "MD-1JR21", "serie": "1S", "ra": "MT22088678", "mat": 12, "ing": 17, "turmaLabel": "EM"}, {"nome": "ISIS ANJOS", "unidade": "BANGU", "turma": "BG-2MIL21", "serie": "2S", "ra": "MT25172644", "mat": 11, "ing": 17, "turmaLabel": "EM"}, {"nome": "JOÃO JESUS", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT23117971", "mat": 12, "ing": 16, "turmaLabel": "EM"}, {"nome": "LORENZO AZZOLINI", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25192162", "mat": 11, "ing": 17, "turmaLabel": "EM"}, {"nome": "DAVY OLIVEIRA", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT23125602", "mat": 13, "ing": 15, "turmaLabel": "EM"}, {"nome": "KARINY SANTOS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24163693", "mat": 12, "ing": 15, "turmaLabel": "EM"}, {"nome": "RENAN CORREA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL21", "serie": "2S", "ra": "MT25187618", "mat": 10, "ing": 17, "turmaLabel": "EM"}, {"nome": "ERNANI SILVA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT21070800", "mat": 13, "ing": 14, "turmaLabel": "EM"}, {"nome": "PEDRO ESTRELLA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24159261", "mat": 11, "ing": 16, "turmaLabel": "EM"}, {"nome": "ANTHONY BARRAQUI", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT25171034", "mat": 10, "ing": 17, "turmaLabel": "EM"}, {"nome": "MATEUS OLIVEIRA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "2S", "ra": "MT24147936", "mat": 10, "ing": 17, "turmaLabel": "EM"}, {"nome": "BIANCA RIBEIRO", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25194028", "mat": 10, "ing": 16, "turmaLabel": "EM"}, {"nome": "ISAQUE FERRAZ", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24148868", "mat": 12, "ing": 14, "turmaLabel": "EM"}, {"nome": "MATHEUS PAULA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25196650", "mat": 12, "ing": 14, "turmaLabel": "EM"}, {"nome": "BEATRIZ SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT24153199", "mat": 10, "ing": 16, "turmaLabel": "EM"}, {"nome": "MARIA MALATESTA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT24158628", "mat": 14, "ing": 12, "turmaLabel": "EM"}, {"nome": "ARTHUR COSTA", "unidade": "MADUREIRA", "turma": "MD-1JR21", "serie": "1S", "ra": "MT24154023", "mat": 12, "ing": 14, "turmaLabel": "EM"}, {"nome": "BERNARDO MONTEIRO", "unidade": "MADUREIRA", "turma": "MD-1JR21", "serie": "1S", "ra": "MT24150344", "mat": 12, "ing": 14, "turmaLabel": "EM"}, {"nome": "MILLENA GONÇALVES", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT22076178", "mat": 12, "ing": 14, "turmaLabel": "EM"}, {"nome": "CAIO COSTA", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT24156036", "mat": 10, "ing": 15, "turmaLabel": "EM"}, {"nome": "JOÃO CUNTA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT24148066", "mat": 10, "ing": 15, "turmaLabel": "EM"}, {"nome": "ROBERTO NASCIMENTO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25183674", "mat": 10, "ing": 14, "turmaLabel": "EM"}, {"nome": "MIGUEL PEIXOTO", "unidade": "MADUREIRA", "turma": "-", "serie": "2S", "ra": "MT24154445", "mat": 10, "ing": 14, "turmaLabel": "EM"}, {"nome": "ENZO SANTOS", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22094130", "mat": 10, "ing": 14, "turmaLabel": "EM"}, {"nome": "HERICK SILVA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT23119373", "mat": 10, "ing": 13, "turmaLabel": "EM"}, {"nome": "LEONARDO ALVES", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT23121999", "mat": 10, "ing": 13, "turmaLabel": "EM"}, {"nome": "MIGUEL RODRIGUES", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT25174624", "mat": 11, "ing": 12, "turmaLabel": "EM"}, {"nome": "THIAGO SANT'ANNA", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT21061007", "mat": 13, "ing": 10, "turmaLabel": "EM"}, {"nome": "ARTHUR MARTINS", "unidade": "MADUREIRA", "turma": "-", "serie": "2S", "ra": "MT23121650", "mat": 11, "ing": 12, "turmaLabel": "EM"}, {"nome": "BERNARDO LAPROVITERA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT24154528", "mat": 11, "ing": 11, "turmaLabel": "EM"}, {"nome": "DANIEL MORAES", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT25170424", "mat": 8, "ing": 20, "turmaLabel": "EM"}, {"nome": "HEITOR MUNIZ", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25178500", "mat": 9, "ing": 19, "turmaLabel": "EM"}, {"nome": "LUCAS GOMES", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24147175", "mat": 8, "ing": 20, "turmaLabel": "EM"}, {"nome": "EMANUEL SÁ", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT21069059", "mat": 9, "ing": 19, "turmaLabel": "EM"}, {"nome": "GABRIEL COELHO", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25198938", "mat": 9, "ing": 18, "turmaLabel": "EM"}, {"nome": "MARCELLO MAIA", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT25185745", "mat": 8, "ing": 19, "turmaLabel": "EM"}, {"nome": "GUILHERME CANELLAS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25182262", "mat": 9, "ing": 18, "turmaLabel": "EM"}, {"nome": "DERICK ASSIS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25177171", "mat": 8, "ing": 19, "turmaLabel": "EM"}, {"nome": "RAFAEL ALMEIDA", "unidade": "TIJUCA", "turma": "TJ-1MIL21", "serie": "1S", "ra": "MT25196254", "mat": 7, "ing": 20, "turmaLabel": "EM"}, {"nome": "JÚLIA ARAÚJO", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-2MIL11", "serie": "2S", "ra": "MT25190596", "mat": 8, "ing": 18, "turmaLabel": "EM"}, {"nome": "LEONARDO PEREZ", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT20032389", "mat": 6, "ing": 20, "turmaLabel": "EM"}, {"nome": "PABLO SILVA", "unidade": "BANGU", "turma": "-", "serie": "8A", "ra": "MT25186024", "mat": 7, "ing": 19, "turmaLabel": "EM"}, {"nome": "PEDRO RIBEIRO", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT25173493", "mat": 8, "ing": 18, "turmaLabel": "EM"}, {"nome": "PEDRO SANTOS", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT25180159", "mat": 6, "ing": 20, "turmaLabel": "EM"}, {"nome": "ROBERTO COSTA", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT24148694", "mat": 9, "ing": 17, "turmaLabel": "EM"}, {"nome": "CAROLINA SOUZA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT21064563", "mat": 8, "ing": 18, "turmaLabel": "EM"}, {"nome": "JOÃO ABREU", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24148850", "mat": 7, "ing": 19, "turmaLabel": "EM"}, {"nome": "LIVIA MARTINS", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "1S", "ra": "MT24149205", "mat": 9, "ing": 17, "turmaLabel": "EM"}, {"nome": "GABRIEL RAMOS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT22103261", "mat": 6, "ing": 20, "turmaLabel": "EM"}, {"nome": "NICOLE OLIVEIRA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24159733", "mat": 6, "ing": 20, "turmaLabel": "EM"}, {"nome": "PEDRO FARIA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT25169871", "mat": 7, "ing": 19, "turmaLabel": "EM"}, {"nome": "LUCAS NICOLAS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25173972", "mat": 8, "ing": 18, "turmaLabel": "EM"}, {"nome": "RAFAEL MAIA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT20034328", "mat": 6, "ing": 20, "turmaLabel": "EM"}, {"nome": "GUSTAVO MAIA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT20034187", "mat": 6, "ing": 20, "turmaLabel": "EM"}, {"nome": "JOAO ANDRADE", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-1MIL11", "serie": "1S", "ra": "MT25180043", "mat": 9, "ing": 17, "turmaLabel": "EM"}, {"nome": "ARTHUR PEREIRA", "unidade": "MADUREIRA", "turma": "MD-1JR21", "serie": "1S", "ra": "MT25157132", "mat": 9, "ing": 17, "turmaLabel": "EM"}, {"nome": "ARTHUR FREITAS", "unidade": "TAQUARA", "turma": "-", "serie": "2S", "ra": "MT23120991", "mat": 6, "ing": 19, "turmaLabel": "EM"}, {"nome": "EMANUELLA SOARES", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT25192584", "mat": 9, "ing": 16, "turmaLabel": "EM"}, {"nome": "SAMUEL FILHO", "unidade": "TAQUARA", "turma": "-", "serie": "2S", "ra": "MT24156259", "mat": 5, "ing": 20, "turmaLabel": "EM"}, {"nome": "GUILHERME BARROS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL21", "serie": "2S", "ra": "MT24158016", "mat": 9, "ing": 16, "turmaLabel": "EM"}, {"nome": "INÁCIO CUPERTINO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25178930", "mat": 8, "ing": 17, "turmaLabel": "EM"}, {"nome": "MANUELLA GAMA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25199092", "mat": 7, "ing": 18, "turmaLabel": "EM"}, {"nome": "ESTER RIBEIRO", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "2S", "ra": "MT25171521", "mat": 8, "ing": 17, "turmaLabel": "EM"}, {"nome": "ITALO FILHO", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "EM", "ra": "MT24149833", "mat": 6, "ing": 19, "turmaLabel": "EM"}, {"nome": "GABRIELA MOURA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT23115066", "mat": 8, "ing": 17, "turmaLabel": "EM"}, {"nome": "LETÍCIA BARBOSA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT24160145", "mat": 8, "ing": 17, "turmaLabel": "EM"}, {"nome": "ELISA SANTOS", "unidade": "NOVA IGUACU", "turma": "-", "serie": "2S", "ra": "MT24163339", "mat": 7, "ing": 18, "turmaLabel": "EM"}, {"nome": "BRUNO DIAS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25171463", "mat": 9, "ing": 16, "turmaLabel": "EM"}, {"nome": "GUILHERME ROSA", "unidade": "MADUREIRA", "turma": "MD-1JR21", "serie": "1S", "ra": "MT24149171", "mat": 7, "ing": 18, "turmaLabel": "EM"}, {"nome": "GABRIEL JORGE", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT24148413", "mat": 9, "ing": 16, "turmaLabel": "EM"}, {"nome": "DANIEL PEREIRA", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT23109135", "mat": 9, "ing": 15, "turmaLabel": "EM"}, {"nome": "JUAN BARBOSA", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT21046784", "mat": 8, "ing": 16, "turmaLabel": "EM"}, {"nome": "GABRIEL SILVA", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT21053699", "mat": 9, "ing": 15, "turmaLabel": "EM"}, {"nome": "JULIA FERNANDES", "unidade": "TAQUARA", "turma": "-", "serie": "1S", "ra": "MT21054119", "mat": 6, "ing": 18, "turmaLabel": "EM"}, {"nome": "LARA MARTINS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT23128218", "mat": 7, "ing": 17, "turmaLabel": "EM"}, {"nome": "BIANCA PASSO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT23126600", "mat": 7, "ing": 17, "turmaLabel": "EM"}, {"nome": "LAIS VIEIRA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT23130503", "mat": 7, "ing": 17, "turmaLabel": "EM"}, {"nome": "MATHEUS TEIXEIRA", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "1S", "ra": "MT26202515", "mat": 7, "ing": 17, "turmaLabel": "EM"}, {"nome": "BENÍCIO MOTA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24149981", "mat": 8, "ing": 16, "turmaLabel": "EM"}, {"nome": "NICOLY CABRAL", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "2S", "ra": "MT24148686", "mat": 7, "ing": 17, "turmaLabel": "EM"}, {"nome": "JOSÉ BRAIDO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT24157372", "mat": 5, "ing": 19, "turmaLabel": "EM"}, {"nome": "ANDREY SILVA", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT25177064", "mat": 7, "ing": 17, "turmaLabel": "EM"}, {"nome": "ROGERIO JUNIOR", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24154957", "mat": 7, "ing": 17, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT25173692", "mat": 6, "ing": 18, "turmaLabel": "EM"}, {"nome": "GABRIELA FERNANDES", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-1MIL11", "serie": "1S", "ra": "MT25193483", "mat": 9, "ing": 15, "turmaLabel": "EM"}, {"nome": "LUANA GUILHERME", "unidade": "MADUREIRA", "turma": "MD-1JR21", "serie": "1S", "ra": "MT25152612", "mat": 6, "ing": 18, "turmaLabel": "EM"}, {"nome": "ARTHUR DANTAS", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT24153280", "mat": 6, "ing": 18, "turmaLabel": "EM"}, {"nome": "STEPHANY BENEDITO", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT25173360", "mat": 7, "ing": 16, "turmaLabel": "EM"}, {"nome": "ANA REIS", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT22101828", "mat": 5, "ing": 18, "turmaLabel": "EM"}, {"nome": "CLARA ABREU", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25188913", "mat": 8, "ing": 15, "turmaLabel": "EM"}, {"nome": "EMILLY SOEIRO", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT24156127", "mat": 6, "ing": 17, "turmaLabel": "EM"}, {"nome": "ANNA EVANGELISTA", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT23117922", "mat": 7, "ing": 16, "turmaLabel": "EM"}, {"nome": "DAVI NEVES", "unidade": "BANGU", "turma": "BG-2MIL21", "serie": "2S", "ra": "MT25199555", "mat": 6, "ing": 17, "turmaLabel": "EM"}, {"nome": "YASMIN SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL21", "serie": "1S", "ra": "MT25196676", "mat": 9, "ing": 14, "turmaLabel": "EM"}, {"nome": "NICHOLAS ASSIS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25177205", "mat": 9, "ing": 14, "turmaLabel": "EM"}, {"nome": "NATHAN RIBEIRO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25184318", "mat": 7, "ing": 16, "turmaLabel": "EM"}, {"nome": "LETÍCIA ROCHA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT24162158", "mat": 5, "ing": 18, "turmaLabel": "EM"}, {"nome": "LUAN TAVARES", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT22088918", "mat": 5, "ing": 18, "turmaLabel": "EM"}, {"nome": "ISADORA TEIXEIRA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24161598", "mat": 4, "ing": 19, "turmaLabel": "EM"}, {"nome": "LUARA SANTANA", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-2MIL11", "serie": "2S", "ra": "MT24147316", "mat": 14, "ing": 9, "turmaLabel": "EM"}, {"nome": "MARIA TERRA", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-2MIL11", "serie": "2S", "ra": "MT21074901", "mat": 9, "ing": 14, "turmaLabel": "EM"}, {"nome": "LUCAS OLIVEIRA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT24135501", "mat": 8, "ing": 14, "turmaLabel": "EM"}, {"nome": "MARIA LEÃO", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-2MIL11", "serie": "2S", "ra": "MT25187238", "mat": 5, "ing": 17, "turmaLabel": "EM"}, {"nome": "JÚLIA MOTTA", "unidade": "TAQUARA", "turma": "-", "serie": "1S", "ra": "MT21068382", "mat": 5, "ing": 17, "turmaLabel": "EM"}, {"nome": "DANILO HOLZ", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT22090948", "mat": 6, "ing": 16, "turmaLabel": "EM"}, {"nome": "GEOVANNA ORNELAS", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT25191958", "mat": 5, "ing": 17, "turmaLabel": "EM"}, {"nome": "GLADSON JUNIOR", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT23118425", "mat": 5, "ing": 17, "turmaLabel": "EM"}, {"nome": "IGOR MARQUES", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT23127244", "mat": 7, "ing": 15, "turmaLabel": "EM"}, {"nome": "JOÃO CARVALHO", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT25173790", "mat": 5, "ing": 17, "turmaLabel": "EM"}, {"nome": "MARIA DAHER", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT24150039", "mat": 7, "ing": 15, "turmaLabel": "EM"}, {"nome": "MARIA LUSTOSA", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT21070560", "mat": 5, "ing": 17, "turmaLabel": "EM"}, {"nome": "HENRIQUE SOUZA", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT25166760", "mat": 8, "ing": 14, "turmaLabel": "EM"}, {"nome": "ISAAC MEDEIROS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT25172875", "mat": 4, "ing": 18, "turmaLabel": "EM"}, {"nome": "SAMUEL LOPES", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24154916", "mat": 5, "ing": 17, "turmaLabel": "EM"}, {"nome": "ANA SOUZA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25199142", "mat": 6, "ing": 16, "turmaLabel": "EM"}, {"nome": "ANA SILVEIRA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT23122070", "mat": 7, "ing": 15, "turmaLabel": "EM"}, {"nome": "ANA CARVALHAES", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT25168543", "mat": 7, "ing": 15, "turmaLabel": "EM"}, {"nome": "SOFIA COUTINHO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL21", "serie": "1S", "ra": "MT25195611", "mat": 7, "ing": 15, "turmaLabel": "EM"}, {"nome": "ANNA CRUZ", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT22066880", "mat": 4, "ing": 18, "turmaLabel": "EM"}, {"nome": "MANUELA TAVARES", "unidade": "TIJUCA", "turma": "TJ-2MIL21", "serie": "2S", "ra": "MT25193004", "mat": 3, "ing": 18, "turmaLabel": "EM"}, {"nome": "PEDRO SOUZA", "unidade": "TIJUCA", "turma": "TJ-1MIL21", "serie": "1S", "ra": "MT25191263", "mat": 7, "ing": 14, "turmaLabel": "EM"}, {"nome": "FELIPE FARINHA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25157926", "mat": 9, "ing": 12, "turmaLabel": "EM"}, {"nome": "BEATRIZ FRANÇA", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT21067459", "mat": 8, "ing": 13, "turmaLabel": "EM"}, {"nome": "DAVI SOARES", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT21063441", "mat": 7, "ing": 14, "turmaLabel": "EM"}, {"nome": "GABRIEL BRITO", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25194002", "mat": 2, "ing": 19, "turmaLabel": "EM"}, {"nome": "GUSTAVO BRAGA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT22093017", "mat": 8, "ing": 13, "turmaLabel": "EM"}, {"nome": "IGOR SOUSA", "unidade": "BANGU", "turma": "-", "serie": "1S", "ra": "MT24156093", "mat": 12, "ing": 9, "turmaLabel": "EM"}, {"nome": "MIGUEL SOUZA", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT21070875", "mat": 6, "ing": 15, "turmaLabel": "EM"}, {"nome": "ALICE GOMES", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT22100994", "mat": 6, "ing": 15, "turmaLabel": "EM"}, {"nome": "BÁRBARA NASCIMENTO", "unidade": "CAMPO GRANDE", "turma": "CG-PCNE21", "serie": "CNE", "ra": "MT25199969", "mat": 5, "ing": 16, "turmaLabel": "EM"}, {"nome": "CAUÃ SANTOS", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25165804", "mat": 7, "ing": 14, "turmaLabel": "EM"}, {"nome": "KAIKY ROCHA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25181066", "mat": 9, "ing": 12, "turmaLabel": "EM"}, {"nome": "LAVINIA DALLIER", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25200593", "mat": 7, "ing": 14, "turmaLabel": "EM"}, {"nome": "MARIAH SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25180456", "mat": 5, "ing": 16, "turmaLabel": "EM"}, {"nome": "GUILHERME PEREIRA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT21054481", "mat": 2, "ing": 19, "turmaLabel": "EM"}, {"nome": "MARIANA SOUZA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24149668", "mat": 8, "ing": 13, "turmaLabel": "EM"}, {"nome": "FABRICIO SANTOS", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL21", "serie": "1S", "ra": "MT25196627", "mat": 7, "ing": 14, "turmaLabel": "EM"}, {"nome": "VITORIA SOUZA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2VES11", "serie": "2S", "ra": "MT25166695", "mat": 6, "ing": 15, "turmaLabel": "EM"}, {"nome": "LUIZA FERREIRA", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT22100945", "mat": 7, "ing": 14, "turmaLabel": "EM"}, {"nome": "GUILHERME COSTA", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT25181504", "mat": 7, "ing": 14, "turmaLabel": "EM"}, {"nome": "MATEUS BARROS", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT25182254", "mat": 3, "ing": 18, "turmaLabel": "EM"}, {"nome": "LUCAS MOURA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT25169590", "mat": 7, "ing": 14, "turmaLabel": "EM"}, {"nome": "ALEXANDRE LIMA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24150088", "mat": 5, "ing": 16, "turmaLabel": "EM"}, {"nome": "VINÍCIUS SANTOS", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24160335", "mat": 8, "ing": 13, "turmaLabel": "EM"}, {"nome": "EDUARDA SANTOS", "unidade": "MADUREIRA", "turma": "MD-1JR21", "serie": "1S", "ra": "MT25171927", "mat": 7, "ing": 14, "turmaLabel": "EM"}, {"nome": "ALEXANDRE CAVALCANTE", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25168634", "mat": 4, "ing": 16, "turmaLabel": "EM"}, {"nome": "RENAN DIAS", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT24164972", "mat": 6, "ing": 14, "turmaLabel": "EM"}, {"nome": "GEOVANA SILVA", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT23124274", "mat": 6, "ing": 14, "turmaLabel": "EM"}, {"nome": "GIULIANA SILVA", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25174327", "mat": 6, "ing": 14, "turmaLabel": "EM"}, {"nome": "GUILHERME OLIVEIRA", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT24150765", "mat": 8, "ing": 12, "turmaLabel": "EM"}, {"nome": "JONAS TEODORO", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25184243", "mat": 3, "ing": 17, "turmaLabel": "EM"}, {"nome": "YAN WOOD", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT22093819", "mat": 6, "ing": 14, "turmaLabel": "EM"}, {"nome": "JOÃO VASCONCELLOS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24162463", "mat": 5, "ing": 15, "turmaLabel": "EM"}, {"nome": "SOPHIA CLAUDIANO", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "2S", "ra": "MT24148710", "mat": 6, "ing": 14, "turmaLabel": "EM"}, {"nome": "DÉBORA LIMA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT24153231", "mat": 12, "ing": 8, "turmaLabel": "EM"}, {"nome": "JOÃO MESQUITA", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "EF2", "ra": "MT24151797", "mat": 5, "ing": 15, "turmaLabel": "EM"}, {"nome": "JULIA MIGUEL", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT24152985", "mat": 6, "ing": 14, "turmaLabel": "EM"}, {"nome": "HELOISE MAC-CORMICK", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25177189", "mat": 1, "ing": 19, "turmaLabel": "EM"}, {"nome": "THEO FERREIRA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25184532", "mat": 3, "ing": 17, "turmaLabel": "EM"}, {"nome": "EMERSON ALVES", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "2S", "ra": "MT24150070", "mat": 4, "ing": 16, "turmaLabel": "EM"}, {"nome": "MANUELA SOUZA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24149593", "mat": 7, "ing": 13, "turmaLabel": "EM"}, {"nome": "IZADORA BATISTA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25196213", "mat": 4, "ing": 16, "turmaLabel": "EM"}, {"nome": "YASMIN FERREIRA", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT22101166", "mat": 6, "ing": 14, "turmaLabel": "EM"}, {"nome": "ISABELLA SANTOS", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT25187436", "mat": 5, "ing": 15, "turmaLabel": "EM"}, {"nome": "SOPHIA DIAS", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT22093454", "mat": 4, "ing": 16, "turmaLabel": "EM"}, {"nome": "ALICE PAZ", "unidade": "TIJUCA", "turma": "TJ-2MIL21", "serie": "2S", "ra": "MT25168014", "mat": 2, "ing": 18, "turmaLabel": "EM"}, {"nome": "ISABELLA MASSAPUST", "unidade": "TIJUCA", "turma": "TJ-1MIL21", "serie": "1S", "ra": "MT25157702", "mat": 7, "ing": 13, "turmaLabel": "EM"}, {"nome": "MARIA ASSIS", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT22087720", "mat": 5, "ing": 15, "turmaLabel": "EM"}, {"nome": "ENZO SILVA", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT25200502", "mat": 8, "ing": 12, "turmaLabel": "EM"}, {"nome": "ARTHUR LOPES", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT24156473", "mat": 7, "ing": 12, "turmaLabel": "EM"}, {"nome": "EIKE FERNANDES", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT26202978", "mat": 5, "ing": 14, "turmaLabel": "EM"}, {"nome": "MIGUEL ANDRADE", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT25196346", "mat": 2, "ing": 17, "turmaLabel": "EM"}, {"nome": "ANA OLIVEIRA", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT24153702", "mat": 4, "ing": 15, "turmaLabel": "EM"}, {"nome": "JULIAN SOUSA", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25180522", "mat": 6, "ing": 13, "turmaLabel": "EM"}, {"nome": "MARIA LIMA", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25189424", "mat": 2, "ing": 17, "turmaLabel": "EM"}, {"nome": "THAWANY COSTA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25178070", "mat": 8, "ing": 11, "turmaLabel": "EM"}, {"nome": "ALICIA SOUZA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT24149510", "mat": 6, "ing": 13, "turmaLabel": "EM"}, {"nome": "MARIA OLIVEIRA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT24155590", "mat": 7, "ing": 12, "turmaLabel": "EM"}, {"nome": "MIGUEL NOGUEIRA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT24161713", "mat": 6, "ing": 13, "turmaLabel": "EM"}, {"nome": "YASMIM OLIVEIRA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT24154072", "mat": 6, "ing": 13, "turmaLabel": "EM"}, {"nome": "MATHEUS MORAES", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25189515", "mat": 7, "ing": 12, "turmaLabel": "EM"}, {"nome": "MIGUEL SANTOS", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25186719", "mat": 4, "ing": 15, "turmaLabel": "EM"}, {"nome": "YURI MESNARD", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25178096", "mat": 5, "ing": 14, "turmaLabel": "EM"}, {"nome": "IGOR BLANC", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24154130", "mat": 7, "ing": 12, "turmaLabel": "EM"}, {"nome": "LUÍS SANTOS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24160129", "mat": 8, "ing": 11, "turmaLabel": "EM"}, {"nome": "NICOLE SANTOS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT23120264", "mat": 6, "ing": 13, "turmaLabel": "EM"}, {"nome": "THAMIRES LIMA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT25171919", "mat": 9, "ing": 10, "turmaLabel": "EM"}, {"nome": "ISABELA CORTES", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25188640", "mat": 6, "ing": 13, "turmaLabel": "EM"}, {"nome": "PEDRO SILVA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25193640", "mat": 7, "ing": 12, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2500619", "mat": 7, "ing": 12, "turmaLabel": "EM"}, {"nome": "VICTÓRIA VIANA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT24157489", "mat": 9, "ing": 10, "turmaLabel": "EM"}, {"nome": "BRENNO SILVA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT25190919", "mat": 4, "ing": 15, "turmaLabel": "EM"}, {"nome": "ELOAH OLIVEIRA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT23126501", "mat": 4, "ing": 15, "turmaLabel": "EM"}, {"nome": "EDUARDO FONSECA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT25185612", "mat": 7, "ing": 12, "turmaLabel": "EM"}, {"nome": "DAVI ACÁCIO", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24147555", "mat": 7, "ing": 12, "turmaLabel": "EM"}, {"nome": "LUKAS SILVA", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT25174749", "mat": 12, "ing": 7, "turmaLabel": "EM"}, {"nome": "ANA SILVA", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25201641", "mat": 9, "ing": 10, "turmaLabel": "EM"}, {"nome": "DAVI OLIVEIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22059349", "mat": 3, "ing": 16, "turmaLabel": "EM"}, {"nome": "JOÃO SANTOS", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25199431", "mat": 7, "ing": 12, "turmaLabel": "EM"}, {"nome": "LUCAS MACEDO", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25183815", "mat": 5, "ing": 14, "turmaLabel": "EM"}, {"nome": "LUIZ DIAS", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25188814", "mat": 8, "ing": 11, "turmaLabel": "EM"}, {"nome": "NICOLLAS SANT'ANNA", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22062731", "mat": 4, "ing": 15, "turmaLabel": "EM"}, {"nome": "LETÍCIA SANTOS", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT22101463", "mat": 7, "ing": 11, "turmaLabel": "EM"}, {"nome": "MARVIN TURLE", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT23120504", "mat": 5, "ing": 13, "turmaLabel": "EM"}, {"nome": "CAIO GONÇALVES", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-2MIL11", "serie": "2S", "ra": "MT25170861", "mat": 5, "ing": 13, "turmaLabel": "EM"}, {"nome": "JOÃO LIMA", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT25171026", "mat": 5, "ing": 13, "turmaLabel": "EM"}, {"nome": "JONATHAN CAMARGO", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT21061528", "mat": 3, "ing": 15, "turmaLabel": "EM"}, {"nome": "DAVI VIDAL", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25177510", "mat": 6, "ing": 12, "turmaLabel": "EM"}, {"nome": "FRANCESCA VENTURA", "unidade": "BANGU", "turma": "BG-1VES12", "serie": "1S", "ra": "MT24153736", "mat": 2, "ing": 16, "turmaLabel": "EM"}, {"nome": "LEONARDO RIBEIRO", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25198474", "mat": 5, "ing": 13, "turmaLabel": "EM"}, {"nome": "MARIA NUNES", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25183864", "mat": 7, "ing": 11, "turmaLabel": "EM"}, {"nome": "PEDRO ASSUMPÇÃO", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT21056486", "mat": 2, "ing": 16, "turmaLabel": "EM"}, {"nome": "KARINE SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24149692", "mat": 5, "ing": 13, "turmaLabel": "EM"}, {"nome": "MARIA CORREIA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24162265", "mat": 3, "ing": 15, "turmaLabel": "EM"}, {"nome": "NICOLLE MIRANDA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24159709", "mat": 1, "ing": 17, "turmaLabel": "EM"}, {"nome": "MICHEL FILHO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25168337", "mat": 4, "ing": 14, "turmaLabel": "EM"}, {"nome": "GABRIEL MARQUES", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25201211", "mat": 4, "ing": 14, "turmaLabel": "EM"}, {"nome": "VICENTE DALTRO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25193269", "mat": 7, "ing": 11, "turmaLabel": "EM"}, {"nome": "LUCAS TAVARES", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT26202044", "mat": 10, "ing": 8, "turmaLabel": "EM"}, {"nome": "GUILHERME SANTOS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25177262", "mat": 4, "ing": 14, "turmaLabel": "EM"}, {"nome": "GIOVANNA QUEIROS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT26203802", "mat": 5, "ing": 13, "turmaLabel": "EM"}, {"nome": "JOAO ALVES", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25166265", "mat": 6, "ing": 12, "turmaLabel": "EM"}, {"nome": "NATALIA BAPTISTA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT24150815", "mat": 4, "ing": 14, "turmaLabel": "EM"}, {"nome": "NALLANDA RAMOS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT22097711", "mat": 7, "ing": 11, "turmaLabel": "EM"}, {"nome": "ANA DIAS", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT23122310", "mat": 7, "ing": 11, "turmaLabel": "EM"}, {"nome": "MAÍRA RODRIGUES", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT23122740", "mat": 7, "ing": 11, "turmaLabel": "EM"}, {"nome": "BRUNA SILVA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT23117898", "mat": 5, "ing": 13, "turmaLabel": "EM"}, {"nome": "CRISTIANO DEININGER", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT22078992", "mat": 9, "ing": 9, "turmaLabel": "EM"}, {"nome": "EMANUELLE PEREIRA", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT21056049", "mat": 6, "ing": 12, "turmaLabel": "EM"}, {"nome": "KAYO MARCOLINO", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT25196247", "mat": 9, "ing": 9, "turmaLabel": "EM"}, {"nome": "WESLEY LIMA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24150005", "mat": 9, "ing": 9, "turmaLabel": "EM"}, {"nome": "KARYNA LIMA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24161929", "mat": 3, "ing": 15, "turmaLabel": "EM"}, {"nome": "FILIPE DELFINO", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-2MIL11", "serie": "2S", "ra": "MT24158933", "mat": 9, "ing": 9, "turmaLabel": "EM"}, {"nome": "BRENO RIBEIRO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25193152", "mat": 7, "ing": 11, "turmaLabel": "EM"}, {"nome": "DAVI FENTA", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT25197120", "mat": 4, "ing": 14, "turmaLabel": "EM"}, {"nome": "FELIPE CRUZ", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25191917", "mat": 7, "ing": 11, "turmaLabel": "EM"}, {"nome": "NATHAN SAMPAIO", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25193137", "mat": 6, "ing": 12, "turmaLabel": "EM"}, {"nome": "MARIA PEREIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT25182429", "mat": 5, "ing": 13, "turmaLabel": "EM"}, {"nome": "DANIEL SOUZA", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT25194267", "mat": 6, "ing": 11, "turmaLabel": "EM"}, {"nome": "ARTHUR LIMA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25158882", "mat": 7, "ing": 10, "turmaLabel": "EM"}, {"nome": "ISABELA BRAVIM", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT26203406", "mat": 6, "ing": 11, "turmaLabel": "EM"}, {"nome": "LUANNA SILVA", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT25199878", "mat": 9, "ing": 8, "turmaLabel": "EM"}, {"nome": "ANA CAMPOS", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT24163495", "mat": 9, "ing": 8, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2", "mat": 6, "ing": 11, "turmaLabel": "EM"}, {"nome": "DAVI SILVA", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT26202846", "mat": 7, "ing": 10, "turmaLabel": "EM"}, {"nome": "EDUARDO BALLIANA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25180902", "mat": 5, "ing": 12, "turmaLabel": "EM"}, {"nome": "KAIQUE MONTENEGRO", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT24162679", "mat": 9, "ing": 8, "turmaLabel": "EM"}, {"nome": "MIGUEL CRISTINO", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT23119092", "mat": 7, "ing": 10, "turmaLabel": "EM"}, {"nome": "RHUAN SANTOS", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT24163867", "mat": 4, "ing": 13, "turmaLabel": "EM"}, {"nome": "JÚLIA OLIVEIRA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24162000", "mat": 7, "ing": 10, "turmaLabel": "EM"}, {"nome": "CARLOS SANTOS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25165853", "mat": 7, "ing": 10, "turmaLabel": "EM"}, {"nome": "EDUARDA ESTARNECK", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24163123", "mat": 5, "ing": 12, "turmaLabel": "EM"}, {"nome": "GIOVANNA ALVES", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25187667", "mat": 5, "ing": 12, "turmaLabel": "EM"}, {"nome": "GUSTAVO SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24149775", "mat": 3, "ing": 14, "turmaLabel": "EM"}, {"nome": "JOSÉ NASCIMENTO", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25185810", "mat": 6, "ing": 11, "turmaLabel": "EM"}, {"nome": "JOSIANE COSTA", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "EM", "ra": "MT24157356", "mat": 10, "ing": 7, "turmaLabel": "EM"}, {"nome": "MARIA ALUÍZIO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT23119365", "mat": 4, "ing": 13, "turmaLabel": "EM"}, {"nome": "RICHARD WAN-DALL", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT21066568", "mat": 6, "ing": 11, "turmaLabel": "EM"}, {"nome": "ISAAC SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25195215", "mat": 4, "ing": 13, "turmaLabel": "EM"}, {"nome": "LORHANE LIMA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25196452", "mat": 7, "ing": 10, "turmaLabel": "EM"}, {"nome": "MARCELLA MENDES", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25188962", "mat": 4, "ing": 13, "turmaLabel": "EM"}, {"nome": "HENRIKO ALVES", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "EM", "ra": "MT24149957", "mat": 8, "ing": 9, "turmaLabel": "EM"}, {"nome": "ESTER SILVA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25188178", "mat": 5, "ing": 12, "turmaLabel": "EM"}, {"nome": "DAVI PETZINGER", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25172768", "mat": 8, "ing": 9, "turmaLabel": "EM"}, {"nome": "JOÃO FONSECA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT21074075", "mat": 5, "ing": 12, "turmaLabel": "EM"}, {"nome": "LUIZ TAVARES", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25187865", "mat": 8, "ing": 9, "turmaLabel": "EM"}, {"nome": "PIETRO SILVA", "unidade": "DUQUE DE CAXIAS", "turma": "-", "serie": "1S", "ra": "MT24158537", "mat": 7, "ing": 10, "turmaLabel": "EM"}, {"nome": "MIGUEL CRUZ", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT25184144", "mat": 7, "ing": 10, "turmaLabel": "EM"}, {"nome": "JOÃO LOMBA", "unidade": "MADUREIRA", "turma": "-", "serie": "1S", "ra": "MT25185364", "mat": 7, "ing": 10, "turmaLabel": "EM"}, {"nome": "GABRIELLY SOUZA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT25167404", "mat": 13, "ing": 4, "turmaLabel": "EM"}, {"nome": "LUIZ SANTOS", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT24146714", "mat": 7, "ing": 10, "turmaLabel": "EM"}, {"nome": "DANIEL LOPES", "unidade": "MADUREIRA", "turma": "MD-1JR21", "serie": "1S", "ra": "MT24149528", "mat": 8, "ing": 9, "turmaLabel": "EM"}, {"nome": "ANNA AMORIM", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT23133424", "mat": 3, "ing": 14, "turmaLabel": "EM"}, {"nome": "ANNA PEREIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22093264", "mat": 3, "ing": 14, "turmaLabel": "EM"}, {"nome": "THALES SILVA", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25193491", "mat": 1, "ing": 16, "turmaLabel": "EM"}, {"nome": "ENZO PEREIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT24163362", "mat": 8, "ing": 9, "turmaLabel": "EM"}, {"nome": "GABRIEL BRICIO", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT24161150", "mat": 6, "ing": 11, "turmaLabel": "EM"}, {"nome": "LAÍS ANDRADE", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT24164758", "mat": 6, "ing": 11, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT309", "mat": 6, "ing": 10, "turmaLabel": "EM"}, {"nome": "ANA DIVINO", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25178484", "mat": 6, "ing": 10, "turmaLabel": "EM"}, {"nome": "EMANUELA SILVA", "unidade": "BANGU", "turma": "BG-2MIL21", "serie": "2S", "ra": "MT24145906", "mat": 7, "ing": 9, "turmaLabel": "EM"}, {"nome": "FERNANDA COSTA", "unidade": "BANGU", "turma": "BG-2MIL21", "serie": "2S", "ra": "MT23132525", "mat": 7, "ing": 9, "turmaLabel": "EM"}, {"nome": "JOSE CORREA", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25197781", "mat": 10, "ing": 6, "turmaLabel": "EM"}, {"nome": "STEFANI CARVALHO", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT24142481", "mat": 6, "ing": 10, "turmaLabel": "EM"}, {"nome": "VITÓRIA PAZ", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT25183898", "mat": 5, "ing": 11, "turmaLabel": "EM"}, {"nome": "ISADORA FERREIRA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24155426", "mat": 4, "ing": 12, "turmaLabel": "EM"}, {"nome": "PAULO CERQUEIRA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25193244", "mat": 6, "ing": 10, "turmaLabel": "EM"}, {"nome": "ANA FERREIRA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25186131", "mat": 7, "ing": 9, "turmaLabel": "EM"}, {"nome": "MARIA RIBEIRO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25178898", "mat": 3, "ing": 13, "turmaLabel": "EM"}, {"nome": "YURI ALBUQUERQUE", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT26202879", "mat": 7, "ing": 9, "turmaLabel": "EM"}, {"nome": "ENZO BEZERRA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24153181", "mat": 6, "ing": 10, "turmaLabel": "EM"}, {"nome": "PEDRO OLIVEIRA", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "2S", "ra": "MT25201542", "mat": 4, "ing": 12, "turmaLabel": "EM"}, {"nome": "CAIO SANTOS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25178088", "mat": 7, "ing": 9, "turmaLabel": "EM"}, {"nome": "RHAUÃ ARAUJO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25187873", "mat": 6, "ing": 10, "turmaLabel": "EM"}, {"nome": "MATHEUS SANTANA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25187659", "mat": 2, "ing": 14, "turmaLabel": "EM"}, {"nome": "MAYCON CONCEIÇÃO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT24156101", "mat": 11, "ing": 5, "turmaLabel": "EM"}, {"nome": "LUCAS MORAIS", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT26202929", "mat": 5, "ing": 11, "turmaLabel": "EM"}, {"nome": "NÍCHOLAS BRITO", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT25174590", "mat": 6, "ing": 10, "turmaLabel": "EM"}, {"nome": "MANUELLA SOUZA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT24152795", "mat": 5, "ing": 11, "turmaLabel": "EM"}, {"nome": "RAYAN FORTUNATO", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT23110927", "mat": 6, "ing": 10, "turmaLabel": "EM"}, {"nome": "RICKSON SOUZA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT24160616", "mat": 9, "ing": 7, "turmaLabel": "EM"}, {"nome": "ARTHUR CONCEIÇÃO", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT25181173", "mat": 11, "ing": 5, "turmaLabel": "EM"}, {"nome": "GUSTAVO NUNES", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT25167792", "mat": 6, "ing": 10, "turmaLabel": "EM"}, {"nome": "KAIO PEREIRA", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT25200874", "mat": 5, "ing": 11, "turmaLabel": "EM"}, {"nome": "MIGUEL PIRES", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-1MIL11", "serie": "1S", "ra": "MT24149395", "mat": 6, "ing": 10, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT26209877", "mat": 8, "ing": 8, "turmaLabel": "EM"}, {"nome": "ALICE GOMES", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22093470", "mat": 8, "ing": 8, "turmaLabel": "EM"}, {"nome": "ARTHUR SILVANO", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22101349", "mat": 6, "ing": 10, "turmaLabel": "EM"}, {"nome": "EMILY LIMA", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT23125859", "mat": 8, "ing": 8, "turmaLabel": "EM"}, {"nome": "GEOVANA SILVA", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25174319", "mat": 1, "ing": 14, "turmaLabel": "EM"}, {"nome": "LAURA SILVA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-2MIL11", "serie": "2S", "ra": "MT25161639", "mat": 4, "ing": 11, "turmaLabel": "EM"}, {"nome": "MARIA SOUZA", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT24160392", "mat": 6, "ing": 9, "turmaLabel": "EM"}, {"nome": "RUAN PONTES", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT25170689", "mat": 7, "ing": 8, "turmaLabel": "EM"}, {"nome": "ISABELLA GAMA", "unidade": "TAQUARA", "turma": "-", "serie": "1S", "ra": "MT22089973", "mat": 8, "ing": 7, "turmaLabel": "EM"}, {"nome": "MANUELLA MARTINS", "unidade": "TAQUARA", "turma": "-", "serie": "1S", "ra": "MT24165003", "mat": 7, "ing": 8, "turmaLabel": "EM"}, {"nome": "ARTHUR MONTEIRO", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT21062476", "mat": 9, "ing": 6, "turmaLabel": "EM"}, {"nome": "KAUA PEREIRA", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT24153686", "mat": 4, "ing": 11, "turmaLabel": "EM"}, {"nome": "BRENO OLIVEIRA", "unidade": "BANGU", "turma": "-", "serie": "1S", "ra": "MT24153728", "mat": 3, "ing": 12, "turmaLabel": "EM"}, {"nome": "MARIA SILVA", "unidade": "BANGU", "turma": "BG-9MIL11", "serie": "9A", "ra": "MT25198045", "mat": 10, "ing": 5, "turmaLabel": "EM"}, {"nome": "MARIANA ARAUJO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL21", "serie": "1S", "ra": "MT25180787", "mat": 5, "ing": 10, "turmaLabel": "EM"}, {"nome": "LAVÍNIA JACINTHO", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25169947", "mat": 6, "ing": 9, "turmaLabel": "EM"}, {"nome": "MATHEUS MARTINS", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "2S", "ra": "MT24164352", "mat": 4, "ing": 11, "turmaLabel": "EM"}, {"nome": "BRYAN DORNELA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25187675", "mat": 9, "ing": 6, "turmaLabel": "EM"}, {"nome": "ANA GAUDARD", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24148470", "mat": 6, "ing": 9, "turmaLabel": "EM"}, {"nome": "PAULO DOMICIANO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25185877", "mat": 7, "ing": 8, "turmaLabel": "EM"}, {"nome": "GABRIELA ALCANTARA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT21062047", "mat": 7, "ing": 8, "turmaLabel": "EM"}, {"nome": "JULIA SANTOS", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24151300", "mat": 6, "ing": 9, "turmaLabel": "EM"}, {"nome": "KAMILLY SANTOS", "unidade": "NOVA IGUACU", "turma": "-", "serie": "2S", "ra": "MT24161069", "mat": 8, "ing": 7, "turmaLabel": "EM"}, {"nome": "MARIA NASCIMENTO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25186784", "mat": 9, "ing": 6, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2406", "mat": 5, "ing": 10, "turmaLabel": "EM"}, {"nome": "ISABELLE SILVA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT25173295", "mat": 5, "ing": 10, "turmaLabel": "EM"}, {"nome": "JOÃO BARBOSA", "unidade": "TIJUCA", "turma": "TJ-1MIL21", "serie": "1S", "ra": "MT25181272", "mat": 1, "ing": 14, "turmaLabel": "EM"}, {"nome": "LARA MENEZES", "unidade": "MADUREIRA", "turma": "MD-2JR21", "serie": "2S", "ra": "MT23109010", "mat": 6, "ing": 9, "turmaLabel": "EM"}, {"nome": "DANIEL NOGUEIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22093496", "mat": 5, "ing": 10, "turmaLabel": "EM"}, {"nome": "GABRIEL MENDES", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25197765", "mat": 6, "ing": 9, "turmaLabel": "EM"}, {"nome": "MIGUEL BOTELHO", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-2MIL11", "serie": "2S", "ra": "MT25150921", "mat": 3, "ing": 11, "turmaLabel": "EM"}, {"nome": "MIGUEL BORGES", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25183443", "mat": 8, "ing": 6, "turmaLabel": "EM"}, {"nome": "ARTHUR LIMA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25178005", "mat": 6, "ing": 8, "turmaLabel": "EM"}, {"nome": "ISAAC ROCHA", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT22099246", "mat": 2, "ing": 12, "turmaLabel": "EM"}, {"nome": "KAIQUE LIMA", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25190505", "mat": 6, "ing": 8, "turmaLabel": "EM"}, {"nome": "LUÍS PIRES", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT25188038", "mat": 4, "ing": 10, "turmaLabel": "EM"}, {"nome": "MATHEUS PESSOA", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25191735", "mat": 7, "ing": 7, "turmaLabel": "EM"}, {"nome": "MIGUEL ALEXANDRE", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT24150187", "mat": 7, "ing": 7, "turmaLabel": "EM"}, {"nome": "MIGUEL SOARES", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25194390", "mat": 3, "ing": 11, "turmaLabel": "EM"}, {"nome": "MIGUEL OLIVEIRA", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25186743", "mat": 6, "ing": 8, "turmaLabel": "EM"}, {"nome": "RAFAEL SANTOS", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT25166661", "mat": 7, "ing": 7, "turmaLabel": "EM"}, {"nome": "SOPHIA FIGUEIREDO", "unidade": "BANGU", "turma": "BG-2VES11", "serie": "2S", "ra": "MT23123979", "mat": 5, "ing": 9, "turmaLabel": "EM"}, {"nome": "PIETRO OLIVEIRA", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "CNE", "ra": "MT25201740", "mat": 5, "ing": 9, "turmaLabel": "EM"}, {"nome": "JORGE JUNIOR", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT20043535", "mat": 5, "ing": 9, "turmaLabel": "EM"}, {"nome": "DAVI NASCIMENTO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25178062", "mat": 4, "ing": 10, "turmaLabel": "EM"}, {"nome": "EMILLY SANTOS", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25184268", "mat": 3, "ing": 11, "turmaLabel": "EM"}, {"nome": "EMANUEL RANGEL", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25200734", "mat": 5, "ing": 9, "turmaLabel": "EM"}, {"nome": "ISADORA MAIA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT24149742", "mat": 7, "ing": 7, "turmaLabel": "EM"}, {"nome": "MATHEUS LEITE", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25170150", "mat": 5, "ing": 9, "turmaLabel": "EM"}, {"nome": "PEDRO GONÇALVES", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25201468", "mat": 4, "ing": 10, "turmaLabel": "EM"}, {"nome": "MANUELLA DIAS", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25183518", "mat": 5, "ing": 9, "turmaLabel": "EM"}, {"nome": "GIOVANA VARELLA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24157729", "mat": 3, "ing": 11, "turmaLabel": "EM"}, {"nome": "JOAO SANTOS", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL21", "serie": "1S", "ra": "MT25190182", "mat": 5, "ing": 9, "turmaLabel": "EM"}, {"nome": "ESTHER LIMA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25197955", "mat": 6, "ing": 8, "turmaLabel": "EM"}, {"nome": "FAGNER RAMOS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25177254", "mat": 5, "ing": 9, "turmaLabel": "EM"}, {"nome": "GUILHERME NONATO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT24151532", "mat": 3, "ing": 11, "turmaLabel": "EM"}, {"nome": "JOÃO JESUS", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT24153793", "mat": 7, "ing": 7, "turmaLabel": "EM"}, {"nome": "SOPHIA TAVARES", "unidade": "MADUREIRA", "turma": "-", "serie": "2S", "ra": "MT24150559", "mat": 7, "ing": 7, "turmaLabel": "EM"}, {"nome": "ISABELA SIMÕES", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT23111370", "mat": 3, "ing": 11, "turmaLabel": "EM"}, {"nome": "REBECA NASCIMENTO", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24158420", "mat": 6, "ing": 8, "turmaLabel": "EM"}, {"nome": "CECILIA LEAL", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT25182064", "mat": 2, "ing": 12, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT25190725", "mat": 6, "ing": 8, "turmaLabel": "EM"}, {"nome": "ENZO BORGATTI", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-2MIL11", "serie": "2S", "ra": "MT24147415", "mat": 4, "ing": 10, "turmaLabel": "EM"}, {"nome": "ANA OLIVEIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25180449", "mat": 8, "ing": 6, "turmaLabel": "EM"}, {"nome": "MATHEUS DAVID", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25187204", "mat": 6, "ing": 8, "turmaLabel": "EM"}, {"nome": "WAYNE CRUZ", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22057723", "mat": 4, "ing": 10, "turmaLabel": "EM"}, {"nome": "ALEXSSANDRO ESTEVES", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT24164980", "mat": 3, "ing": 11, "turmaLabel": "EM"}, {"nome": "BIANCA PEREIRA", "unidade": "ROCHA MIRANDA", "turma": "-", "serie": "EM", "ra": "MT24150138", "mat": 4, "ing": 10, "turmaLabel": "EM"}, {"nome": "LUCAS MELO", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT26201806", "mat": 5, "ing": 8, "turmaLabel": "EM"}, {"nome": "ALEXANDRE BITTENCOURT", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-2MIL11", "serie": "2S", "ra": "MT25166356", "mat": 7, "ing": 6, "turmaLabel": "EM"}, {"nome": "GABRIEL COSTA", "unidade": "RETIRO DOS ARTISTAS", "turma": "-", "serie": "2S", "ra": "MT25166349", "mat": 6, "ing": 7, "turmaLabel": "EM"}, {"nome": "GABRIEL ARAUJO", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT25169343", "mat": 4, "ing": 9, "turmaLabel": "EM"}, {"nome": "GABRIEL MIRINDIBA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25191065", "mat": 6, "ing": 7, "turmaLabel": "EM"}, {"nome": "GABRIEL SOUZA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25197989", "mat": 4, "ing": 9, "turmaLabel": "EM"}, {"nome": "JOÃO CARVALHO", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25192352", "mat": 7, "ing": 6, "turmaLabel": "EM"}, {"nome": "LUCAS MARTINS", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25194739", "mat": 7, "ing": 6, "turmaLabel": "EM"}, {"nome": "RAFAEL MONGE", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT23130404", "mat": 3, "ing": 10, "turmaLabel": "EM"}, {"nome": "SARAH SANTOS", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT24139420", "mat": 6, "ing": 7, "turmaLabel": "EM"}, {"nome": "MATEUS MORAES", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT25181496", "mat": 5, "ing": 8, "turmaLabel": "EM"}, {"nome": "DAVI BARCELOS", "unidade": "BANGU", "turma": "BG-2MIL21", "serie": "2S", "ra": "MT24153140", "mat": 6, "ing": 7, "turmaLabel": "EM"}, {"nome": "JULIA MORAES", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25189465", "mat": 7, "ing": 6, "turmaLabel": "EM"}, {"nome": "NICOLE GUERRA", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT24154650", "mat": 6, "ing": 7, "turmaLabel": "EM"}, {"nome": "SOPHIA SILVA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25188723", "mat": 8, "ing": 5, "turmaLabel": "EM"}, {"nome": "JOÃO RODRIGUEZ", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT24156143", "mat": 5, "ing": 8, "turmaLabel": "EM"}, {"nome": "MARIA SANTANA", "unidade": "CAMPO GRANDE", "turma": "CG-PCNE21", "serie": "CNE", "ra": "MT25195504", "mat": 5, "ing": 8, "turmaLabel": "EM"}, {"nome": "BERNARDO TELLES", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24148777", "mat": 3, "ing": 10, "turmaLabel": "EM"}, {"nome": "MARCELLA MOTTA", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "EM", "ra": "MT24159824", "mat": 6, "ing": 7, "turmaLabel": "EM"}, {"nome": "PIETRO ALVES", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24160517", "mat": 6, "ing": 7, "turmaLabel": "EM"}, {"nome": "KAROLLINY BARBOZA", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "1S", "ra": "MT24157869", "mat": 5, "ing": 8, "turmaLabel": "EM"}, {"nome": "MARCELLY SANTOS", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "1S", "ra": "MT23124217", "mat": 5, "ing": 8, "turmaLabel": "EM"}, {"nome": "DEBORA PAIVA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24148462", "mat": 6, "ing": 7, "turmaLabel": "EM"}, {"nome": "JOAO MULLER", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT23124258", "mat": 4, "ing": 9, "turmaLabel": "EM"}, {"nome": "MATEUS OLIVEIRA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT23126683", "mat": 2, "ing": 11, "turmaLabel": "EM"}, {"nome": "PEDRO SILVEIRA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24149460", "mat": 4, "ing": 9, "turmaLabel": "EM"}, {"nome": "JULIA FONSECA", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT23119498", "mat": 4, "ing": 9, "turmaLabel": "EM"}, {"nome": "JOAO SILVA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT21063912", "mat": 7, "ing": 6, "turmaLabel": "EM"}, {"nome": "MATEUS OLIVEIRA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25196536", "mat": 8, "ing": 5, "turmaLabel": "EM"}, {"nome": "LEANDRO BARBOSA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT25173121", "mat": 7, "ing": 6, "turmaLabel": "EM"}, {"nome": "LUCAS RODRIGUES", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24149874", "mat": 6, "ing": 7, "turmaLabel": "EM"}, {"nome": "MATEUS DUARTE", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT25168113", "mat": 5, "ing": 8, "turmaLabel": "EM"}, {"nome": "NATHAN RODRIGUES", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-2MIL11", "serie": "2S", "ra": "MT24164634", "mat": 5, "ing": 8, "turmaLabel": "EM"}, {"nome": "PIETRO FERREIRA", "unidade": "SÃO JOÃO DE MERITI", "turma": "-", "serie": "2S", "ra": "MT21042791", "mat": 7, "ing": 6, "turmaLabel": "EM"}, {"nome": "MATHEUS JESUS", "unidade": "TIJUCA", "turma": "TJ-2MIL21", "serie": "2S", "ra": "MT25180498", "mat": 3, "ing": 10, "turmaLabel": "EM"}, {"nome": "LEONARDO GARCIA", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22099139", "mat": 7, "ing": 6, "turmaLabel": "EM"}, {"nome": "MARIA MORAIS", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT23123755", "mat": 5, "ing": 8, "turmaLabel": "EM"}, {"nome": "GIOVANNE SANTOS", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT24155954", "mat": 4, "ing": 9, "turmaLabel": "EM"}, {"nome": "JOÃO MACHADO", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT24134538", "mat": 4, "ing": 8, "turmaLabel": "EM"}, {"nome": "CAROLINA GONÇALVES", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25199738", "mat": 8, "ing": 4, "turmaLabel": "EM"}, {"nome": "DAVI OLIVEIRA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT21057286", "mat": 7, "ing": 5, "turmaLabel": "EM"}, {"nome": "EDUARDO SOUZA", "unidade": "BANGU", "turma": "-", "serie": "2S", "ra": "MT24155707", "mat": 4, "ing": 8, "turmaLabel": "EM"}, {"nome": "GABRIEL OLIVEIRA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25173600", "mat": 7, "ing": 5, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2538865", "mat": 4, "ing": 8, "turmaLabel": "EM"}, {"nome": "JÚLIA JAVANHOLI", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25182783", "mat": 4, "ing": 8, "turmaLabel": "EM"}, {"nome": "MARIA PAULA", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25178567", "mat": 5, "ing": 7, "turmaLabel": "EM"}, {"nome": "SOFIA ALMEIDA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25196643", "mat": 3, "ing": 9, "turmaLabel": "EM"}, {"nome": "YASMIM DUARTE", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25189226", "mat": 1, "ing": 11, "turmaLabel": "EM"}, {"nome": "LUCAS SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25181686", "mat": 4, "ing": 8, "turmaLabel": "EM"}, {"nome": "THIAGO SANTOS", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "2S", "ra": "MT24159360", "mat": 4, "ing": 8, "turmaLabel": "EM"}, {"nome": "MIGUEL PASSOS", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25178906", "mat": 4, "ing": 8, "turmaLabel": "EM"}, {"nome": "MIGUEL CARVALHO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25189218", "mat": 5, "ing": 7, "turmaLabel": "EM"}, {"nome": "PEDRO PEREIRA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25183476", "mat": 3, "ing": 9, "turmaLabel": "EM"}, {"nome": "SOPHIA NOVAES", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25183625", "mat": 4, "ing": 8, "turmaLabel": "EM"}, {"nome": "GIOVANNI MONTEIRO", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT25173915", "mat": 5, "ing": 7, "turmaLabel": "EM"}, {"nome": "MIGUEL RUFINO", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24157752", "mat": 7, "ing": 5, "turmaLabel": "EM"}, {"nome": "SARAH FREITAS", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "2S", "ra": "MT24150377", "mat": 3, "ing": 9, "turmaLabel": "EM"}, {"nome": "HUDSON LIMA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL21", "serie": "1S", "ra": "MT25181652", "mat": 4, "ing": 8, "turmaLabel": "EM"}, {"nome": "LUIZ SALSA", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT25179979", "mat": 5, "ing": 7, "turmaLabel": "EM"}, {"nome": "JUAN SANTOS", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT25185760", "mat": 4, "ing": 8, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT25791906", "mat": 3, "ing": 9, "turmaLabel": "EM"}, {"nome": "ANNA NUNES", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-1MIL11", "serie": "1S", "ra": "MT25183401", "mat": 9, "ing": 3, "turmaLabel": "EM"}, {"nome": "MOISES MARQUES", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT25197740", "mat": 8, "ing": 4, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT22191933", "mat": 7, "ing": 5, "turmaLabel": "EM"}, {"nome": "IGOR CONTI", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT24156549", "mat": 7, "ing": 5, "turmaLabel": "EM"}, {"nome": "MARIANA CRESPO", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22059588", "mat": 6, "ing": 6, "turmaLabel": "EM"}, {"nome": "GABRIEL GODINHO", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT23130131", "mat": 5, "ing": 7, "turmaLabel": "EM"}, {"nome": "ARTHUR SERRA", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25183559", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "GUILHERME MARTINS", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT24149288", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "LUIZ TOLEDO", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT24156325", "mat": 2, "ing": 9, "turmaLabel": "EM"}, {"nome": "DAVI OLIVEIRA", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT21061403", "mat": 5, "ing": 6, "turmaLabel": "EM"}, {"nome": "ISABELLA SANTOS", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT25199803", "mat": 4, "ing": 7, "turmaLabel": "EM"}, {"nome": "EMANUELLE RAMOS", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25180217", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "HENRIQUE TAVARES", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25193731", "mat": 4, "ing": 7, "turmaLabel": "EM"}, {"nome": "JORGE GONÇALVES", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT24148439", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "MARCELLY SANTOS", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25186156", "mat": 4, "ing": 7, "turmaLabel": "EM"}, {"nome": "MARIA LORETO", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25195421", "mat": 5, "ing": 6, "turmaLabel": "EM"}, {"nome": "MARIA MAIA", "unidade": "BANGU", "turma": "BG-2MIL21", "serie": "2S", "ra": "MT25173477", "mat": 4, "ing": 7, "turmaLabel": "EM"}, {"nome": "BRENDA MATOS", "unidade": "CAMPO GRANDE", "turma": "CG-2VES11", "serie": "2S", "ra": "MT24160178", "mat": 2, "ing": 9, "turmaLabel": "EM"}, {"nome": "RAFAEL BARBOSA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25170143", "mat": 4, "ing": 7, "turmaLabel": "EM"}, {"nome": "AMANDA RODRIGUES", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25194697", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT5", "mat": 4, "ing": 7, "turmaLabel": "EM"}, {"nome": "GUSTAVO FREITAS", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25189663", "mat": 2, "ing": 9, "turmaLabel": "EM"}, {"nome": "MANUELLA ABREU", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25189481", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "ISAQUE CARPANEZ", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24142085", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "GABRIEL SEIXAS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25169509", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "ISADORA CARDOSO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25199720", "mat": 5, "ing": 6, "turmaLabel": "EM"}, {"nome": "ANA DAMICO", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT25200841", "mat": 4, "ing": 7, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT1", "mat": 4, "ing": 7, "turmaLabel": "EM"}, {"nome": "YAN CASTRO", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT25178583", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "GUSTAVO SENA", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT24163214", "mat": 1, "ing": 10, "turmaLabel": "EM"}, {"nome": "JOÃO SILVA", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24151466", "mat": 9, "ing": 2, "turmaLabel": "EM"}, {"nome": "JOÃO VAZ", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-1MIL11", "serie": "1S", "ra": "MT25193426", "mat": 3, "ing": 8, "turmaLabel": "EM"}, {"nome": "DÉBORA FARIAS", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-2MIL11", "serie": "2S", "ra": "MT25178542", "mat": 5, "ing": 6, "turmaLabel": "EM"}, {"nome": "PEDRO SANTOS", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25197187", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "ANA MUNHÃO", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22099048", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "JORGE MONTEIRO", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT23114846", "mat": 5, "ing": 6, "turmaLabel": "EM"}, {"nome": "LUCAS LEITE", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25194846", "mat": 7, "ing": 4, "turmaLabel": "EM"}, {"nome": "VITOR LIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25187709", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "MARIA SANTOS", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT24155988", "mat": 6, "ing": 5, "turmaLabel": "EM"}, {"nome": "BERNARDO REIS", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25198946", "mat": 7, "ing": 3, "turmaLabel": "EM"}, {"nome": "JOÃO ROCHA", "unidade": "TAQUARA", "turma": "-", "serie": "2S", "ra": "MT24151698", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "SAMILY SILVA", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT25193376", "mat": 5, "ing": 5, "turmaLabel": "EM"}, {"nome": "EMANUEL CARLOS", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25184235", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "ISABELLA RIBEIRO", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT24147233", "mat": 3, "ing": 7, "turmaLabel": "EM"}, {"nome": "MARIA BARROS", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25168295", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "MIGUEL SILVA", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25170242", "mat": 5, "ing": 5, "turmaLabel": "EM"}, {"nome": "RHENAN FERREIRA", "unidade": "BANGU", "turma": "BG-2MIL21", "serie": "2S", "ra": "MT25177817", "mat": 3, "ing": 7, "turmaLabel": "EM"}, {"nome": "LUCAS AMBROSIO", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "CNE", "ra": "MT25201252", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "JOÃO LOUREIRO", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25169467", "mat": 2, "ing": 8, "turmaLabel": "EM"}, {"nome": "RAYSSA SANTOS", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT26202556", "mat": 3, "ing": 7, "turmaLabel": "EM"}, {"nome": "GABRIELLE SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24159832", "mat": 3, "ing": 7, "turmaLabel": "EM"}, {"nome": "SAMANTHA CARVALHO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL21", "serie": "1S", "ra": "MT25195652", "mat": 5, "ing": 5, "turmaLabel": "EM"}, {"nome": "LARA ORNELAS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25201237", "mat": 6, "ing": 4, "turmaLabel": "EM"}, {"nome": "GABRIELLE DIAS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25200742", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "LUÍSA OLIVEIRA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25200767", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "MARIA SILVA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25191800", "mat": 5, "ing": 5, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT26301820", "mat": 3, "ing": 7, "turmaLabel": "EM"}, {"nome": "MARJORIE LACERDA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT24158586", "mat": 2, "ing": 8, "turmaLabel": "EM"}, {"nome": "MILENA CANUTO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT25188087", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "MATHEUS BAULY", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT24156366", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "LARA RAMOS", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT24160681", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "VICTÓRIA SILVA", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-1MIL11", "serie": "1S", "ra": "MT23127368", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT22", "mat": 5, "ing": 5, "turmaLabel": "EM"}, {"nome": "ENZO XAVIER", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-2MIL11", "serie": "2S", "ra": "MT25169673", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "NICOLLY MANHÃES", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-2MIL11", "serie": "2S", "ra": "MT24147498", "mat": 4, "ing": 6, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT24151", "mat": 1, "ing": 9, "turmaLabel": "EM"}, {"nome": "CÁSSIA SANTOS", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT22071773", "mat": 6, "ing": 4, "turmaLabel": "EM"}, {"nome": "JENIFER MARINHO", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT24164444", "mat": 2, "ing": 8, "turmaLabel": "EM"}, {"nome": "MIGUEL LIMA", "unidade": "TAQUARA", "turma": "-", "serie": "1S", "ra": "MT21063466", "mat": 4, "ing": 5, "turmaLabel": "EM"}, {"nome": "ALEJANDRO MORAES", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT23118599", "mat": 3, "ing": 6, "turmaLabel": "EM"}, {"nome": "BERNARDO VIEIRA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25197500", "mat": 4, "ing": 5, "turmaLabel": "EM"}, {"nome": "GUSTAVO SANTOS", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT24151706", "mat": 5, "ing": 4, "turmaLabel": "EM"}, {"nome": "JOÃO GONÇALVES", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25187477", "mat": 3, "ing": 6, "turmaLabel": "EM"}, {"nome": "MATHEUS PINTO", "unidade": "BANGU", "turma": "BG-1VES11", "serie": "1S", "ra": "MT25198441", "mat": 3, "ing": 6, "turmaLabel": "EM"}, {"nome": "ISABELLA FERREIRA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT23109499", "mat": 3, "ing": 6, "turmaLabel": "EM"}, {"nome": "FERNANDO SILVA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL11", "serie": "1S", "ra": "MT25168220", "mat": 4, "ing": 5, "turmaLabel": "EM"}, {"nome": "RAFAEL RICARDO", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL11", "serie": "2S", "ra": "MT24137796", "mat": 2, "ing": 7, "turmaLabel": "EM"}, {"nome": "ANA COSTA", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL21", "serie": "1S", "ra": "MT25181611", "mat": 3, "ing": 6, "turmaLabel": "EM"}, {"nome": "LARISSA MORAES", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL21", "serie": "1S", "ra": "MT25190372", "mat": 4, "ing": 5, "turmaLabel": "EM"}, {"nome": "NAHUAN FRANCELINO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL21", "serie": "1S", "ra": "MT25186198", "mat": 1, "ing": 8, "turmaLabel": "EM"}, {"nome": "MARIA PAULA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT24140923", "mat": 4, "ing": 5, "turmaLabel": "EM"}, {"nome": "DAVI LIMA", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT23123367", "mat": 3, "ing": 6, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT25199560", "mat": 5, "ing": 4, "turmaLabel": "EM"}, {"nome": "HENRIQUE CARNEIRO", "unidade": "MADUREIRA", "turma": "MD-2MIL11", "serie": "2S", "ra": "MT23111198", "mat": 6, "ing": 3, "turmaLabel": "EM"}, {"nome": "ADRIANE LUZ", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-1MIL11", "serie": "1S", "ra": "MT25187188", "mat": 5, "ing": 4, "turmaLabel": "EM"}, {"nome": "WILLIAM LIMA", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT24150237", "mat": 3, "ing": 6, "turmaLabel": "EM"}, {"nome": "ELOAH LIMA", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT22098651", "mat": 4, "ing": 5, "turmaLabel": "EM"}, {"nome": "PEDRO MORAES", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25199472", "mat": 5, "ing": 4, "turmaLabel": "EM"}, {"nome": "CARLOS ONÉLIO", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT24157232", "mat": 2, "ing": 7, "turmaLabel": "EM"}, {"nome": "GUILHERME SOUZA", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT25198458", "mat": 2, "ing": 7, "turmaLabel": "EM"}, {"nome": "KAUÃ FONSECA", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT25167610", "mat": 4, "ing": 5, "turmaLabel": "EM"}, {"nome": "RAFAEL BERTÃO", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-1MIL11", "serie": "1S", "ra": "MT25188350", "mat": 2, "ing": 6, "turmaLabel": "EM"}, {"nome": "PAOLA SOARES", "unidade": "TAQUARA", "turma": "TQ-2MIL11", "serie": "2S", "ra": "MT24161796", "mat": 2, "ing": 6, "turmaLabel": "EM"}, {"nome": "BERNARDO LEITE", "unidade": "BANGU", "turma": "-", "serie": "1S", "ra": "MT25179110", "mat": 2, "ing": 6, "turmaLabel": "EM"}, {"nome": "MIGUEL LANGER", "unidade": "BANGU", "turma": "BG-2MIL21", "serie": "2S", "ra": "MT25173568", "mat": 3, "ing": 5, "turmaLabel": "EM"}, {"nome": "SOPHIA PINHEIRO", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT23130719", "mat": 4, "ing": 4, "turmaLabel": "EM"}, {"nome": "GUILHERME ROSA", "unidade": "BANGU", "turma": "BG-1VES11", "serie": "1S", "ra": "MT22101786", "mat": 3, "ing": 5, "turmaLabel": "EM"}, {"nome": "KAUÃ RIBEIRO", "unidade": "BANGU", "turma": "BG-1MIL12", "serie": "1S", "ra": "MT25198573", "mat": 4, "ing": 4, "turmaLabel": "EM"}, {"nome": "JOAO SANCHES", "unidade": "CAMPO GRANDE", "turma": "CG-PCNE21", "serie": "CNE", "ra": "MT25198565", "mat": 2, "ing": 6, "turmaLabel": "EM"}, {"nome": "GABRIEL ORIOLI", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT24157265", "mat": 4, "ing": 4, "turmaLabel": "EM"}, {"nome": "THIAGO FERNANDES", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL12", "serie": "2S", "ra": "MT25200395", "mat": 1, "ing": 7, "turmaLabel": "EM"}, {"nome": "TALITA ALVES", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25186255", "mat": 5, "ing": 3, "turmaLabel": "EM"}, {"nome": "LUCAS SILVA", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT21052105", "mat": 4, "ing": 4, "turmaLabel": "EM"}, {"nome": "HEITOR ARAÚJO", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT23130875", "mat": 4, "ing": 4, "turmaLabel": "EM"}, {"nome": "PEDRO BARBOSA", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT25180969", "mat": 4, "ing": 4, "turmaLabel": "EM"}, {"nome": "LUIS CAVADAS", "unidade": "NOVA IGUACU", "turma": "-", "serie": "2S", "ra": "MT20034765", "mat": 5, "ing": 3, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT112", "mat": 3, "ing": 5, "turmaLabel": "EM"}, {"nome": "MARIA MEROLA", "unidade": "SÃO JOÃO DE MERITI", "turma": "SJ-1MIL11", "serie": "1S", "ra": "MT21063664", "mat": 4, "ing": 4, "turmaLabel": "EM"}, {"nome": "GIOVANNA GOMES", "unidade": "TAQUARA", "turma": "TQ-1MIL11", "serie": "1S", "ra": "MT25167982", "mat": 3, "ing": 4, "turmaLabel": "EM"}, {"nome": "ARTHUR NASCIMENTO", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25199282", "mat": 3, "ing": 4, "turmaLabel": "EM"}, {"nome": "AYALLA SILVA", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25180944", "mat": 2, "ing": 5, "turmaLabel": "EM"}, {"nome": "GUILHERME SOUZA", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT25189259", "mat": 4, "ing": 3, "turmaLabel": "EM"}, {"nome": "ISAAC FERNANDES", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT25174814", "mat": 1, "ing": 6, "turmaLabel": "EM"}, {"nome": "RUAN ALVARO", "unidade": "BANGU", "turma": "BG-1MIL11", "serie": "1S", "ra": "MT24159535", "mat": 2, "ing": 5, "turmaLabel": "EM"}, {"nome": "BRUNNA CORTES", "unidade": "CAMPO GRANDE", "turma": "CG-2MIL21", "serie": "2S", "ra": "MT24147894", "mat": 1, "ing": 6, "turmaLabel": "EM"}, {"nome": "JOÃO MELO", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT25181017", "mat": 2, "ing": 5, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2520221", "mat": 4, "ing": 3, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT2517967", "mat": 1, "ing": 6, "turmaLabel": "EM"}, {"nome": "RAFAEL FRANCELINO", "unidade": "NOVA IGUACU", "turma": "NI-2MIL11", "serie": "2S", "ra": "MT20042289", "mat": 4, "ing": 3, "turmaLabel": "EM"}, {"nome": "GABRIELLY FERREIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT25165655", "mat": 5, "ing": 2, "turmaLabel": "EM"}, {"nome": "VITÓRIA CARVALHO", "unidade": "RETIRO DOS ARTISTAS", "turma": "RA-2MIL11", "serie": "2S", "ra": "MT25200080", "mat": 3, "ing": 3, "turmaLabel": "EM"}, {"nome": "LUANA MARINS", "unidade": "BANGU", "turma": "BG-2MIL11", "serie": "2S", "ra": "MT20040432", "mat": 4, "ing": 2, "turmaLabel": "EM"}, {"nome": "MANUELLA BOMFIM", "unidade": "CAMPO GRANDE", "turma": "CG-1MIL12", "serie": "1S", "ra": "MT22095764", "mat": 2, "ing": 4, "turmaLabel": "EM"}, {"nome": "MARIA FRAGOSO", "unidade": "CAMPO GRANDE", "turma": "-", "serie": "EM", "ra": "MT24159220", "mat": 2, "ing": 4, "turmaLabel": "EM"}, {"nome": "VITOR ALVES", "unidade": "DUQUE DE CAXIAS", "turma": "CX-2MIL11", "serie": "2S", "ra": "MT24150864", "mat": 2, "ing": 4, "turmaLabel": "EM"}, {"nome": "AUGUSTO MURI", "unidade": "MADUREIRA", "turma": "MD-1MIL11", "serie": "1S", "ra": "MT25194622", "mat": 3, "ing": 3, "turmaLabel": "EM"}, {"nome": "NÍCKOLLAS RAMALHO", "unidade": "NOVA IGUACU", "turma": "NI-1MIL11", "serie": "1S", "ra": "MT21073812", "mat": 3, "ing": 3, "turmaLabel": "EM"}, {"nome": "ANA ONÉLIO", "unidade": "ROCHA MIRANDA", "turma": "RM-2MIL11", "serie": "2S", "ra": "MT24157257", "mat": 2, "ing": 4, "turmaLabel": "EM"}, {"nome": "GABRIEL RIBEIRO", "unidade": "MADUREIRA", "turma": "-", "serie": "2S", "ra": "MT22097182", "mat": 3, "ing": 2, "turmaLabel": "EM"}, {"nome": "HEITOR ZACHARIAS", "unidade": "DUQUE DE CAXIAS", "turma": "CX-1MIL11", "serie": "1S", "ra": "MT25192873", "mat": 4, "ing": 1, "turmaLabel": "EM"}, {"nome": "JOÃO PEREIRA", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT23122427", "mat": 3, "ing": 2, "turmaLabel": "EM"}, {"nome": "PEDRO SOUZA", "unidade": "BANGU", "turma": "BG-1MIL21", "serie": "1S", "ra": "MT25193996", "mat": 0, "ing": 3, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT25193827", "mat": 1, "ing": 2, "turmaLabel": "EM"}, {"nome": "FILIPE CARRIANO", "unidade": "ROCHA MIRANDA", "turma": "RM-1MIL11", "serie": "1S", "ra": "MT25192063", "mat": 1, "ing": 2, "turmaLabel": "EM"}, {"nome": "ALUNO RA", "unidade": "NOVA IGUACU", "turma": "-", "serie": "-", "ra": "MT3100", "mat": 0, "ing": 1, "turmaLabel": "EM"}];
+
+// ═══════════════════════════════════════════════════════
+// BUILD — processa cada turma separadamente
+// ═══════════════════════════════════════════════════════
+function buildTurma(raw, label){
+  raw.forEach(a=>{
+    a.turmaLabel = label;
+    a.ok_mat = a.mat >= 10;
+    a.ok_ing = a.ing >= 10;
+    a.aprov  = a.ok_mat && a.ok_ing;
+    a.gtot   = a.mat + a.ing;
+    a.motivo = !a.ok_mat && !a.ok_ing ? 'Mat e Inglês abaixo do mínimo'
+             : !a.ok_mat ? 'Matemática abaixo do mínimo'
+             : !a.ok_ing ? 'Inglês abaixo do mínimo' : '';
+  });
+  const apv = raw.filter(a=> a.aprov).sort((a,b)=>b.gtot-a.gtot||(b.mat-a.mat));
+  const rep = raw.filter(a=>!a.aprov).sort((a,b)=>b.gtot-a.gtot||(b.mat-a.mat));
+  const sorted = [...apv,...rep];
+  sorted.forEach((a,i)=>a.rank=i+1);
+  const avg = k => sorted.reduce((s,x)=>s+(x[k]||0),0)/sorted.length;
+  return { list: sorted, avgs: {mat:avg('mat'), ing:avg('ing'), gtot:avg('gtot')} };
+}
+
+const T9 = buildTurma(DATA_9MIL, '9MIL');
+const TEM = buildTurma(DATA_EM,  'EM');
+const ALL = [...T9.list, ...TEM.list];
+
+// Preenche selects de unidade
+(()=>{
+  const fill = (list, id) => {
+    const sel = document.getElementById(id);
+    [...new Set(list.map(a=>a.unidade))].sort()
+      .forEach(u=>{ const o=document.createElement('option'); o.value=u; o.textContent=u; sel.appendChild(o); });
+  };
+  fill(T9.list,  'uniSel9mil');
+  fill(TEM.list, 'uniSelEm');
+})();
+
+let f9mil = 'todos', fEm = 'todos';
+let atual = null, secaoOrigem = 'em', chartObj = null;
+
+const pBadge = p => p>=80?'b-ex':p>=65?'b-bo':p>=50?'b-re':'b-ru';
+const pLabel = p => p>=80?'🏆 Excelente':p>=65?'✅ Bom':p>=50?'⚠️ Regular':'❌ Melhorar';
+const notaCN = a => +(a.gtot/40*10).toFixed(2);
+
+// ═══════════════════════════════════════════════════════
+// RENDER RANKING genérico
+// ═══════════════════════════════════════════════════════
+function renderRanking(list, avgs, filtro, bodyId, statsId, totalId, aprovId, reprovId, searchId, uniSelId){
+  const q = (document.getElementById(searchId).value||'').toLowerCase();
+  let lst = list.filter(a=>!q||a.nome.toLowerCase().includes(q));
+  if(filtro==='aprov')   lst = lst.filter(a=> a.aprov);
+  if(filtro==='reprov')  lst = lst.filter(a=>!a.aprov);
+  if(filtro==='unidade'){ const v=document.getElementById(uniSelId).value; if(v) lst=lst.filter(a=>a.unidade===v); }
+
+  document.getElementById(bodyId).innerHTML = lst.map(a=>{
+    const p=a.rank, pc=p===1?'g1':p===2?'g2':p===3?'g3':'';
+    const em=p===1?'🥇':p===2?'🥈':p===3?'🥉':p;
+    const rc='ranking-row'+(p<=3?' top3':'');
+    const st = a.aprov
+      ? '<span class="chip chip-aprov">✓ Aprovado</span>'
+      : '<span class="chip chip-reprov">✗ Reprovado</span>';
+    return `<tr class="${rc}" onclick="openAluno('${a.nome.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
+      <td style="text-align:center"><span class="pos-badge ${pc}">${em}</span></td>
+      <td style="padding-left:14px">
+        <span class="aluno-nome">${a.nome}</span>
+        <span class="aluno-meta">${a.unidade}${!a.aprov?' · '+a.motivo:''}</span>
+      </td>
+      <td style="font-size:22px;font-weight:900;text-align:center;color:${a.ok_mat?'#16a34a':'#dc2626'}">${a.mat}<span style="font-size:11px;color:var(--text3)">/20</span></td>
+      <td style="font-size:22px;font-weight:900;text-align:center;color:${a.ok_ing?'#16a34a':'#dc2626'}">${a.ing}<span style="font-size:11px;color:var(--text3)">/20</span></td>
+      <td style="font-size:26px;font-weight:900;text-align:center;color:var(--navy)">${a.gtot}<span style="font-size:12px;font-weight:500;color:var(--text3)">/40</span></td>
+      <td style="text-align:center">${st}</td>
+    </tr>`;
+  }).join('');
+
+  const tot = list.length, apvN = list.filter(a=>a.aprov).length;
+  document.getElementById(totalId).textContent = tot;
+  document.getElementById(aprovId).textContent = apvN;
+  document.getElementById(reprovId).textContent = tot-apvN;
+
+  document.getElementById(statsId).innerHTML = `
+    <div class="stat-item"><div class="s-label">Total de Alunos</div><div class="s-val">${tot}</div><div class="s-hint">participantes</div></div>
+    <div class="stat-item"><div class="s-label">Aprovados</div><div class="s-val" style="color:var(--green)">${apvN}</div><div class="s-hint">${Math.round(apvN/tot*100)}% da turma</div></div>
+    <div class="stat-item"><div class="s-label">Reprovados</div><div class="s-val" style="color:var(--red)">${tot-apvN}</div><div class="s-hint">${Math.round((tot-apvN)/tot*100)}%</div></div>
+    <div class="stat-item"><div class="s-label">Maior Pontuação</div><div class="s-val" style="color:var(--navy)">${list[0]?list[0].gtot:0}</div><div class="s-hint">de 40 questões</div></div>
+    <div class="stat-item"><div class="s-label">Média Matemática</div><div class="s-val">${avgs.mat.toFixed(1)}</div><div class="s-hint">de 20 (mín. 10)</div></div>
+    <div class="stat-item"><div class="s-label">Média Inglês</div><div class="s-val">${avgs.ing.toFixed(1)}</div><div class="s-hint">de 20 (mín. 10)</div></div>
+  `;
+}
+
+function render9mil(){ renderRanking(T9.list, T9.avgs, f9mil, 'body9mil','stats9mil','total9mil','aprov9mil','reprov9mil','search9mil','uniSel9mil'); }
+function renderEm(){   renderRanking(TEM.list,TEM.avgs,fEm,  'bodyEm',  'statsEm',  'totalEm',  'aprovEm',  'reprovEm',  'searchEm',  'uniSelEm');  }
+
+function setF9mil(f,btn){
+  f9mil=f;
+  document.getElementById('9milSection').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+  document.getElementById('uniWrap9mil').style.display=f==='unidade'?'block':'none';
+  render9mil();
+}
+function setFEm(f,btn){
+  fEm=f;
+  document.getElementById('emSection').querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+  document.getElementById('uniWrapEm').style.display=f==='unidade'?'block':'none';
+  renderEm();
+}
+
+// ═══════════════════════════════════════════════════════
+// BUSCA
+// ═══════════════════════════════════════════════════════
+function showSug(){
+  const v=(document.getElementById('nomeInput').value||'').toLowerCase();
+  const d=document.getElementById('sugDiv');
+  if(v.length<2){d.innerHTML='';return;}
+  d.innerHTML=ALL.filter(a=>a.nome.toLowerCase().includes(v)).slice(0,8)
+    .map(a=>`<div class="sug-item" onclick="openAluno('${a.nome.replace(/'/g,"\\'")}')">
+      #${a.rank} ${a.turmaLabel} — ${a.nome} <span style="color:var(--text3);font-size:11px">${a.unidade}</span>
+      ${a.aprov?'<span style="color:#16a34a;font-size:11px">✓</span>':'<span style="color:#dc2626;font-size:11px">✗</span>'}
+    </div>`).join('');
+}
+function buscar(){
+  const v=(document.getElementById('nomeInput').value||'').trim().toUpperCase();
+  const f=ALL.find(a=>a.nome.toUpperCase()===v||a.nome.toUpperCase().includes(v));
+  if(!f){alert('Aluno não encontrado!');return;}
+  openAluno(f.nome);
+}
+
+// ═══════════════════════════════════════════════════════
+// DASHBOARD INDIVIDUAL
+// ═══════════════════════════════════════════════════════
+function openAluno(nome){
+  const candidato = ALL.find(a=>a.nome===nome);
+  if(!candidato) return;
+  // Abre o modal de matrícula
+  const modal = document.getElementById('raModal');
+  document.getElementById('raInput').value='';
+  document.getElementById('raError').style.display='none';
+  modal.dataset.nome = nome;
+  modal.style.display='flex';
+  setTimeout(()=>document.getElementById('raInput').focus(),100);
+}
+
+function confirmarRA(){
+  const modal = document.getElementById('raModal');
+  const nome  = modal.dataset.nome;
+  const candidato = ALL.find(a=>a.nome===nome);
+  const digitado  = document.getElementById('raInput').value.trim().toUpperCase();
+  const esperado  = (candidato.ra||'').toUpperCase();
+  if(digitado !== esperado){
+    document.getElementById('raError').style.display='block';
+    document.getElementById('raInput').select();
+    return;
+  }
+  fecharRAModal();
+  atual = candidato;
+  secaoOrigem = atual.turmaLabel==='9MIL' ? '9mil' : 'em';
+
+  document.getElementById('dashNome').textContent = atual.nome;
+  document.getElementById('dashInfo').textContent =
+    `#${atual.rank}º na turma ${atual.turmaLabel} · ${atual.unidade} · ${atual.gtot} acertos de 40 · ${atual.aprov?'✓ Aprovado':'✗ '+atual.motivo}`;
+
+  const dd=document.getElementById('destDiv');
+  if(atual.rank<=5){dd.style.display='block';document.getElementById('destText').textContent=`#${atual.rank}º — ${atual.turmaLabel}`;}
+  else dd.style.display='none';
+
+  buildNotas(); buildGrafico(); buildIndicadores();
+  goTab('pNotas', document.querySelector('.tab-btn'));
+  document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+  document.getElementById('dashboard').style.display='block';
+  window.scrollTo(0,0);
+}
+
+function fecharRAModal(){
+  document.getElementById('raModal').style.display='none';
+}
+
+// ── ABA NOTAS ──
+function buildNotas(){
+  const a=atual;
+  const turma = a.turmaLabel==='9MIL' ? T9 : TEM;
+  const nota=notaCN(a);
+  const matPct=+(a.mat/20*100).toFixed(0);
+  const ingPct=+(a.ing/20*100).toFixed(0);
+  const rankTurma=a.rank, totalTurma=turma.list.length;
+
+  document.getElementById('pNotas').innerHTML=`
+  <div class="card fade-in">
+    <div class="card-head"><h2>📊 Resumo de Desempenho</h2></div>
+    <p class="card-sub">Resultado no simulado do 1º Dia — turma ${a.turmaLabel}.</p>
+    <div class="stat-grid">
+      <div class="stat-item">
+        <div class="s-label">Classificação</div>
+        <div class="s-val" style="color:var(--navy)">#${rankTurma}º</div>
+        <div class="s-hint">de ${totalTurma} na ${a.turmaLabel}</div>
+      </div>
+      <div class="stat-item">
+        <div class="s-label">Total de Acertos</div>
+        <div class="s-val">${a.gtot}</div>
+        <div class="s-hint">de 40 questões</div>
+      </div>
+      <div class="stat-item">
+        <div class="s-label">Nota CN Estimada</div>
+        <div class="s-val" style="color:${nota>=7.4?'#16a34a':'#dc2626'}">${nota.toFixed(2)}</div>
+        <div class="s-hint">corte CN ≈ 7,40</div>
+      </div>
+      <div class="stat-item">
+        <div class="s-label">Resultado</div>
+        <div class="s-val" style="font-size:28px;padding-top:4px">${a.aprov?'✅':'❌'}</div>
+        <div class="s-hint">${a.aprov?'Aprovado no 1º Dia':a.motivo}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-head"><h2>📐 Desempenho por Disciplina</h2></div>
+    <p class="card-sub">Mínimo exigido: 10 acertos em <strong>cada</strong> disciplina.</p>
+    <div class="disc-grid">
+      <div class="disc-card ${a.ok_mat?'pass':'fail'}">
+        <div class="dc-name">Matemática</div>
+        <div class="dc-val">${a.mat}</div>
+        <div class="dc-max">de 20 questões — mínimo 10</div>
+        ${a.ok_mat?'<span class="chip chip-aprov">✓ Aprovado</span>':'<span class="chip chip-reprov">✗ Abaixo do mínimo</span>'}
+      </div>
+      <div class="disc-card ${a.ok_ing?'pass':'fail'}">
+        <div class="dc-name">Inglês</div>
+        <div class="dc-val">${a.ing}</div>
+        <div class="dc-max">de 20 questões — mínimo 10</div>
+        ${a.ok_ing?'<span class="chip chip-aprov">✓ Aprovado</span>':'<span class="chip chip-reprov">✗ Abaixo do mínimo</span>'}
+      </div>
+    </div>
+    <div style="display:inline-block;margin-top:8px;padding:10px 18px;border-radius:10px;font-weight:800;font-size:14px;${a.aprov?'background:#f0fdf4;border:1.5px solid #86efac;color:#15803d':'background:#fef2f2;border:1.5px solid #fca5a5;color:#b91c1c'}">
+      Resultado 1º Dia: ${a.aprov?'✓ Aprovado':'✗ Reprovado — '+a.motivo}
+    </div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-head"><h2>📊 Comparativo com a Turma ${a.turmaLabel}</h2></div>
+    <p class="card-sub">Desempenho do aluno versus a média da sua turma.</p>
+    <table class="dtable">
+      <thead><tr><th>Disciplina</th><th>Acertos</th><th>% Acerto</th><th>Média ${a.turmaLabel}</th><th>Diferença</th><th>Situação</th></tr></thead>
+      <tbody>
+        <tr ${!a.ok_mat?'style="background:#fff8f8"':''}>
+          <td>Matemática <span style="color:var(--text3);font-size:11px">mín. 10</span></td>
+          <td style="font-weight:800">${a.mat}/20</td>
+          <td><span class="badge ${pBadge(matPct)}">${matPct}%</span></td>
+          <td style="color:var(--text2)">${turma.avgs.mat.toFixed(1)} (${(turma.avgs.mat/20*100).toFixed(0)}%)</td>
+          <td style="font-weight:900;color:${(a.mat-turma.avgs.mat)>=0?'#16a34a':'#dc2626'}">${(a.mat-turma.avgs.mat)>=0?'+':''}${(a.mat-turma.avgs.mat).toFixed(1)}</td>
+          <td>${pLabel(matPct)}</td>
+        </tr>
+        <tr ${!a.ok_ing?'style="background:#fff8f8"':''}>
+          <td>Inglês <span style="color:var(--text3);font-size:11px">mín. 10</span></td>
+          <td style="font-weight:800">${a.ing}/20</td>
+          <td><span class="badge ${pBadge(ingPct)}">${ingPct}%</span></td>
+          <td style="color:var(--text2)">${turma.avgs.ing.toFixed(1)} (${(turma.avgs.ing/20*100).toFixed(0)}%)</td>
+          <td style="font-weight:900;color:${(a.ing-turma.avgs.ing)>=0?'#16a34a':'#dc2626'}">${(a.ing-turma.avgs.ing)>=0?'+':''}${(a.ing-turma.avgs.ing).toFixed(1)}</td>
+          <td>${pLabel(ingPct)}</td>
+        </tr>
+      </tbody>
+    </table>
+    ${nota<7.4?`<div class="warn-box"><h5>⚠️ Abaixo do corte estimado do CN</h5><ul>
+      <li>Nota estimada (${nota.toFixed(2)}) abaixo do corte histórico (~7,40)</li>
+      <li>Precisa de aproximadamente <strong>${Math.ceil(7.4*4-a.gtot)} acertos adicionais</strong> para atingir o corte</li>
+      <li>Foque nas disciplinas com menor percentual de acerto</li>
+    </ul></div>`:`<div class="info-box"><h5>✅ Acima do corte estimado do CN</h5><ul>
+      <li>Nota estimada (${nota.toFixed(2)}) acima do corte histórico (~7,40)</li>
+      <li>Mantenha a consistência e continue praticando questões de provas anteriores do CN</li>
+    </ul></div>`}
+  </div>`;
+}
+
+// ── ABA GRÁFICO ──
+function buildGrafico(){
+  const a=atual;
+  const turma = a.turmaLabel==='9MIL' ? T9 : TEM;
+  const topN = a.turmaLabel==='9MIL' ? 20 : 80;
+  const topLabel = a.turmaLabel==='9MIL' ? 'Top 20 — 9MIL' : 'Top 80 — EM';
+  const topList = turma.list.slice(0, topN);
+  const topAvgMat = topList.reduce((s,x)=>s+x.mat,0)/topList.length;
+  const topAvgIng = topList.reduce((s,x)=>s+x.ing,0)/topList.length;
+
+  document.getElementById('pGrafico').innerHTML=`
+  <div class="card fade-in">
+    <div class="card-head"><h2>📈 Comparativo — ${a.nome.split(' ')[0]} vs Turma ${a.turmaLabel}</h2></div>
+    <p class="card-sub">Desempenho do aluno frente à média geral e ao mínimo exigido pelo CN.</p>
+    <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+  </div>
+  <div class="card fade-in">
+    <div class="card-head"><h2>🕸️ Radar — ${a.nome.split(' ')[0]} vs ${topLabel}</h2></div>
+    <p class="card-sub">Comparação do aluno com a média dos ${topN} melhores da turma ${a.turmaLabel} em cada disciplina (% de acerto).</p>
+    <div class="chart-wrap" style="height:380px"><canvas id="radarChart"></canvas></div>
+  </div>
+  <div class="card fade-in">
+    <div class="card-head"><h2>📊 Distribuição da Turma ${a.turmaLabel}</h2></div>
+    <p class="card-sub">Quantos alunos acertaram cada quantidade de questões.</p>
+    <div class="chart-wrap"><canvas id="distChart"></canvas></div>
+  </div>`;
+
+  if(chartObj){try{Object.values(chartObj).forEach(c=>c.destroy());}catch(e){}}
+  chartObj={};
+
+  setTimeout(()=>{
+    // ── BAR ──
+    const ctx1=document.getElementById('barChart').getContext('2d');
+    chartObj.bar=new Chart(ctx1,{
+      type:'bar',
+      data:{
+        labels:['Matemática','Inglês'],
+        datasets:[
+          {label:a.nome.split(' ')[0],           data:[a.mat,a.ing],                                          backgroundColor:['#3b82f6','#8b5cf6'],borderRadius:8},
+          {label:'Média '+a.turmaLabel,           data:[+turma.avgs.mat.toFixed(1),+turma.avgs.ing.toFixed(1)],backgroundColor:['rgba(59,130,246,.3)','rgba(139,92,246,.3)'],borderRadius:8},
+          {label:'Mínimo CN',                     data:[10,10],                                                backgroundColor:'rgba(220,38,38,.15)',borderWidth:2,borderColor:'rgba(220,38,38,.6)',borderRadius:8}
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'}},scales:{y:{beginAtZero:true,max:20,ticks:{stepSize:2}}}}
+    });
+
+    // ── RADAR ──
+    // Eixos: Mat %, Inglês %, Total %, Aprovação (1=aprov, 0=reprov em %)
+    const aMatPct  = +(a.mat/20*100).toFixed(1);
+    const aIngPct  = +(a.ing/20*100).toFixed(1);
+    const aTotPct  = +(a.gtot/40*100).toFixed(1);
+    const aAprovPct= a.aprov ? 100 : +(((a.ok_mat?1:0)+(a.ok_ing?1:0))/2*100).toFixed(1);
+
+    const tMatPct  = +(topAvgMat/20*100).toFixed(1);
+    const tIngPct  = +(topAvgIng/20*100).toFixed(1);
+    const tTotPct  = +((topAvgMat+topAvgIng)/40*100).toFixed(1);
+    const tAprovPct= +(topList.filter(x=>x.aprov).length/topList.length*100).toFixed(1);
+
+    const ctx2=document.getElementById('radarChart').getContext('2d');
+    chartObj.radar=new Chart(ctx2,{
+      type:'radar',
+      data:{
+        labels:['Matemática (%)','Inglês (%)','Total (%)','Aprovação (%)'],
+        datasets:[
+          {
+            label: a.nome.split(' ')[0],
+            data:[aMatPct,aIngPct,aTotPct,aAprovPct],
+            backgroundColor:'rgba(59,130,246,.15)',
+            borderColor:'#3b82f6',
+            pointBackgroundColor:'#3b82f6',
+            pointRadius:5,
+            borderWidth:2
+          },
+          {
+            label: topLabel,
+            data:[tMatPct,tIngPct,tTotPct,tAprovPct],
+            backgroundColor:'rgba(234,179,8,.12)',
+            borderColor:'#ca8a04',
+            pointBackgroundColor:'#ca8a04',
+            pointRadius:5,
+            borderWidth:2,
+            borderDash:[5,3]
+          }
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{position:'top'}},
+        scales:{r:{
+          beginAtZero:true, max:100,
+          ticks:{stepSize:20, font:{size:11}},
+          pointLabels:{font:{size:12,weight:'700'}},
+          grid:{color:'rgba(0,0,0,.08)'},
+          angleLines:{color:'rgba(0,0,0,.1)'}
+        }}
+      }
+    });
+
+    // ── DIST ──
+    const matBins=Array(21).fill(0), ingBins=Array(21).fill(0);
+    turma.list.forEach(x=>{if(x.mat!=null)matBins[x.mat]++;if(x.ing!=null)ingBins[x.ing]++;});
+    const ctx3=document.getElementById('distChart').getContext('2d');
+    chartObj.dist=new Chart(ctx3,{
+      type:'bar',
+      data:{
+        labels:[...Array(21).keys()],
+        datasets:[
+          {label:'Matemática',data:matBins,backgroundColor:'rgba(59,130,246,.5)',borderRadius:4},
+          {label:'Inglês',    data:ingBins,backgroundColor:'rgba(139,92,246,.4)',borderRadius:4}
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{position:'top'},tooltip:{callbacks:{title:([i])=>`${i.label} acertos`}}},
+        scales:{x:{title:{display:true,text:'Nº de acertos'}},y:{title:{display:true,text:'Qtd de alunos'}}}}
+    });
+  },80);
+}
+
+// ═══════════════════════════════════════════════════════
+// ABA INDICADORES
+// ═══════════════════════════════════════════════════════
+function buildIndicadores(){
+  const a = atual;
+  const turma = a.turmaLabel==='9MIL' ? T9 : TEM;
+
+  // ── Percentuais do aluno e da turma ──
+  const aMatPct = a.mat / 20 * 100;
+  const aIngPct = a.ing / 20 * 100;
+  const aTotPct = a.gtot / 40 * 100;
+
+  const tMatPct = turma.avgs.mat / 20 * 100;
+  const tIngPct = turma.avgs.ing / 20 * 100;
+  const tTotPct = (turma.avgs.mat + turma.avgs.ing) / 40 * 100;
+
+  // ── ∆p: diferença aluno vs turma (proxy de ∆p já que há 1 simulado) ──
+  const dpMat = aMatPct - tMatPct;
+  const dpIng = aIngPct - tIngPct;
+  const dpTot = aTotPct - tTotPct;
+
+  // ── Faixas de desempenho relativo (∆p aluno-turma) ──
+  function faixaDp(dp){
+    if(dp >= 15) return {label:'🟢 Acima da turma', cor:'#16a34a', bg:'#f0fdf4', border:'#86efac'};
+    if(dp >= -15) return {label:'🟡 Próximo da turma', cor:'#d97706', bg:'#fffbeb', border:'#fde68a'};
+    return {label:'🔴 Abaixo da turma', cor:'#dc2626', bg:'#fef2f2', border:'#fca5a5'};
+  }
+  const fMat = faixaDp(dpMat);
+  const fIng = faixaDp(dpIng);
+  const fTot = faixaDp(dpTot);
+
+  // ── Índice de Confiabilidade — baseado no desempenho absoluto do aluno ──
+  // IC alto = aluno consistente e acima do esperado; IC baixo = resultado instável/baixo
+  function icLabel(pct){
+    if(pct >= 70) return {label:'IC ALTO',  sub:'Resultado sólido e confiável',  cor:'#16a34a', bg:'#f0fdf4', border:'#86efac'};
+    if(pct >= 50) return {label:'IC MÉDIO', sub:'Resultado razoável — atenção', cor:'#d97706', bg:'#fffbeb', border:'#fde68a'};
+    return              {label:'IC BAIXO',  sub:'Resultado instável — intervir',  cor:'#dc2626', bg:'#fef2f2', border:'#fca5a5'};
+  }
+  const icMat = icLabel(aMatPct);
+  const icIng = icLabel(aIngPct);
+
+  // ── ROI Pedagógico (sem pesos — peso=1 para todas, CN igual) ──
+  // Base: gap para o corte CN (nota 7,4 = 29,6 acertos de 40 ≈ 74%)
+  const cortePct = 74;
+  const gapMat = Math.max(0, cortePct - aMatPct);  // quanto falta em % para estar no nível do corte
+  const gapIng = Math.max(0, cortePct - aIngPct);
+  // Gap até o mínimo eliminatório (10/20 = 50%)
+  const gapMinMat = Math.max(0, 50 - aMatPct);
+  const gapMinIng = Math.max(0, 50 - aIngPct);
+  // ROI = prioridade de estudo: gap total ponderado (mín eliminatório tem peso 2x)
+  const roiMat = (gapMinMat * 2) + gapMat;
+  const roiIng = (gapMinIng * 2) + gapIng;
+  const roiTotal = roiMat + roiIng || 1;
+  const roiMatPct = (roiMat / roiTotal * 100).toFixed(0);
+  const roiIngPct = (roiIng / roiTotal * 100).toFixed(0);
+
+  // ── Score Relativo (sem pesos = média simples) ──
+  const scoreAluno = aTotPct.toFixed(1);
+  const scoreTurma = tTotPct.toFixed(1);
+  const scoreTop = (turma.list.slice(0,10).reduce((s,x)=>s+x.gtot,0)/10/40*100).toFixed(1);
+  const scoreDiff = (aTotPct - tTotPct).toFixed(1);
+
+  // ── Faixas de Score ──
+  function scoreLabel(pct){
+    if(pct >= 74)  return {l:'Aprovação CN', cor:'#16a34a'};
+    if(pct >= 50)  return {l:'Zona de Atenção', cor:'#d97706'};
+    return               {l:'Crítico', cor:'#dc2626'};
+  }
+  const slA = scoreLabel(aTotPct);
+
+  document.getElementById('pIndicadores').innerHTML=`
+  <!-- CARD 1: Score Relativo -->
+  <div class="card fade-in">
+    <div class="card-head"><h2>📊 Score Relativo — 1º Dia</h2></div>
+    <p class="card-sub">Posicionamento do aluno no simulado em relação à turma e ao Top 10. CN não possui pesos — todas as disciplinas contribuem igualmente.</p>
+    <div class="stat-grid">
+      <div class="stat-item">
+        <div class="s-label">Score do Aluno</div>
+        <div class="s-val" style="color:${slA.cor}">${scoreAluno}%</div>
+        <div class="s-hint">${slA.l}</div>
+      </div>
+      <div class="stat-item">
+        <div class="s-label">Média da Turma</div>
+        <div class="s-val" style="color:var(--navy)">${scoreTurma}%</div>
+        <div class="s-hint">${a.turmaLabel}</div>
+      </div>
+      <div class="stat-item">
+        <div class="s-label">Média Top 10</div>
+        <div class="s-val" style="color:var(--gold)">${scoreTop}%</div>
+        <div class="s-hint">referência de excelência</div>
+      </div>
+      <div class="stat-item">
+        <div class="s-label">Diferença vs Turma</div>
+        <div class="s-val" style="color:${parseFloat(scoreDiff)>=0?'#16a34a':'#dc2626'}">${parseFloat(scoreDiff)>=0?'+':''}${scoreDiff} p.p.</div>
+        <div class="s-hint">${parseFloat(scoreDiff)>=0?'acima':'abaixo'} da média</div>
+      </div>
+    </div>
+    <table class="dtable" style="margin-top:10px">
+      <thead><tr><th>Faixa</th><th>% Acerto Total</th><th>Classificação</th></tr></thead>
+      <tbody>
+        <tr><td>🟢 Zona de Aprovação CN</td><td>≥ 74%</td><td style="color:#16a34a;font-weight:800">Corte histórico atingido</td></tr>
+        <tr><td>🟡 Zona de Atenção</td><td>50% – 73%</td><td style="color:#d97706;font-weight:800">Acima do mínimo, abaixo do corte</td></tr>
+        <tr><td>🔴 Zona Crítica</td><td>< 50%</td><td style="color:#dc2626;font-weight:800">Risco de eliminação</td></tr>
+        <tr style="background:#e0f2fe"><td><strong>${a.nome.split(' ')[0]}</strong></td><td><strong>${scoreAluno}%</strong></td><td style="color:${slA.cor};font-weight:900">${slA.l}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CARD 2: ∆p Aluno vs Turma -->
+  <div class="card fade-in">
+    <div class="card-head"><h2>📈 ∆p — Desempenho Relativo vs Turma</h2></div>
+    <p class="card-sub">Diferença entre o percentual de acerto do aluno e a média da turma ${a.turmaLabel} em cada disciplina. Indica posicionamento e tendência relativa.</p>
+    <table class="dtable">
+      <thead><tr><th>Disciplina</th><th>Aluno</th><th>Média Turma</th><th>∆p</th><th>Faixa</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Matemática</td>
+          <td style="font-weight:800">${aMatPct.toFixed(1)}%</td>
+          <td style="color:var(--text2)">${tMatPct.toFixed(1)}%</td>
+          <td style="font-weight:900;color:${dpMat>=0?'#16a34a':'#dc2626'}">${dpMat>=0?'+':''}${dpMat.toFixed(1)} p.p.</td>
+          <td><span style="padding:3px 10px;border-radius:20px;font-size:12px;font-weight:800;background:${fMat.bg};border:1px solid ${fMat.border};color:${fMat.cor}">${fMat.label}</span></td>
+        </tr>
+        <tr>
+          <td>Inglês</td>
+          <td style="font-weight:800">${aIngPct.toFixed(1)}%</td>
+          <td style="color:var(--text2)">${tIngPct.toFixed(1)}%</td>
+          <td style="font-weight:900;color:${dpIng>=0?'#16a34a':'#dc2626'}">${dpIng>=0?'+':''}${dpIng.toFixed(1)} p.p.</td>
+          <td><span style="padding:3px 10px;border-radius:20px;font-size:12px;font-weight:800;background:${fIng.bg};border:1px solid ${fIng.border};color:${fIng.cor}">${fIng.label}</span></td>
+        </tr>
+        <tr style="background:#f8fafc">
+          <td><strong>Total</strong></td>
+          <td style="font-weight:800">${aTotPct.toFixed(1)}%</td>
+          <td style="color:var(--text2)">${tTotPct.toFixed(1)}%</td>
+          <td style="font-weight:900;color:${dpTot>=0?'#16a34a':'#dc2626'}">${dpTot>=0?'+':''}${dpTot.toFixed(1)} p.p.</td>
+          <td><span style="padding:3px 10px;border-radius:20px;font-size:12px;font-weight:800;background:${fTot.bg};border:1px solid ${fTot.border};color:${fTot.cor}">${fTot.label}</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="info-box" style="margin-top:12px">
+      <h5>📌 Como interpretar o ∆p</h5>
+      <ul>
+        <li><strong>∆p ≥ +15 p.p.</strong> → Aluno acima da turma — manter consistência</li>
+        <li><strong>−15 ≤ ∆p < +15 p.p.</strong> → Próximo da média — atenção às disciplinas em queda</li>
+        <li><strong>∆p < −15 p.p.</strong> → Abaixo da turma — intervenção pedagógica recomendada</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CARD 3: Índice de Confiabilidade -->
+  <div class="card fade-in">
+    <div class="card-head"><h2>🎯 Índice de Confiabilidade (IC)</h2></div>
+    <p class="card-sub">Avalia a estabilidade do resultado do aluno em relação à distribuição da turma. Mede regularidade, concentração e amplitude da variação.</p>
+    <div class="disc-grid">
+      <div style="border-radius:12px;padding:20px;text-align:center;border:2px solid ${icMat.border};background:${icMat.bg}">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;color:${icMat.cor}">Matemática</div>
+        <div style="font-size:32px;font-weight:900;color:${icMat.cor};line-height:1;margin-bottom:6px">${icMat.label}</div>
+        <div style="font-size:12px;color:var(--text2);font-weight:600">${icMat.sub}</div>
+        <div style="margin-top:8px;font-size:12px;color:var(--text3)">${aMatPct.toFixed(1)}% de acerto (${a.mat}/20)</div>
+      </div>
+      <div style="border-radius:12px;padding:20px;text-align:center;border:2px solid ${icIng.border};background:${icIng.bg}">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;color:${icIng.cor}">Inglês</div>
+        <div style="font-size:32px;font-weight:900;color:${icIng.cor};line-height:1;margin-bottom:6px">${icIng.label}</div>
+        <div style="font-size:12px;color:var(--text2);font-weight:600">${icIng.sub}</div>
+        <div style="margin-top:8px;font-size:12px;color:var(--text3)">${aIngPct.toFixed(1)}% de acerto (${a.ing}/20)</div>
+      </div>
+    </div>
+    <table class="dtable" style="margin-top:14px">
+      <thead><tr><th>Faixa IC</th><th>% de Acerto</th><th>Interpretação</th></tr></thead>
+      <tbody>
+        <tr><td>🟢 IC ALTO</td><td>≥ 70%</td><td>Resultado sólido e confiável — manter ritmo</td></tr>
+        <tr><td>🟡 IC MÉDIO</td><td>50% – 69%</td><td>Razoável, mas com margem de melhora</td></tr>
+        <tr><td>🔴 IC BAIXO</td><td>< 50%</td><td>Resultado instável — intervenção necessária</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box" style="margin-top:8px">
+      <h5>💡 O que o IC indica</h5>
+      <ul>
+        <li>IC ALTO = aluno com desempenho sólido (≥70% de acerto) — resultado confiável e consistente</li>
+        <li>IC MÉDIO = resultado razoável, mas com espaço para melhora — monitorar próximos simulados</li>
+        <li>IC BAIXO = abaixo de 50% de acerto — investigar erro conceitual, gestão de tempo ou dificuldade específica</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CARD 4: ROI Pedagógico -->
+  <div class="card fade-in">
+    <div class="card-head"><h2>💡 ROI Pedagógico — Prioridade de Estudo</h2></div>
+    <p class="card-sub">Indica onde o investimento de tempo gera maior retorno. No CN não há pesos — o ROI é calculado com base no gap para o mínimo eliminatório (10/20) e para o corte CN (~74% de acertos).</p>
+    <table class="dtable">
+      <thead><tr><th>Disciplina</th><th>Acerto Aluno</th><th>Gap p/ Mínimo (50%)</th><th>Gap p/ Corte CN (74%)</th><th>ROI</th><th>Prioridade</th></tr></thead>
+      <tbody>
+        ${[
+          {n:'Matemática', pct:aMatPct, gMin:gapMinMat, gCN:gapMat, roi:roiMat},
+          {n:'Inglês',     pct:aIngPct, gMin:gapMinIng, gCN:gapIng, roi:roiIng}
+        ].sort((x,y)=>y.roi-x.roi).map((d,i)=>`
+        <tr ${i===0&&d.roi>0?'style="background:#fffbeb"':''}>
+          <td style="font-weight:800">${d.n}</td>
+          <td>${d.pct.toFixed(1)}%</td>
+          <td style="color:${d.gMin>0?'#dc2626':'#16a34a'};font-weight:800">${d.gMin>0?'+'+d.gMin.toFixed(1)+' p.p. faltando':'✓ Atingido'}</td>
+          <td style="color:${d.gCN>0?'#d97706':'#16a34a'};font-weight:800">${d.gCN>0?'+'+d.gCN.toFixed(1)+' p.p. faltando':'✓ Acima do corte'}</td>
+          <td style="font-weight:900;font-size:16px;color:var(--navy)">${d.roi.toFixed(0)}</td>
+          <td><span style="padding:4px 12px;border-radius:20px;font-size:12px;font-weight:800;background:${i===0&&d.roi>0?'#fef3c7':'#f0fdf4'};color:${i===0&&d.roi>0?'#92400e':'#15803d'};border:1px solid ${i===0&&d.roi>0?'#fde68a':'#86efac'}">${i===0&&d.roi>0?'🔴 Alta Prioridade':'🟢 OK'}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+    ${(roiMat > 0 || roiIng > 0) ? `
+    <div style="margin-top:14px;padding:14px 18px;background:#fffbeb;border:1px solid #fde68a;border-left:4px solid #d97706;border-radius:10px">
+      <div style="font-size:13px;font-weight:800;color:#78350f;margin-bottom:8px">📋 Plano de Ação Sugerido</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        ${roiMat > roiIng ? `
+        <div style="flex:1;min-width:180px;font-size:13px;color:#92400e;line-height:1.7">
+          <strong>1ª Prioridade: Matemática</strong><br>
+          ROI: ${roiMat.toFixed(0)} pontos de impacto<br>
+          ${gapMinMat>0?'⚠️ Abaixo do mínimo eliminatório — foco imediato':'Gap para o corte: '+gapMat.toFixed(1)+' p.p.'}
+        </div>
+        <div style="flex:1;min-width:180px;font-size:13px;color:#92400e;line-height:1.7">
+          <strong>2ª Prioridade: Inglês</strong><br>
+          ROI: ${roiIng.toFixed(0)} pontos de impacto<br>
+          ${gapMinIng>0?'⚠️ Abaixo do mínimo eliminatório — foco imediato':'Gap para o corte: '+gapIng.toFixed(1)+' p.p.'}
+        </div>` : `
+        <div style="flex:1;min-width:180px;font-size:13px;color:#92400e;line-height:1.7">
+          <strong>1ª Prioridade: Inglês</strong><br>
+          ROI: ${roiIng.toFixed(0)} pontos de impacto<br>
+          ${gapMinIng>0?'⚠️ Abaixo do mínimo eliminatório — foco imediato':'Gap para o corte: '+gapIng.toFixed(1)+' p.p.'}
+        </div>
+        <div style="flex:1;min-width:180px;font-size:13px;color:#92400e;line-height:1.7">
+          <strong>2ª Prioridade: Matemática</strong><br>
+          ROI: ${roiMat.toFixed(0)} pontos de impacto<br>
+          ${gapMinMat>0?'⚠️ Abaixo do mínimo eliminatório — foco imediato':'Gap para o corte: '+gapMat.toFixed(1)+' p.p.'}
+        </div>`}
+      </div>
+    </div>` : `<div class="info-box"><h5>✅ Aluno acima do corte em todas as disciplinas</h5><ul><li>Manter a consistência e foco em questões difíceis do CN para garantir margem de segurança.</li></ul></div>`}
+    <div class="info-box" style="margin-top:12px">
+      <h5>📌 Como interpretar o ROI Pedagógico</h5>
+      <ul>
+        <li>O <strong>ROI</strong> quantifica o retorno de cada hora de estudo em pontos de impacto na aprovação</li>
+        <li>Gap para o <strong>mínimo eliminatório</strong> (50%) tem peso dobrado — elimina antes de classificar</li>
+        <li>Gap para o <strong>corte CN</strong> (~74%) indica esforço necessário para classificação</li>
+        <li>Disciplina com <strong>ROI maior = maior prioridade</strong> de investimento de tempo</li>
+      </ul>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// NAVEGAÇÃO
+// ═══════════════════════════════════════════════════════
+function goSec(s,btn){
+  secaoOrigem=s;
+  document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(s+'Section').classList.add('active');
+  document.getElementById('dashboard').style.display='none';
+  if(btn) btn.classList.add('active');
+}
+function goTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn) btn.classList.add('active');
+}
+function voltar(){
+  document.getElementById('dashboard').style.display='none';
+  document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+  document.getElementById(secaoOrigem+'Section').classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const navMap={'9mil':'nav9mil','em':'navEm','busca':'navBusca'};
+  document.getElementById(navMap[secaoOrigem]||'navEm').classList.add('active');
+}
+
+// INIT
+render9mil();
+renderEm();
+</script>
+<!-- Modal de confirmação de matrícula -->
+<div id="raModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:16px;padding:32px 28px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.25);position:relative">
+    <button onclick="fecharRAModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;font-size:22px;cursor:pointer;color:#8b99ab">✕</button>
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:36px;margin-bottom:8px">🔒</div>
+      <h3 style="font-size:18px;font-weight:900;color:#1e3a5f;margin:0 0 6px">Acesso ao Dashboard Individual</h3>
+      <p style="font-size:13px;color:#6b7280;margin:0">Digite a <strong>matrícula (RA)</strong> do aluno para acessar seu desempenho detalhado.</p>
+    </div>
+    <input id="raInput" type="text" placeholder="Ex: MT25198953"
+      onkeydown="if(event.key==='Enter')confirmarRA()"
+      style="width:100%;box-sizing:border-box;padding:12px 16px;font-size:15px;font-weight:700;border:2px solid #e5e9f0;border-radius:10px;outline:none;text-transform:uppercase;letter-spacing:1px;font-family:inherit;margin-bottom:8px"
+      onfocus="this.style.borderColor='#1e3a5f'" onblur="this.style.borderColor='#e5e9f0'"/>
+    <div id="raError" style="display:none;color:#dc2626;font-size:12px;font-weight:700;margin-bottom:10px;padding:8px 12px;background:#fef2f2;border-radius:8px;border:1px solid #fca5a5">
+      ⚠️ Matrícula incorreta. Verifique e tente novamente.
+    </div>
+    <button onclick="confirmarRA()"
+      style="width:100%;padding:13px;background:#1e3a5f;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.5px">
+      🔓 Acessar Dashboard
+    </button>
+    <p style="text-align:center;font-size:11px;color:#9ca3af;margin:12px 0 0">A matrícula foi fornecida no momento da inscrição.</p>
+  </div>
+</div>
+</body>
+</html>
