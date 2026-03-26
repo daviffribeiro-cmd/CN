@@ -274,8 +274,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
     <div class="legend-box">
       <strong>Como ler:</strong>
       <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado = média ≥ 7,65</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado = média abaixo de 7,65</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado = média ≥ 7,65 + mín. 8 acertos em cada disciplina (50%) + redação</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado = média abaixo de 7,65 ou eliminado por mínimo em alguma disciplina</div>
       <div class="legend-item">📌 Aprovados primeiro, depois reprovados — ambos por média</div>
     </div>
     <div class="ranking-card">
@@ -301,9 +301,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
         <thead><tr>
           <th style="width:60px;text-align:center">Pos.</th>
           <th style="text-align:left;padding-left:14px">Aluno</th>
-          <th>Português <span style="font-weight:500;font-size:10px">(/10)</span></th>
-          <th>Matemática <span style="font-weight:500;font-size:10px">(/10)</span></th>
-          <th>Inglês <span style="font-weight:500;font-size:10px">(/10)</span></th>
+          <th>Português <span style="font-weight:500;font-size:10px">(/16)</span></th>
+          <th>Matemática <span style="font-weight:500;font-size:10px">(/16)</span></th>
+          <th>Inglês <span style="font-weight:500;font-size:10px">(/16)</span></th>
           <th>Média <span style="font-weight:500;font-size:10px">(corte 7,65)</span></th>
           <th>Status</th>
         </tr></thead>
@@ -2254,6 +2254,16 @@ const DATA_EPCAR = [{"unidade":"CAMPO GRANDE","nome":"MIGUEL CASTRO","turma":"CG
 
 // Pré-processa EPCAr igual ao buildTurma
 (()=>{
+  // Recalcula status com critério de mínimo 50% por disciplina (8/16 acertos)
+  DATA_EPCAR.forEach(function(s){
+    s.ok_por = (s.acertos_por||0) >= 8;
+    s.ok_mat = (s.acertos_mat||0) >= 8;
+    s.ok_ing = (s.acertos_ing||0) >= 8;
+    var passaMínimo = s.ok_por && s.ok_mat && s.ok_ing;
+    var passaMedia = s.media >= 7.65;
+    var temRedacao = s.redacao === 'Sim';
+    s.status = (passaMínimo && passaMedia && temRedacao) ? 'Aprovado' : 'Reprovado';
+  });
   const apv = DATA_EPCAR.filter(s=>s.status==='Aprovado').sort((a,b)=>b.media-a.media||(b.nota_por-a.nota_por)||(b.nota_mat-a.nota_mat)||(b.nota_ing-a.nota_ing));
   const rep = DATA_EPCAR.filter(s=>s.status!=='Aprovado').sort((a,b)=>b.media-a.media||(b.nota_por-a.nota_por)||(b.nota_mat-a.nota_mat)||(b.nota_ing-a.nota_ing));
   const sorted = [...apv,...rep];
@@ -2289,9 +2299,9 @@ function renderEPCAr(){
     const st = aprovado
       ? '<span class="chip chip-aprov">✓ Aprovado</span>'
       : '<span class="chip chip-reprov">✗ Reprovado</span>';
-    const cP = a.nota_por<5?'#dc2626':'var(--text)';
-    const cM = a.nota_mat<5?'#dc2626':'var(--text)';
-    const cI = a.nota_ing<5?'#dc2626':'var(--text)';
+    const cP = a.ok_por?'#16a34a':'#dc2626';
+    const cM = a.ok_mat?'#16a34a':'#dc2626';
+    const cI = a.ok_ing?'#16a34a':'#dc2626';
     const cMed = aprovado?'#16a34a':'#dc2626';
     return `<tr class="${rc}" onclick="openAlunoEPCAr('${a.nome.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">
       <td style="text-align:center"><span class="pos-badge ${pc}">${em}</span></td>
@@ -2299,9 +2309,9 @@ function renderEPCAr(){
         <span class="aluno-nome">${a.nome}</span>
         <span class="aluno-meta">${a.unidade} · ${a.turma||'-'}</span>
       </td>
-      <td style="font-size:20px;font-weight:900;text-align:center;color:${cP}">${a.nota_por.toFixed(1)}</td>
-      <td style="font-size:20px;font-weight:900;text-align:center;color:${cM}">${a.nota_mat.toFixed(1)}</td>
-      <td style="font-size:20px;font-weight:900;text-align:center;color:${cI}">${a.nota_ing.toFixed(1)}</td>
+      <td style="font-size:20px;font-weight:900;text-align:center;color:${cP}">${a.acertos_por}<span style="font-size:11px;color:var(--text3)">/16</span></td>
+      <td style="font-size:20px;font-weight:900;text-align:center;color:${cM}">${a.acertos_mat}<span style="font-size:11px;color:var(--text3)">/16</span></td>
+      <td style="font-size:20px;font-weight:900;text-align:center;color:${cI}">${a.acertos_ing}<span style="font-size:11px;color:var(--text3)">/16</span></td>
       <td style="font-size:24px;font-weight:900;text-align:center;color:${cMed}">${a.media.toFixed(2)}</td>
       <td style="text-align:center">${st}</td>
     </tr>`;
@@ -2371,38 +2381,59 @@ function buildNotasEPCAr(){
   h+='<div class="stat-item"><div class="s-label">Resultado</div><div class="s-val" style="font-size:28px">'+(aprovado?'✅':'❌')+'</div><div class="s-hint">'+(aprovado?'Aprovado':'Reprovado')+'</div></div>';
   h+='</div></div>';
   h+='<div class="card fade-in"><div class="card-head"><h2>📐 Desempenho por Disciplina</h2></div>';
+  h+='<p class="card-sub">Mínimo exigido: <strong>8 acertos (50%)</strong> em cada disciplina + média ≥ 7,65.</p>';
   h+='<div class="disc-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">';
-  h+='<div class="disc-card '+(a.nota_por>=7.65?'pass':'fail')+'">';
-  h+='<div class="dc-name">Português</div><div class="dc-val">'+a.nota_por.toFixed(1)+'</div>';
-  h+='<div class="dc-max">de 10 ('+a.acertos_por+' acertos)</div>';
-  h+=(a.nota_por>=7.65?'<span class="chip chip-aprov">✓ Boa nota</span>':'<span class="chip chip-reprov">✗ Abaixo corte</span>')+'</div>';
-  h+='<div class="disc-card '+(a.nota_mat>=7.65?'pass':'fail')+'">';
-  h+='<div class="dc-name">Matemática</div><div class="dc-val">'+a.nota_mat.toFixed(1)+'</div>';
-  h+='<div class="dc-max">de 10 ('+a.acertos_mat+' acertos)</div>';
-  h+=(a.nota_mat>=7.65?'<span class="chip chip-aprov">✓ Boa nota</span>':'<span class="chip chip-reprov">✗ Abaixo corte</span>')+'</div>';
-  h+='<div class="disc-card '+(a.nota_ing>=7.65?'pass':'fail')+'">';
-  h+='<div class="dc-name">Inglês</div><div class="dc-val">'+a.nota_ing.toFixed(1)+'</div>';
-  h+='<div class="dc-max">de 10 ('+a.acertos_ing+' acertos)</div>';
-  h+=(a.nota_ing>=7.65?'<span class="chip chip-aprov">✓ Boa nota</span>':'<span class="chip chip-reprov">✗ Abaixo corte</span>')+'</div>';
+  h+='<div class="disc-card '+(a.ok_por?'pass':'fail')+'">';
+  h+='<div class="dc-name">Português</div>';
+  h+='<div class="dc-val">'+a.acertos_por+'<span style="font-size:18px;font-weight:700">/16</span></div>';
+  h+='<div class="dc-max">nota: '+a.nota_por.toFixed(2)+' — mínimo 8</div>';
+  h+=(a.ok_por?'<span class="chip chip-aprov">✓ '+(a.nota_por>=7.65?'Boa nota':'Mín. OK')+'</span>':'<span class="chip chip-reprov">✗ Eliminado (mín. 8)</span>')+'</div>';
+  h+='<div class="disc-card '+(a.ok_mat?'pass':'fail')+'">';
+  h+='<div class="dc-name">Matemática</div>';
+  h+='<div class="dc-val">'+a.acertos_mat+'<span style="font-size:18px;font-weight:700">/16</span></div>';
+  h+='<div class="dc-max">nota: '+a.nota_mat.toFixed(2)+' — mínimo 8</div>';
+  h+=(a.ok_mat?'<span class="chip chip-aprov">✓ '+(a.nota_mat>=7.65?'Boa nota':'Mín. OK')+'</span>':'<span class="chip chip-reprov">✗ Eliminado (mín. 8)</span>')+'</div>';
+  h+='<div class="disc-card '+(a.ok_ing?'pass':'fail')+'">';
+  h+='<div class="dc-name">Inglês</div>';
+  h+='<div class="dc-val">'+a.acertos_ing+'<span style="font-size:18px;font-weight:700">/16</span></div>';
+  h+='<div class="dc-max">nota: '+a.nota_ing.toFixed(2)+' — mínimo 8</div>';
+  h+=(a.ok_ing?'<span class="chip chip-aprov">✓ '+(a.nota_ing>=7.65?'Boa nota':'Mín. OK')+'</span>':'<span class="chip chip-reprov">✗ Eliminado (mín. 8)</span>')+'</div>';
   h+='</div></div>';
   h+='<div class="card fade-in"><div class="card-head"><h2>📊 Comparativo Turma EPCAr</h2></div>';
-  h+='<table class="dtable"><thead><tr><th>Disciplina</th><th>Nota</th><th>%</th><th>Média Turma</th><th>Diferença</th><th>Situação</th></tr></thead><tbody>';
-  var disc=[{n:'Português',v:a.nota_por,avg:avgP,p:pP},{n:'Matemática',v:a.nota_mat,avg:avgM,p:pM},{n:'Inglês',v:a.nota_ing,avg:avgI,p:pI}];
+  h+='<p class="card-sub">Mínimo por disciplina: 8 acertos (50% de 16). Corte geral: 7,65.</p>';
+  h+='<table class="dtable"><thead><tr><th>Disciplina</th><th>Acertos</th><th>Nota</th><th>%</th><th>Média Turma</th><th>Diferença</th><th>Situação</th></tr></thead><tbody>';
+  var disc=[
+    {n:'Português',v:a.nota_por,avg:avgP,p:pP,ac:a.acertos_por,ok:a.ok_por},
+    {n:'Matemática',v:a.nota_mat,avg:avgM,p:pM,ac:a.acertos_mat,ok:a.ok_mat},
+    {n:'Inglês',v:a.nota_ing,avg:avgI,p:pI,ac:a.acertos_ing,ok:a.ok_ing}
+  ];
   disc.forEach(function(d){
     var df=d.v-d.avg, dfs=(df>=0?'+':'')+df.toFixed(2), dfc=df>=0?'#16a34a':'#dc2626';
-    h+='<tr'+(d.v<7.65?' style="background:#fff8f8"':'')+'>';
-    h+='<td>'+d.n+'</td><td style="font-weight:800">'+d.v.toFixed(1)+'/10</td>';
+    var rowBg = !d.ok ? 'background:#fef2f2' : d.v<7.65 ? 'background:#fff8f8' : '';
+    h+='<tr'+(rowBg?' style="'+rowBg+'"':'')+'>';
+    h+='<td>'+d.n+'</td>';
+    h+='<td style="font-weight:800;color:'+(d.ok?'var(--text)':'#dc2626')+'">'+d.ac+'/16</td>';
+    h+='<td style="font-weight:800">'+d.v.toFixed(1)+'/10</td>';
     h+='<td><span class="badge '+pBadge(d.p)+'">'+d.p+'%</span></td>';
     h+='<td>'+d.avg.toFixed(2)+'</td>';
     h+='<td style="font-weight:900;color:'+dfc+'">'+dfs+'</td>';
-    h+='<td>'+pLabel(d.p)+'</td></tr>';
+    h+='<td>'+(d.ok?pLabel(d.p):'<span style="color:#dc2626;font-weight:800">⛔ Eliminado</span>')+'</td></tr>';
   });
   h+='</tbody></table>';
   if(aprovado){
-    h+='<div class="info-box"><h5>✅ Acima do corte EPCAr</h5><ul><li>Média '+a.media.toFixed(2)+' aprovada. Mantenha o ritmo!</li></ul></div>';
+    h+='<div class="info-box"><h5>✅ Aprovado na EPCAr</h5><ul><li>Média '+a.media.toFixed(2)+' acima do corte 7,65. Mínimos de cada disciplina atingidos. Mantenha o ritmo!</li></ul></div>';
   } else {
-    var fraca=a.nota_por<=a.nota_mat&&a.nota_por<=a.nota_ing?'Português':a.nota_mat<=a.nota_ing?'Matemática':'Inglês';
-    h+='<div class="warn-box"><h5>⚠️ Abaixo do corte (7,65)</h5><ul><li>Faltam '+(7.65-a.media).toFixed(2)+' pts. Disciplina mais fraca: '+fraca+'</li></ul></div>';
+    var eliminado = !a.ok_por || !a.ok_mat || !a.ok_ing;
+    if(eliminado){
+      var discElim=[];
+      if(!a.ok_por) discElim.push('Português ('+a.acertos_por+'/16)');
+      if(!a.ok_mat) discElim.push('Matemática ('+a.acertos_mat+'/16)');
+      if(!a.ok_ing) discElim.push('Inglês ('+a.acertos_ing+'/16)');
+      h+='<div class="warn-box"><h5>⛔ Eliminado por mínimo</h5><ul><li>Precisa de no mínimo 8 acertos (50%) em cada disciplina.</li><li>Abaixo do mínimo: '+discElim.join(', ')+'</li>'+(a.media<7.65?'<li>Além disso, média '+a.media.toFixed(2)+' abaixo do corte 7,65.</li>':'')+'</ul></div>';
+    } else {
+      var fraca=a.nota_por<=a.nota_mat&&a.nota_por<=a.nota_ing?'Português':a.nota_mat<=a.nota_ing?'Matemática':'Inglês';
+      h+='<div class="warn-box"><h5>⚠️ Abaixo do corte (7,65)</h5><ul><li>Faltam '+(7.65-a.media).toFixed(2)+' pts. Disciplina mais fraca: '+fraca+'. Os mínimos de cada disciplina foram atingidos.</li></ul></div>';
+    }
   }
   h+='</div>';
   document.getElementById('pNotas').innerHTML=h;
@@ -2465,7 +2496,7 @@ function buildNotasEPCAr(){
   var roiDiscs=[{n:'Português',p:aPct,gm:gmP,gc:gP,r:roiP},{n:'Matemática',p:aMPct,gm:gmM,gc:gM,r:roiM},{n:'Inglês',p:aIPct,gm:gmI,gc:gI,r:roiI}];
   roiDiscs.sort(function(a,b){return b.r-a.r;});
   hi+='<div class="card fade-in"><div class="card-head"><h2>💡 ROI Pedagógico</h2></div>';
-  hi+='<p class="card-sub">Gap para mínimo pedagógico (50%) tem peso 2×. Maior ROI = prioridade.</p>';
+  hi+='<p class="card-sub">Gap para mínimo eliminatório (50% = 8/16 acertos) tem peso 2×. Maior ROI = prioridade.</p>';
   hi+='<table class="dtable"><thead><tr><th>Disciplina</th><th>% Acerto</th><th>Gap Mín (50%)</th><th>Gap Corte (76,5%)</th><th>ROI</th></tr></thead><tbody>';
   roiDiscs.forEach(function(d,i){
     hi+='<tr'+(i===0&&d.r>0?' style="background:#fffbeb"':'')+'>';
@@ -2498,7 +2529,7 @@ function buildNotasEPCAr(){
   var aprovN=DATA_EPCAR.filter(function(s){return s.status==='Aprovado';}).length;
   var hc='';
   hc+='<div class="card fade-in"><div class="card-head"><h2>✈️ Chance de Aprovação EPCAr</h2></div>';
-  hc+='<p class="card-sub">Corte 7,65 = 100% de chance. Desempate: Português &gt; Matemática &gt; Inglês.</p>';
+  hc+='<p class="card-sub">Corte 7,65 + mín. 8 acertos por disciplina (50% de 16) + redação = 100% de chance.</p>';
   hc+='<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin:16px 0">';
   hc+='<div style="text-align:center;min-width:110px"><div style="font-size:60px;font-weight:900;color:'+fCor(chance)+';line-height:1">'+chance+'%</div>';
   hc+='<div style="font-size:13px;font-weight:700;color:'+fCor(chance)+'">'+fLbl(chance)+'</div></div>';
@@ -2511,7 +2542,18 @@ function buildNotasEPCAr(){
   hc+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">Corte EPCAr</div><div style="font-weight:900;font-size:18px">7,65</div></div>';
   hc+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">Posição Turma</div><div style="font-weight:900;font-size:18px;color:var(--navy)">#'+posicao+'º</div></div>';
   hc+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">'+(a.media<7.65?'Faltam':'Sobram')+'</div><div style="font-weight:900;font-size:18px;color:'+(a.media<7.65?'#dc2626':'#16a34a')+'">'+Math.abs(7.65-a.media).toFixed(2)+' pts</div></div>';
-  hc+='</div></div></div></div>';
+  hc+='</div></div></div>';
+  var eliminadoMini = !a.ok_por || !a.ok_mat || !a.ok_ing;
+  if(eliminadoMini){
+    var discElimC=[];
+    if(!a.ok_por) discElimC.push('Português ('+a.acertos_por+'/16 → mín. 8)');
+    if(!a.ok_mat) discElimC.push('Matemática ('+a.acertos_mat+'/16 → mín. 8)');
+    if(!a.ok_ing) discElimC.push('Inglês ('+a.acertos_ing+'/16 → mín. 8)');
+    hc+='<div style="margin-top:10px;padding:10px 14px;background:#fef2f2;border-left:3px solid #dc2626;border-radius:6px;font-size:13px;font-weight:700;color:#b91c1c">⛔ Eliminado por mínimo — precisa de ≥8 acertos (50%) em cada disciplina.<br>Abaixo do mínimo: '+discElimC.join(', ')+'</div>';
+  } else if(a.redacao !== 'Sim'){
+    hc+='<div style="margin-top:10px;padding:10px 14px;background:#fef2f2;border-left:3px solid #dc2626;border-radius:6px;font-size:13px;font-weight:700;color:#b91c1c">⛔ Sem redação entregue — redação é eliminatória.</div>';
+  }
+  hc+='</div>';
   hc+='<div class="card fade-in"><div class="card-head"><h2>📍 Posição na Turma</h2></div>';
   hc+='<p class="card-sub">Percentil '+percentil+'º — você está acima de '+percentil+'% da turma.</p>';
   hc+='<div style="background:#e5e9f0;border-radius:8px;height:22px;position:relative;margin-bottom:16px">';
