@@ -135,6 +135,57 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .plan-tbl tfoot td{background:#f0fdf4;font-weight:900;color:#14532d;padding:12px 10px;text-align:center;font-size:13px;border-top:2px solid #86efac;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeIn .3s ease;}
+
+/* ── Modal base ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--white);border-radius:16px;padding:32px;max-width:480px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.25);position:relative;}
+.modal-box h2{font-size:20px;font-weight:900;color:var(--navy);margin-bottom:6px;}
+.modal-box p{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5;}
+.modal-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:15px;font-weight:500;outline:none;background:var(--bg);transition:border-color .2s;margin-bottom:12px;}
+.modal-input:focus{border-color:var(--navy);background:var(--white);}
+.modal-btn{width:100%;padding:13px;background:var(--navy);color:white;border:none;border-radius:9px;font-size:15px;font-weight:800;cursor:pointer;transition:all .2s;}
+.modal-btn:hover{background:var(--navy2);transform:translateY(-1px);}
+.modal-btn.secondary{background:var(--bg);color:var(--text2);border:1.5px solid var(--border);margin-top:8px;}
+.modal-btn.secondary:hover{background:#f0f4f8;transform:none;}
+.modal-error{color:#dc2626;font-size:13px;font-weight:700;margin-bottom:10px;padding:8px 12px;background:#fef2f2;border-radius:7px;display:none;}
+.modal-success{color:#15803d;font-size:13px;font-weight:700;margin-bottom:10px;padding:8px 12px;background:#f0fdf4;border:1px solid #86efac;border-radius:7px;display:none;}
+.upload-area{border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:12px;}
+.upload-area:hover,.upload-area.drag{border-color:var(--navy);background:var(--blue-soft);}
+.upload-area input[type=file]{display:none;}
+.upload-area .ua-icon{font-size:32px;margin-bottom:6px;}
+.upload-area .ua-text{font-size:13px;color:var(--text2);font-weight:600;}
+.upload-area .ua-hint{font-size:11px;color:var(--text3);margin-top:3px;}
+.upload-list{max-height:180px;overflow-y:auto;margin-bottom:12px;}
+.upload-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg);border-radius:8px;margin-bottom:6px;font-size:13px;}
+.upload-item .ui-name{flex:1;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.upload-item .ui-ok{color:#16a34a;font-weight:800;}
+.upload-item .ui-err{color:#dc2626;font-weight:800;}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text3);line-height:1;}
+.modal-close:hover{color:var(--text);}
+.modal-tabs{display:flex;gap:0;border-bottom:1.5px solid var(--border);margin-bottom:20px;}
+.modal-tab{padding:10px 16px;border:none;background:none;font-size:13px;font-weight:700;color:var(--text3);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;}
+.modal-tab.active{color:var(--navy);border-bottom-color:var(--navy);}
+.modal-step{display:none;}.modal-step.active{display:block;}
+
+/* ── Print ── */
+@media print{
+  /* Oculta TUDO por padrão */
+  body > *{display:none!important;}
+  /* Mostra apenas o dashboard individual */
+  #dashboard{display:block!important;}
+  /* Dentro do dashboard, oculta navegação e botões */
+  #dashboard .dash-topbar,
+  #dashboard .tabs-bar,
+  #dashboard button,
+  .modal-overlay{display:none!important;}
+  /* Mostra todas as abas */
+  #dashboard .tab-pane{display:block!important;}
+  #dashboard .page-wrap{display:block!important;padding:0!important;}
+  .card{page-break-inside:avoid;box-shadow:none!important;border:1px solid #ddd!important;}
+  canvas{max-width:100%!important;}
+  body{background:white!important;}
+}
 @media(max-width:700px){
   .site-header-inner{height:auto;padding:12px 0;}
   .disc-grid{grid-template-columns:1fr 1fr;}
@@ -162,6 +213,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       <button class="nav-btn"        id="nav9mil2" onclick="goSec('9mil2',this)">🏅 9MIL — 2º Dia</button>
       <button class="nav-btn"        id="navEPCAr" onclick="goSec('epcar',this)">✈️ EPCAr — Geral</button>
       <button class="nav-btn"        id="navBusca" onclick="goSec('busca',this)">🔍 Buscar Aluno</button>
+      <button class="nav-btn" id="navAtualizar" onclick="abrirModalAtualizar()" style="margin-left:8px;background:#1e3a5f;color:white;border-color:#1e3a5f;">⚙️ Atualizar Dados</button>
     </nav>
   </div>
 </header>
@@ -614,6 +666,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       <button class="tab-btn" onclick="goTab('pIndicadores',this)">🧮 Indicadores</button>
       <button class="tab-btn" onclick="goTab('pChanceEPCAr',this)">✈️ Chance EPCAr</button>
       <button class="tab-btn" onclick="goTab('pPlano',this)">📅 Plano de Estudos</button>
+      <button class="tab-btn" onclick="imprimirDashboard()" style="margin-left:auto;color:#1e3a5f;font-weight:800;">🖨️ Imprimir</button>
     </div>
   </div>
   <div class="page-wrap">
@@ -2677,6 +2730,186 @@ function buildNotasEPCAr(){
   hp+='<li><strong>Domingo</strong> — Revisão geral e resolução de dúvidas</li>';
   hp+='</ul></div></div>';
   document.getElementById('pPlano').innerHTML=hp;}
+
+// ═══════════════════════════════════════════════════════
+// SHA-256 hash da senha (não guardamos a senha em texto claro)
+// Senha: DaviFerrarez`matriz2026`
+// ═══════════════════════════════════════════════════════
+const SENHA_HASH = 'd2f72e1c0dda79062ecd75a35601d78fc77a1a475e5696cf69518204b30c2f7c';
+
+async function sha256(msg){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function abrirModalAtualizar(){
+  document.getElementById('senhaInput').value='';
+  document.getElementById('senhaError').style.display='none';
+  document.getElementById('modalSenha').classList.add('open');
+  setTimeout(()=>document.getElementById('senhaInput').focus(),100);
+}
+
+function fecharModalSenha(){
+  document.getElementById('modalSenha').classList.remove('open');
+}
+
+async function verificarSenha(){
+  const v = document.getElementById('senhaInput').value;
+  const h = await sha256(v);
+  if(h === SENHA_HASH){
+    fecharModalSenha();
+    abrirPainelAtualizar();
+  } else {
+    document.getElementById('senhaError').style.display='block';
+    document.getElementById('senhaInput').select();
+  }
+}
+
+function abrirPainelAtualizar(){
+  document.getElementById('atualizarSuccess').style.display='none';
+  document.getElementById('atualizarError').style.display='none';
+  document.getElementById('uploadList').innerHTML='';
+  document.getElementById('btnAplicar').disabled=true;
+  document.getElementById('btnAplicar').style.opacity='0.5';
+  window._filesParaAplicar=[];
+  setModalTab('tabInstrucoes', document.querySelector('.modal-tab'));
+  carregarListaSalvos();
+  document.getElementById('modalAtualizar').classList.add('open');
+}
+
+function fecharModalAtualizar(){
+  document.getElementById('modalAtualizar').classList.remove('open');
+}
+
+function setModalTab(id, btn){
+  document.querySelectorAll('.modal-step').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.modal-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='tabArmazenados') carregarListaSalvos();
+}
+
+function dragOver(e){e.preventDefault();document.getElementById('uploadArea').classList.add('drag');}
+function dragLeave(e){document.getElementById('uploadArea').classList.remove('drag');}
+function dropFiles(e){
+  e.preventDefault();
+  document.getElementById('uploadArea').classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+}
+
+function handleFiles(files){
+  const lista = Array.from(files).filter(f=>/\.(xlsx|xls|csv)$/i.test(f.name));
+  if(!lista.length){
+    document.getElementById('atualizarError').textContent='Nenhum arquivo válido (.xlsx/.xls/.csv).';
+    document.getElementById('atualizarError').style.display='block';
+    return;
+  }
+  document.getElementById('atualizarError').style.display='none';
+  window._filesParaAplicar = (window._filesParaAplicar||[]).concat(lista);
+  const ul = document.getElementById('uploadList');
+  lista.forEach(f=>{
+    const d=document.createElement('div');
+    d.className='upload-item';
+    d.innerHTML=`<span style="font-size:18px">📄</span><span class="ui-name">${f.name}</span><span class="ui-ok">✓</span>`;
+    ul.appendChild(d);
+  });
+  document.getElementById('btnAplicar').disabled=false;
+  document.getElementById('btnAplicar').style.opacity='1';
+}
+
+async function aplicarDados(){
+  const files = window._filesParaAplicar||[];
+  if(!files.length) return;
+  // Para cada arquivo, lê como texto/base64 e salva no localStorage
+  let count=0;
+  const promises = files.map(f=>new Promise((res)=>{
+    const r=new FileReader();
+    r.onload=(e)=>{
+      const key='mz_dados_'+f.name.replace(/[^a-z0-9]/gi,'_').toLowerCase();
+      try{
+        localStorage.setItem(key, e.target.result);
+        localStorage.setItem(key+'_ts', new Date().toLocaleString('pt-BR'));
+        localStorage.setItem(key+'_orig', f.name);
+        count++;
+      }catch(err){console.error(err);}
+      res();
+    };
+    r.readAsDataURL(f);
+  }));
+  await Promise.all(promises);
+  const ok=document.getElementById('atualizarSuccess');
+  ok.textContent=`✅ ${count} arquivo(s) salvo(s) com sucesso! Os dados serão carregados na próxima abertura.`;
+  ok.style.display='block';
+  document.getElementById('btnAplicar').disabled=true;
+  document.getElementById('btnAplicar').style.opacity='0.5';
+  window._filesParaAplicar=[];
+  document.getElementById('uploadList').innerHTML='';
+}
+
+function carregarListaSalvos(){
+  const div=document.getElementById('listaSalvos');
+  const keys=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k && k.startsWith('mz_dados_') && !k.endsWith('_ts') && !k.endsWith('_orig')) keys.push(k);
+  }
+  if(!keys.length){
+    div.innerHTML='<p style="color:var(--text3);font-size:13px;text-align:center;padding:16px">Nenhum dado salvo ainda.</p>';
+    return;
+  }
+  div.innerHTML=keys.map(k=>{
+    const nome=localStorage.getItem(k+'_orig')||k;
+    const ts=localStorage.getItem(k+'_ts')||'—';
+    return `<div class="upload-item" style="background:#f8fafc">
+      <span style="font-size:18px">💾</span>
+      <div style="flex:1">
+        <div class="ui-name">${nome}</div>
+        <div style="font-size:10px;color:var(--text3)">Salvo em: ${ts}</div>
+      </div>
+      <button onclick="removerSalvo('${k}')" style="background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;color:#dc2626;cursor:pointer">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+function removerSalvo(key){
+  localStorage.removeItem(key);
+  localStorage.removeItem(key+'_ts');
+  localStorage.removeItem(key+'_orig');
+  carregarListaSalvos();
+}
+
+function limparTodosSalvos(){
+  if(!confirm('Remover todos os dados salvos?')) return;
+  const keys=[];
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k && k.startsWith('mz_dados_')) keys.push(k);
+  }
+  keys.forEach(k=>localStorage.removeItem(k));
+  carregarListaSalvos();
+  const ok=document.getElementById('atualizarSuccess');
+  ok.textContent='✅ Todos os dados foram removidos.';
+  ok.style.display='block';
+}
+
+// ═══════════════════════════════════════════════════════
+// IMPRESSÃO — mostra todas as abas de uma vez
+// ═══════════════════════════════════════════════════════
+function imprimirDashboard(){
+  // Mostra todas as abas temporariamente
+  document.querySelectorAll('.tab-pane').forEach(p=>p.style.display='block');
+  window.print();
+  // Restaura estado original após print
+  setTimeout(()=>{
+    document.querySelectorAll('.tab-pane').forEach(p=>p.style.display='');
+    // Reativa só a aba que estava ativa
+    const ativa = document.querySelector('.tab-btn.active');
+    const id = ativa ? ativa.getAttribute('onclick').match(/'([^']+)'/)?.[1] : 'pNotas';
+    document.querySelectorAll('.tab-pane').forEach(p=>{
+      p.style.display = (p.id===id) ? 'block' : 'none';
+    });
+  }, 500);
+}
 </script>
 
 <div id="raModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;align-items:center;justify-content:center;padding:16px">
@@ -2797,6 +3030,67 @@ function buildNotasEPCAr(){
         </tr></thead>
         <tbody id="bodyEmC"></tbody>
       </table>
+    </div>
+  </div>
+</div>
+<!-- ═══ MODAL SENHA ═══ -->
+<div id="modalSenha" class="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="fecharModalSenha()">✕</button>
+    <h2>🔐 Área Restrita</h2>
+    <p>Digite a senha para acessar o painel de atualização de dados.</p>
+    <div id="senhaError" class="modal-error">Senha incorreta. Tente novamente.</div>
+    <input type="password" id="senhaInput" class="modal-input" placeholder="Senha de acesso..." onkeydown="if(event.key==='Enter')verificarSenha()">
+    <button class="modal-btn" onclick="verificarSenha()">🔓 Entrar</button>
+    <button class="modal-btn secondary" onclick="fecharModalSenha()">Cancelar</button>
+  </div>
+</div>
+
+<!-- ═══ MODAL ATUALIZAR DADOS ═══ -->
+<div id="modalAtualizar" class="modal-overlay">
+  <div class="modal-box" style="max-width:560px">
+    <button class="modal-close" onclick="fecharModalAtualizar()">✕</button>
+    <h2>⚙️ Atualizar Dados dos Rankings</h2>
+    <p>Arraste ou selecione os arquivos Excel (.xlsx) exportados do sistema. Os dados serão carregados e salvos no navegador automaticamente.</p>
+    <div id="atualizarSuccess" class="modal-success"></div>
+    <div id="atualizarError" class="modal-error"></div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="setModalTab('tabInstrucoes',this)">📋 Instruções</button>
+      <button class="modal-tab" onclick="setModalTab('tabUpload',this)">📂 Upload</button>
+      <button class="modal-tab" onclick="setModalTab('tabArmazenados',this)">💾 Salvos</button>
+    </div>
+    <div id="tabInstrucoes" class="modal-step active">
+      <div class="info-box" style="margin-top:0">
+        <h5>📌 Como atualizar</h5>
+        <ul>
+          <li>Exporte cada ranking como <strong>.xlsx</strong> com as colunas: <code>nome, unidade, turma, ra, mat, ing</code> (1º Dia) ou colunas equivalentes por prova.</li>
+          <li>Clique na aba <strong>Upload</strong>, selecione os arquivos e clique <strong>Aplicar</strong>.</li>
+          <li>Os dados são salvos no <strong>localStorage</strong> do navegador — na próxima abertura do arquivo já carregam automaticamente.</li>
+          <li>Para limpar os dados salvos, use a aba <strong>Salvos</strong>.</li>
+        </ul>
+      </div>
+      <div class="warn-box">
+        <h5>⚠️ Importante</h5>
+        <ul>
+          <li>A primeira linha do Excel deve ser o cabeçalho (nomes das colunas).</li>
+          <li>A coluna <code>nome</code> é obrigatória em todos os arquivos.</li>
+        </ul>
+      </div>
+    </div>
+    <div id="tabUpload" class="modal-step">
+      <label class="upload-area" id="uploadArea" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFiles(event)">
+        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" multiple onchange="handleFiles(this.files)">
+        <div class="ua-icon">📂</div>
+        <div class="ua-text">Clique para selecionar ou arraste os arquivos aqui</div>
+        <div class="ua-hint">Aceita .xlsx, .xls, .csv</div>
+      </label>
+      <div id="uploadList" class="upload-list"></div>
+      <button class="modal-btn" id="btnAplicar" onclick="aplicarDados()" disabled style="opacity:.5">✅ Aplicar Dados</button>
+      <button class="modal-btn secondary" onclick="fecharModalAtualizar()">Cancelar</button>
+    </div>
+    <div id="tabArmazenados" class="modal-step">
+      <div id="listaSalvos" style="margin-bottom:12px"></div>
+      <button class="modal-btn secondary" style="background:#fef2f2;color:#dc2626;border-color:#fca5a5" onclick="limparTodosSalvos()">🗑️ Limpar Todos os Dados Salvos</button>
     </div>
   </div>
 </div>
