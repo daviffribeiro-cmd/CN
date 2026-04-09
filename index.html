@@ -2334,18 +2334,16 @@ function confirmarRA(){
   var modal = document.getElementById('raModal');
   var nome  = modal.dataset.nome;
   var modo  = modal.dataset.modo || '';
-  var candidato;
-  if     (modo==='dia9mil2')  candidato = T9MIL2.find(function(a){return a.nome===nome;});
-  else if(modo==='dia9milC')  candidato = T9MILC.find(function(a){return a.nome===nome;});
-  else if(modo==='diaEm2')    candidato = TEM2.find(function(a){return a.nome===nome;});
-  else if(modo==='diaC')      candidato = TEMC.find(function(a){return a.nome===nome;});
-  else if(modo==='diaEPCAr')  candidato = DATA_EPCAR.find(function(a){return a.nome===nome;});
-  else                        candidato = ALL.find(function(a){return a.nome===nome;});
-  if(!candidato) return;
-
   var digitado = document.getElementById('raInput').value.trim().toUpperCase();
-  var esperado = (candidato.ra||candidato.matricula||'').toUpperCase();
-  if(digitado !== esperado){
+  var byRA = function(a){ return a.nome===nome && (a.ra||a.matricula||'').toUpperCase()===digitado; };
+  var candidato;
+  if     (modo==='dia9mil2')  candidato = T9MIL2.find(byRA);
+  else if(modo==='dia9milC')  candidato = T9MILC.find(byRA);
+  else if(modo==='diaEm2')    candidato = TEM2.find(byRA);
+  else if(modo==='diaC')      candidato = TEMC.find(byRA);
+  else if(modo==='diaEPCAr')  candidato = DATA_EPCAR.find(byRA);
+  else                        candidato = ALL.find(byRA);
+  if(!candidato){
     document.getElementById('raError').style.display='block';
     document.getElementById('raInput').select();
     return;
