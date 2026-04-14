@@ -206,15 +206,19 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       </div>
     </div>
     <nav class="main-nav">
-      <button class="nav-btn active" id="navEmC"   onclick="goSec('emC',this)">🏆 1º Sim CN Médio</button>
-      <button class="nav-btn"        id="nav9milC" onclick="goSec('9milC',this)">🎖️ 1º Sim CN 9°</button>
-      <button class="nav-btn"        id="navEm"    onclick="goSec('em',this)">📚 1º Sim EM — 1º Dia</button>
-      <button class="nav-btn"        id="nav9mil"  onclick="goSec('9mil',this)">📚 1º Sim 9MIL — 1º Dia</button>
-      <button class="nav-btn"        id="navEm2"   onclick="goSec('em2',this)">📗 1º Sim EM — 2º Dia</button>
-      <button class="nav-btn"        id="nav9mil2" onclick="goSec('9mil2',this)">📗 1º Sim 9MIL — 2º Dia</button>
-      <button class="nav-btn"        id="navEmS2D1"   onclick="goSec('emS2D1',this)">📘 EM — 2º Sim 1ºDia</button>
-      <button class="nav-btn"        id="nav9milS2D1" onclick="goSec('9milS2D1',this)">🎯 9MIL — 2º Sim 1ºDia</button>
-      <button class="nav-btn"        id="navEPCAr" onclick="goSec('epcar',this)">✈️ EPCAr — Geral</button>
+      <button class="nav-btn active" id="navEmC"        onclick="goSec('emC',this)">🏆 1° Sim CN Médio</button>
+      <button class="nav-btn"        id="nav9milC"      onclick="goSec('9milC',this)">🎖️ 1° Sim CN 9°</button>
+      <button class="nav-btn"        id="navEm"         onclick="goSec('em',this)">📚 1° Sim EM — 1°Dia</button>
+      <button class="nav-btn"        id="nav9mil"       onclick="goSec('9mil',this)">📚 1° Sim 9MIL — 1°Dia</button>
+      <button class="nav-btn"        id="navEm2"        onclick="goSec('em2',this)">📗 1° Sim EM — 2°Dia</button>
+      <button class="nav-btn"        id="nav9mil2"      onclick="goSec('9mil2',this)">📗 1° Sim 9MIL — 2°Dia</button>
+      <button class="nav-btn"        id="navEmS2D1"     onclick="goSec('emS2D1',this)">📚 2° Sim EM — 1°Dia</button>
+      <button class="nav-btn"        id="nav9milS2D1"   onclick="goSec('9milS2D1',this)">📚 2° Sim 9MIL — 1°Dia</button>
+      <button class="nav-btn"        id="navEmS2D2"     onclick="goSec('emS2D2',this)">📗 2° Sim EM — 2°Dia</button>
+      <button class="nav-btn"        id="nav9milS2D2"   onclick="goSec('9milS2D2',this)">📗 2° Sim 9MIL — 2°Dia</button>
+      <button class="nav-btn"        id="navEmS2Geral"  onclick="goSec('emS2Geral',this)">🏆 2° Sim CN Médio</button>
+      <button class="nav-btn"        id="nav9milS2Geral" onclick="goSec('9milS2Geral',this)">🎖️ 2° Sim CN 9°</button>
+      <button class="nav-btn"        id="navEPCAr"      onclick="goSec('epcar',this)">✈️ EPCAr — Geral</button>
       <button class="nav-btn"        id="navBusca" onclick="goSec('busca',this)">🔍 Buscar Aluno</button>
       <button class="nav-btn" id="navAtualizar" onclick="abrirModalAtualizar()" style="margin-left:8px;background:#1e3a5f;color:white;border-color:#1e3a5f;">⚙️ Atualizar Dados</button>
     </nav>
@@ -463,6 +467,204 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
         <tbody id="body9milS2D1"></tbody>
       </table>
       <div class="stat-grid" id="stats9milS2D1" style="margin-top:20px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING EM 2º SIMULADO — 2°DIA ═══ -->
+<div id="emS2D2Section" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>📗 Ranking EM — 2° Simulado 2°Dia · 01/04/2026</h1>
+      <p>Classificação dos alunos do Ensino Médio no 2° Dia do 2° Simulado: Português (20q) + Ciências (18q) + Est. Sociais (12q).</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado = POR ≥ 10</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado = POR abaixo do mínimo</div>
+      <div class="legend-item">POR(20) + CIÊ(18) + EST.SOC(12) = 50 questões</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">EM 2°Sim · 2°Dia — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="totalEmS2dia">0</span> · Aprovados: <span id="aprovEmS2dia" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprovEmS2dia" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="searchEmS2dia" placeholder="🔍 Buscar pelo nome..." oninput="renderEmS2Dia()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setFEmS2Dia('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setFEmS2Dia('aprov',this)">✅ Aprovados<span class="fb-desc">POR ≥ 10</span></button>
+        <button class="filter-btn" onclick="setFEmS2Dia('reprov',this)">❌ Reprovados<span class="fb-desc">Precisam melhorar</span></button>
+        <button class="filter-btn" onclick="setFEmS2Dia('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrapEmS2dia" style="display:none;margin-bottom:14px">
+        <select id="uniSelEmS2dia" onchange="renderEmS2Dia()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <div id="statsEmS2dia" class="stat-grid" style="margin-bottom:16px"></div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>Português<span style="font-weight:500;font-size:10px"> (mín.10/20)</span></th>
+          <th>Ciências<span style="font-weight:500;font-size:10px"> (/18)</span></th>
+          <th>Est. Sociais<span style="font-weight:500;font-size:10px"> (/12)</span></th>
+          <th>Total<span style="font-weight:500;font-size:10px"> (/50)</span></th>
+          <th>Situação</th>
+        </tr></thead>
+        <tbody id="bodyEmS2dia"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING 9MIL 2º SIMULADO — 2°DIA ═══ -->
+<div id="9milS2D2Section" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>📗 Ranking 9MIL — 2° Simulado 2°Dia · 01/04/2026</h1>
+      <p>Classificação dos alunos do 9° Militar no 2° Dia do 2° Simulado: Português (20q) + Ciências (18q) + Est. Sociais (12q).</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado = POR ≥ 10</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado = POR abaixo do mínimo</div>
+      <div class="legend-item">POR(20) + CIÊ(18) + EST.SOC(12) = 50 questões</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">9MIL 2°Sim · 2°Dia — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="total9milS2dia">0</span> · Aprovados: <span id="aprov9milS2dia" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprov9milS2dia" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="search9milS2dia" placeholder="🔍 Buscar pelo nome..." oninput="render9milS2Dia()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setF9milS2Dia('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setF9milS2Dia('aprov',this)">✅ Aprovados<span class="fb-desc">POR ≥ 10</span></button>
+        <button class="filter-btn" onclick="setF9milS2Dia('reprov',this)">❌ Reprovados<span class="fb-desc">Precisam melhorar</span></button>
+        <button class="filter-btn" onclick="setF9milS2Dia('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrap9milS2dia" style="display:none;margin-bottom:14px">
+        <select id="uniSel9milS2dia" onchange="render9milS2Dia()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <div id="stats9milS2dia" class="stat-grid" style="margin-bottom:16px"></div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>Português<span style="font-weight:500;font-size:10px"> (mín.10/20)</span></th>
+          <th>Ciências<span style="font-weight:500;font-size:10px"> (/18)</span></th>
+          <th>Est. Sociais<span style="font-weight:500;font-size:10px"> (/12)</span></th>
+          <th>Total<span style="font-weight:500;font-size:10px"> (/50)</span></th>
+          <th>Situação</th>
+        </tr></thead>
+        <tbody id="body9milS2dia"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING EM 2° SIMULADO — GERAL (1°+2° DIA) ═══ -->
+<div id="emS2GeralSection" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>🏆 2° Sim CN Médio — Ranking Geral (1°+2° Dia)</h1>
+      <p>Classificação consolidada do Ensino Médio no 2° Simulado: 1°Dia (MAT+ING · 40q) + 2°Dia (POR+CIÊ+EST · 50q) = 90 questões.</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado nos dois dias (MAT≥10, ING≥10, POR≥10)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado em pelo menos um dia</div>
+      <div class="legend-item">1°Dia: MAT(20)+ING(20)=40q · 2°Dia: POR(20)+CIÊ(18)+EST(12)=50q · Total: 90q</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">2° Sim Médio — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="totalEmS2D2">0</span> · Aprovados: <span id="aprovEmS2D2" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprovEmS2D2" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="searchEmS2D2" placeholder="🔍 Buscar pelo nome..." oninput="renderEmS2D2()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setFEmS2D2('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setFEmS2D2('aprov',this)">✅ Aprovados<span class="fb-desc">Passaram nos 2 dias</span></button>
+        <button class="filter-btn" onclick="setFEmS2D2('reprov',this)">❌ Reprovados<span class="fb-desc">Falharam em ao menos 1</span></button>
+        <button class="filter-btn" onclick="setFEmS2D2('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrapEmS2D2" style="display:none;margin-bottom:14px">
+        <select id="uniSelEmS2D2" onchange="renderEmS2D2()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <div id="statsEmS2D2" class="stat-grid" style="margin-bottom:16px"></div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>1°Dia<span style="font-weight:500;font-size:10px"> MAT+ING (/40)</span></th>
+          <th>2°Dia<span style="font-weight:500;font-size:10px"> POR+CIÊ+EST (/50)</span></th>
+          <th>Total<span style="font-weight:500;font-size:10px"> (/90)</span></th>
+          <th>Situação</th>
+        </tr></thead>
+        <tbody id="bodyEmS2D2"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING 9MIL 2° SIMULADO — GERAL (1°+2° DIA) ═══ -->
+<div id="9milS2GeralSection" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>🎖️ 2° Sim CN 9° — Ranking Geral (1°+2° Dia)</h1>
+      <p>Classificação consolidada do 9° Militar no 2° Simulado: 1°Dia (MAT+ING · 40q) + 2°Dia (POR+CIÊ+EST · 50q) = 90 questões.</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado nos dois dias (MAT≥10, ING≥10, POR≥10)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado em pelo menos um dia</div>
+      <div class="legend-item">1°Dia: MAT(20)+ING(20)=40q · 2°Dia: POR(20)+CIÊ(18)+EST(12)=50q · Total: 90q</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">2° Sim 9° — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="total9milS2D2">0</span> · Aprovados: <span id="aprov9milS2D2" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprov9milS2D2" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="search9milS2D2" placeholder="🔍 Buscar pelo nome..." oninput="render9milS2D2()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setF9milS2D2('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setF9milS2D2('aprov',this)">✅ Aprovados<span class="fb-desc">Passaram nos 2 dias</span></button>
+        <button class="filter-btn" onclick="setF9milS2D2('reprov',this)">❌ Reprovados<span class="fb-desc">Falharam em ao menos 1</span></button>
+        <button class="filter-btn" onclick="setF9milS2D2('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrap9milS2D2" style="display:none;margin-bottom:14px">
+        <select id="uniSel9milS2D2" onchange="render9milS2D2()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <div id="stats9milS2D2" class="stat-grid" style="margin-bottom:16px"></div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>1°Dia<span style="font-weight:500;font-size:10px"> MAT+ING (/40)</span></th>
+          <th>2°Dia<span style="font-weight:500;font-size:10px"> POR+CIÊ+EST (/50)</span></th>
+          <th>Total<span style="font-weight:500;font-size:10px"> (/90)</span></th>
+          <th>Situação</th>
+        </tr></thead>
+        <tbody id="body9milS2D2"></tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -889,6 +1091,190 @@ function setF9milS2D1(f,btn){
   document.getElementById('uniWrap9milS2D1').style.display=f==='unidade'?'block':'none';
   render9milS2D1();
 }
+
+// ════════════════════════════════════════════════════════
+// 2° SIMULADO — GERAL (1°+2° DIA)
+// ════════════════════════════════════════════════════════
+
+var DATA_EM_S2GERAL = [{"nome":"BRUNO ROCHA","unidade":"MADUREIRA","ra":"MT23128523","mat":14,"ing":20,"por":13,"cie":15,"est":12,"turmaLabel":"EM"},{"nome":"GABRIEL CARPINELLI","unidade":"MADUREIRA","ra":"MT25189143","mat":18,"ing":20,"por":11,"cie":14,"est":10,"turmaLabel":"EM"},{"nome":"GABRIEL OLIVEIRA","unidade":"MADUREIRA","ra":"MT24157190","mat":16,"ing":19,"por":15,"cie":14,"est":9,"turmaLabel":"EM"},{"nome":"DAVI OLIVEIRA","unidade":"MADUREIRA","ra":"MT25188251","mat":13,"ing":19,"por":14,"cie":14,"est":10,"turmaLabel":"EM"},{"nome":"MARIO PEREIRA","unidade":"MADUREIRA","ra":"MT24161861","mat":13,"ing":19,"por":11,"cie":13,"est":12,"turmaLabel":"EM"},{"nome":"NICOLAS CASTILHO","unidade":"MADUREIRA","ra":"MT25188137","mat":14,"ing":19,"por":12,"cie":13,"est":10,"turmaLabel":"EM"},{"nome":"GABRIEL MACIEL","unidade":"MADUREIRA","ra":"MT25180134","mat":14,"ing":20,"por":14,"cie":14,"est":7,"turmaLabel":"EM"},{"nome":"ISAAC LAPROVITA","unidade":"MADUREIRA","ra":"MT25159286","mat":13,"ing":18,"por":12,"cie":12,"est":9,"turmaLabel":"EM"},{"nome":"BLENDOW OLIVEIRA","unidade":"DUQUE DE CAXIAS","ra":"MT24159667","mat":13,"ing":19,"por":10,"cie":16,"est":6,"turmaLabel":"EM"},{"nome":"KAIQUE AMARAL","unidade":"BANGU","ra":"MT24148231","mat":12,"ing":18,"por":10,"cie":12,"est":9,"turmaLabel":"EM"},{"nome":"GUILHERME RODRIGUES","unidade":"CAMPO GRANDE","ra":"MT24148348","mat":10,"ing":20,"por":10,"cie":12,"est":9,"turmaLabel":"EM"},{"nome":"LUIZ RAMOS","unidade":"MADUREIRA","ra":"MT25151143","mat":13,"ing":15,"por":11,"cie":12,"est":9,"turmaLabel":"EM"},{"nome":"MIGUEL CASTRO","unidade":"CAMPO GRANDE","ra":"MT24153173","mat":14,"ing":18,"por":11,"cie":11,"est":7,"turmaLabel":"EM"},{"nome":"ARTHUR CONCEIÇÃO","unidade":"MADUREIRA","ra":"MT25181173","mat":11,"ing":17,"por":12,"cie":12,"est":8,"turmaLabel":"EM"},{"nome":"PEDRO PINGARILHO","unidade":"DUQUE DE CAXIAS","ra":"MT21057781","mat":15,"ing":18,"por":8,"cie":14,"est":10,"turmaLabel":"EM"},{"nome":"PEDRO ALVES","unidade":"BANGU","ra":"MT24146615","mat":5,"ing":20,"por":16,"cie":15,"est":9,"turmaLabel":"EM"},{"nome":"SUCK LAN","unidade":"MADUREIRA","ra":"MT22057798","mat":9,"ing":20,"por":10,"cie":15,"est":10,"turmaLabel":"EM"},{"nome":"MIGUEL RODRIGUES","unidade":"MADUREIRA","ra":"MT25174624","mat":13,"ing":16,"por":9,"cie":14,"est":11,"turmaLabel":"EM"},{"nome":"DAVI SOUZA","unidade":"MADUREIRA","ra":"MT24148447","mat":9,"ing":20,"por":12,"cie":13,"est":8,"turmaLabel":"EM"},{"nome":"ARTHUR OLIVEIRA","unidade":"BANGU","ra":"MT26203711","mat":10,"ing":18,"por":9,"cie":16,"est":8,"turmaLabel":"EM"},{"nome":"LARA FERNANDES","unidade":"MADUREIRA","ra":"MT24151185","mat":10,"ing":19,"por":9,"cie":12,"est":9,"turmaLabel":"EM"},{"nome":"MÁRCIO TEIXEIRA","unidade":"CAMPO GRANDE","ra":"MT24164329","mat":9,"ing":19,"por":12,"cie":13,"est":7,"turmaLabel":"EM"},{"nome":"KALEL QUEIROZ","unidade":"CAMPO GRANDE","ra":"MT23105349","mat":6,"ing":19,"por":11,"cie":15,"est":8,"turmaLabel":"EM"},{"nome":"MILLENA GONÇALVES","unidade":"ROCHA MIRANDA","ra":"MT22076178","mat":13,"ing":20,"por":10,"cie":11,"est":5,"turmaLabel":"EM"},{"nome":"JULIA FONSECA","unidade":"NOVA IGUAÇU","ra":"MT23119498","mat":3,"ing":20,"por":12,"cie":12,"est":9,"turmaLabel":"EM"},{"nome":"DANIEL PEREIRA","unidade":"TAQUARA","ra":"MT23109135","mat":14,"ing":18,"por":9,"cie":11,"est":6,"turmaLabel":"EM"},{"nome":"MD_CNULTRA_SIM_21_03_2026 0002","unidade":"-","ra":"MT24150344","mat":12,"ing":14,"por":9,"cie":14,"est":7,"turmaLabel":"EM"},{"nome":"MIGUEL SANTOS","unidade":"CAMPO GRANDE","ra":"MT25186719","mat":10,"ing":18,"por":7,"cie":11,"est":9,"turmaLabel":"EM"},{"nome":"LUANA GUILHERME","unidade":"MADUREIRA","ra":"MT25152612","mat":11,"ing":18,"por":8,"cie":15,"est":5,"turmaLabel":"EM"},{"nome":"DAVI FENTA","unidade":"MADUREIRA","ra":"MT25197120","mat":9,"ing":19,"por":10,"cie":5,"est":11,"turmaLabel":"EM"},{"nome":"ARTHUR MARTINS","unidade":"MADUREIRA","ra":"MT23121650","mat":9,"ing":19,"por":12,"cie":15,"est":3,"turmaLabel":"EM"},{"nome":"KAIKY NASCIMENTO","unidade":"MADUREIRA","ra":"MT23122583","mat":9,"ing":19,"por":9,"cie":13,"est":6,"turmaLabel":"EM"},{"nome":"ISIS ANJOS","unidade":"BANGU","ra":"MT25172644","mat":12,"ing":17,"por":10,"cie":14,"est":4,"turmaLabel":"EM"},{"nome":"RAFAEL MAIA","unidade":"NOVA IGUAÇU","ra":"MT20034328","mat":6,"ing":20,"por":14,"cie":10,"est":6,"turmaLabel":"EM"},{"nome":"IGOR MARQUES","unidade":"BANGU","ra":"MT23127244","mat":11,"ing":18,"por":11,"cie":13,"est":4,"turmaLabel":"EM"},{"nome":"HEITOR MUNIZ","unidade":"CAMPO GRANDE","ra":"MT25178500","mat":4,"ing":20,"por":11,"cie":13,"est":7,"turmaLabel":"EM"},{"nome":"MIGUEL VARGAS","unidade":"MADUREIRA","ra":"MT24142275","mat":14,"ing":19,"por":9,"cie":11,"est":4,"turmaLabel":"EM"},{"nome":"SAMUEL FARIAS","unidade":"BANGU","ra":"MT25194010","mat":6,"ing":19,"por":13,"cie":16,"est":3,"turmaLabel":"EM"},{"nome":"PEDRO SOUZA","unidade":"BANGU","ra":"MT25193996","mat":8,"ing":17,"por":8,"cie":10,"est":10,"turmaLabel":"EM"},{"nome":"GABRIEL RIBEIRO","unidade":"MADUREIRA","ra":"MT22097182","mat":6,"ing":19,"por":10,"cie":12,"est":7,"turmaLabel":"EM"},{"nome":"RENAN CORREA","unidade":"CAMPO GRANDE","ra":"MT25187618","mat":10,"ing":18,"por":8,"cie":14,"est":5,"turmaLabel":"EM"},{"nome":"GUILHERME ROSA","unidade":"MADUREIRA","ra":"MT24149171","mat":8,"ing":20,"por":8,"cie":11,"est":7,"turmaLabel":"EM"},{"nome":"MATHEUS NUNES","unidade":"MADUREIRA","ra":"MT21071386","mat":11,"ing":17,"por":9,"cie":10,"est":7,"turmaLabel":"EM"},{"nome":"ARTHUR PEREIRA","unidade":"MADUREIRA","ra":"MT25157132","mat":5,"ing":18,"por":10,"cie":9,"est":10,"turmaLabel":"EM"},{"nome":"PEDRO ALBUQUERQUE","unidade":"MADUREIRA","ra":"MT24138794","mat":7,"ing":16,"por":12,"cie":10,"est":8,"turmaLabel":"EM"},{"nome":"LIVIA MARTINS","unidade":"CAMPO GRANDE","ra":"MT24149205","mat":5,"ing":18,"por":12,"cie":10,"est":8,"turmaLabel":"EM"},{"nome":"EDUARDO CHAVANTE","unidade":"MADUREIRA","ra":"MT22091961","mat":15,"ing":19,"por":8,"cie":11,"est":3,"turmaLabel":"EM"},{"nome":"ARTHUR FREITAS","unidade":"TAQUARA","ra":"MT23120991","mat":4,"ing":19,"por":9,"cie":12,"est":8,"turmaLabel":"EM"},{"nome":"ROBERTO COSTA","unidade":"BANGU","ra":"MT24148694","mat":8,"ing":17,"por":8,"cie":8,"est":10,"turmaLabel":"EM"},{"nome":"LARA MARTINS","unidade":"CAMPO GRANDE","ra":"MT23128218","mat":9,"ing":19,"por":8,"cie":11,"est":6,"turmaLabel":"EM"},{"nome":"EDUARDA SANTOS","unidade":"MADUREIRA","ra":"MT25171927","mat":10,"ing":18,"por":9,"cie":7,"est":8,"turmaLabel":"EM"},{"nome":"ARTHUR COSTA","unidade":"MADUREIRA","ra":"MT24154023","mat":8,"ing":16,"por":8,"cie":10,"est":9,"turmaLabel":"EM"},{"nome":"CAIO COSTA","unidade":"TAQUARA","ra":"MT24156036","mat":6,"ing":18,"por":5,"cie":11,"est":10,"turmaLabel":"EM"},{"nome":"CAUÃ SOBRINHO","unidade":"BANGU","ra":"MT25194036","mat":10,"ing":19,"por":13,"cie":11,"est":2,"turmaLabel":"EM"},{"nome":"MIGUEL LIMA","unidade":"TAQUARA","ra":"MT21063466","mat":5,"ing":17,"por":10,"cie":11,"est":8,"turmaLabel":"EM"},{"nome":"INÁCIO CUPERTINO","unidade":"CAMPO GRANDE","ra":"MT25178930","mat":8,"ing":19,"por":12,"cie":7,"est":6,"turmaLabel":"EM"},{"nome":"EMANUELLA SOARES","unidade":"TAQUARA","ra":"MT25192584","mat":14,"ing":18,"por":8,"cie":9,"est":4,"turmaLabel":"EM"},{"nome":"DAVY OLIVEIRA","unidade":"MADUREIRA","ra":"MT23125602","mat":11,"ing":19,"por":9,"cie":8,"est":5,"turmaLabel":"EM"},{"nome":"PABLO SILVA","unidade":"BANGU","ra":"MT25186024","mat":8,"ing":19,"por":10,"cie":11,"est":4,"turmaLabel":"EM"},{"nome":"BÁRBARA NASCIMENTO","unidade":"CAMPO GRANDE","ra":"MT25199969","mat":7,"ing":19,"por":8,"cie":12,"est":5,"turmaLabel":"EM"},{"nome":"CAIO INOCENCIO","unidade":"BANGU","ra":"MT23118763","mat":7,"ing":17,"por":5,"cie":12,"est":8,"turmaLabel":"EM"},{"nome":"RAPHAEL LIMA","unidade":"MADUREIRA","ra":"MT25178013","mat":8,"ing":16,"por":7,"cie":10,"est":8,"turmaLabel":"EM"},{"nome":"ALÍCIA PANTOJA","unidade":"MADUREIRA","ra":"MT22088678","mat":8,"ing":20,"por":7,"cie":9,"est":6,"turmaLabel":"EM"},{"nome":"PEDRO BARBOSA","unidade":"MADUREIRA","ra":"MT25180969","mat":4,"ing":17,"por":7,"cie":13,"est":7,"turmaLabel":"EM"},{"nome":"GABRIEL SILVA","unidade":"TAQUARA","ra":"MT21053699","mat":9,"ing":18,"por":6,"cie":8,"est":7,"turmaLabel":"EM"},{"nome":"DAVI ACÁCIO","unidade":"NOVA IGUAÇU","ra":"MT24147555","mat":10,"ing":16,"por":6,"cie":10,"est":6,"turmaLabel":"EM"},{"nome":"SOPHIA DIAS","unidade":"NOVA IGUAÇU","ra":"MT22093454","mat":4,"ing":18,"por":12,"cie":8,"est":6,"turmaLabel":"EM"},{"nome":"CAROLINA SOUZA","unidade":"CAMPO GRANDE","ra":"MT21064563","mat":5,"ing":20,"por":10,"cie":11,"est":3,"turmaLabel":"EM"},{"nome":"DANIEL MORAES","unidade":"BANGU","ra":"MT25170424","mat":6,"ing":20,"por":9,"cie":8,"est":5,"turmaLabel":"EM"},{"nome":"EMANUEL RANGEL","unidade":"CAMPO GRANDE","ra":"MT25200734","mat":11,"ing":16,"por":9,"cie":10,"est":3,"turmaLabel":"EM"},{"nome":"MATHEUS PAULA","unidade":"CAMPO GRANDE","ra":"MT25196650","mat":7,"ing":18,"por":6,"cie":10,"est":6,"turmaLabel":"EM"},{"nome":"PEDRO ALMEIDA","unidade":"MADUREIRA","ra":"MT23122930","mat":7,"ing":16,"por":9,"cie":9,"est":6,"turmaLabel":"EM"},{"nome":"ALICIA SOUZA","unidade":"CAMPO GRANDE","ra":"MT24149510","mat":9,"ing":19,"por":9,"cie":9,"est":3,"turmaLabel":"EM"},{"nome":"DERICK ASSIS","unidade":"DUQUE DE CAXIAS","ra":"MT25177171","mat":7,"ing":19,"por":7,"cie":11,"est":4,"turmaLabel":"EM"},{"nome":"ALEXANDRE LIMA","unidade":"NOVA IGUAÇU","ra":"MT24150088","mat":7,"ing":19,"por":7,"cie":8,"est":6,"turmaLabel":"EM"},{"nome":"BEATRIZ FRANÇA","unidade":"TAQUARA","ra":"MT21067459","mat":8,"ing":16,"por":5,"cie":10,"est":7,"turmaLabel":"EM"},{"nome":"MATHEUS ARARIBA","unidade":"TAQUARA","ra":"MT20032371","mat":7,"ing":19,"por":4,"cie":9,"est":7,"turmaLabel":"EM"},{"nome":"SOFIA ALMEIDA","unidade":"BANGU","ra":"MT25196643","mat":8,"ing":17,"por":8,"cie":9,"est":5,"turmaLabel":"EM"},{"nome":"ROBERTO NASCIMENTO","unidade":"CAMPO GRANDE","ra":"MT25183674","mat":4,"ing":19,"por":5,"cie":12,"est":6,"turmaLabel":"EM"},{"nome":"LUCAS SENA","unidade":"TAQUARA","ra":"MT24148421","mat":8,"ing":19,"por":8,"cie":10,"est":3,"turmaLabel":"EM"},{"nome":"LUCAS NICOLAS","unidade":"DUQUE DE CAXIAS","ra":"MT25173972","mat":6,"ing":17,"por":7,"cie":10,"est":6,"turmaLabel":"EM"},{"nome":"PEDRO SOUZA","unidade":"TIJUCA","ra":"MT25191263","mat":7,"ing":14,"por":10,"cie":12,"est":4,"turmaLabel":"EM"},{"nome":"PEDRO FARIA","unidade":"CAMPO GRANDE","ra":"MT25169871","mat":8,"ing":20,"por":8,"cie":9,"est":3,"turmaLabel":"EM"},{"nome":"LUCAS TAVARES","unidade":"MADUREIRA","ra":"MT24164741","mat":10,"ing":18,"por":8,"cie":9,"est":3,"turmaLabel":"EM"},{"nome":"MANUELA TAVARES","unidade":"TIJUCA","ra":"MT25193004","mat":5,"ing":17,"por":5,"cie":8,"est":9,"turmaLabel":"EM"},{"nome":"CAIO CARDOSO","unidade":"SÃO JOÃO DE MERITI","ra":"MT23119555","mat":5,"ing":18,"por":10,"cie":10,"est":4,"turmaLabel":"EM"},{"nome":"ANA SOUZA","unidade":"DUQUE DE CAXIAS","ra":"MT25199142","mat":5,"ing":20,"por":8,"cie":10,"est":4,"turmaLabel":"EM"},{"nome":"MATEUS OLIVEIRA","unidade":"NOVA IGUAÇU","ra":"MT24147936","mat":5,"ing":19,"por":12,"cie":7,"est":4,"turmaLabel":"EM"},{"nome":"LUÍS SANTOS","unidade":"CAMPO GRANDE","ra":"MT24160129","mat":5,"ing":16,"por":10,"cie":10,"est":5,"turmaLabel":"EM"},{"nome":"LUARA SANTANA","unidade":"SÃO JOÃO DE MERITI","ra":"MT24147316","mat":4,"ing":17,"por":10,"cie":10,"est":5,"turmaLabel":"EM"},{"nome":"MATHEUS PAULIQUEVIS","unidade":"NOVA IGUAÇU","ra":"MT22080527","mat":9,"ing":20,"por":5,"cie":10,"est":3,"turmaLabel":"EM"},{"nome":"VITOR DONDE","unidade":"BANGU","ra":"MT25173592","mat":11,"ing":20,"por":9,"cie":3,"est":4,"turmaLabel":"EM"},{"nome":"ANA DIAS","unidade":"MADUREIRA","ra":"MT23122310","mat":7,"ing":16,"por":8,"cie":8,"est":6,"turmaLabel":"EM"},{"nome":"LUIZ TOLEDO","unidade":"TAQUARA","ra":"MT24156325","mat":5,"ing":16,"por":5,"cie":11,"est":7,"turmaLabel":"EM"},{"nome":"GABRIELA MOURA","unidade":"MADUREIRA","ra":"MT23115066","mat":8,"ing":17,"por":8,"cie":6,"est":6,"turmaLabel":"EM"},{"nome":"ALICE GOMES","unidade":"BANGU","ra":"MT22100994","mat":3,"ing":19,"por":8,"cie":7,"est":7,"turmaLabel":"EM"},{"nome":"MANUELA SOUZA","unidade":"CAMPO GRANDE","ra":"MT24149593","mat":7,"ing":17,"por":6,"cie":10,"est":5,"turmaLabel":"EM"},{"nome":"PEDRO NASCIMENTO","unidade":"BANGU","ra":"MT25173626","mat":6,"ing":14,"por":11,"cie":9,"est":5,"turmaLabel":"EM"},{"nome":"PIETRO FERREIRA","unidade":"SÃO JOÃO DE MERITI","ra":"MT21042791","mat":9,"ing":13,"por":9,"cie":6,"est":7,"turmaLabel":"EM"},{"nome":"GUILHERME COSTA","unidade":"MADUREIRA","ra":"MT25181504","mat":8,"ing":18,"por":5,"cie":9,"est":5,"turmaLabel":"EM"},{"nome":"ROGERIO JUNIOR","unidade":"NOVA IGUAÇU","ra":"MT24154957","mat":4,"ing":19,"por":9,"cie":8,"est":5,"turmaLabel":"EM"},{"nome":"HERICK SILVA","unidade":"BANGU","ra":"MT23119373","mat":8,"ing":18,"por":3,"cie":9,"est":6,"turmaLabel":"EM"},{"nome":"MARIANA ARAUJO","unidade":"CAMPO GRANDE","ra":"MT25180787","mat":3,"ing":15,"por":9,"cie":9,"est":7,"turmaLabel":"EM"},{"nome":"SAMUEL FILHO","unidade":"TAQUARA","ra":"MT24156259","mat":6,"ing":20,"por":6,"cie":6,"est":6,"turmaLabel":"EM"},{"nome":"GUILHERME ROSA","unidade":"BANGU","ra":"MT22101786","mat":6,"ing":12,"por":15,"cie":8,"est":4,"turmaLabel":"EM"},{"nome":"MARIANA SOUZA","unidade":"CAMPO GRANDE","ra":"MT24149668","mat":6,"ing":16,"por":11,"cie":8,"est":4,"turmaLabel":"EM"},{"nome":"ANTONELA BATISTA","unidade":"DUQUE DE CAXIAS","ra":"MT25196304","mat":4,"ing":15,"por":9,"cie":8,"est":7,"turmaLabel":"EM"},{"nome":"MATEUS BARROS","unidade":"NOVA IGUAÇU","ra":"MT25182254","mat":9,"ing":17,"por":7,"cie":8,"est":4,"turmaLabel":"EM"},{"nome":"JONAS TEODORO","unidade":"BANGU","ra":"MT25184243","mat":7,"ing":19,"por":8,"cie":4,"est":6,"turmaLabel":"EM"},{"nome":"JOÃO ABREU","unidade":"CAMPO GRANDE","ra":"MT24148850","mat":4,"ing":19,"por":7,"cie":12,"est":3,"turmaLabel":"EM"},{"nome":"BERNARDO LAPROVITERA","unidade":"DUQUE DE CAXIAS","ra":"MT24154528","mat":11,"ing":12,"por":6,"cie":8,"est":6,"turmaLabel":"EM"},{"nome":"GUILHERME BARROS","unidade":"CAMPO GRANDE","ra":"MT24158016","mat":9,"ing":17,"por":9,"cie":10,"est":1,"turmaLabel":"EM"},{"nome":"LUCAS MORAIS","unidade":"MADUREIRA","ra":"MT26202929","mat":9,"ing":14,"por":8,"cie":6,"est":6,"turmaLabel":"EM"},{"nome":"MIGUEL PAIXÃO","unidade":"BANGU","ra":"MT25189077","mat":8,"ing":14,"por":10,"cie":11,"est":2,"turmaLabel":"EM"},{"nome":"GUSTAVO MAIA","unidade":"NOVA IGUAÇU","ra":"MT20034187","mat":5,"ing":20,"por":9,"cie":6,"est":4,"turmaLabel":"EM"},{"nome":"GEOVANA SILVA","unidade":"BANGU","ra":"MT25174319","mat":4,"ing":17,"por":8,"cie":9,"est":5,"turmaLabel":"EM"},{"nome":"MARCELLY SANTOS","unidade":"BANGU","ra":"MT25186156","mat":4,"ing":14,"por":1,"cie":15,"est":7,"turmaLabel":"EM"},{"nome":"YASMIN SILVA","unidade":"CAMPO GRANDE","ra":"MT25196676","mat":6,"ing":16,"por":8,"cie":11,"est":3,"turmaLabel":"EM"},{"nome":"MIGUEL ANDRADE","unidade":"TAQUARA","ra":"MT25196346","mat":8,"ing":16,"por":6,"cie":8,"est":5,"turmaLabel":"EM"},{"nome":"LORHANE LIMA","unidade":"CAMPO GRANDE","ra":"MT25196452","mat":8,"ing":17,"por":5,"cie":8,"est":5,"turmaLabel":"EM"},{"nome":"KARYNA LIMA","unidade":"NOVA IGUAÇU","ra":"MT24161929","mat":4,"ing":19,"por":8,"cie":7,"est":5,"turmaLabel":"EM"},{"nome":"LEONARDO PEREZ","unidade":"TAQUARA","ra":"MT20032389","mat":1,"ing":1,"por":15,"cie":15,"est":8,"turmaLabel":"EM"},{"nome":"NICHOLAS ASSIS","unidade":"DUQUE DE CAXIAS","ra":"MT25177205","mat":7,"ing":18,"por":8,"cie":8,"est":3,"turmaLabel":"EM"},{"nome":"KAIKY ROCHA","unidade":"CAMPO GRANDE","ra":"MT25181066","mat":4,"ing":12,"por":7,"cie":11,"est":7,"turmaLabel":"EM"},{"nome":"DAVI OLIVEIRA","unidade":"ROCHA MIRANDA","ra":"MT22059349","mat":6,"ing":15,"por":8,"cie":7,"est":6,"turmaLabel":"EM"},{"nome":"NALLANDA RAMOS","unidade":"DUQUE DE CAXIAS","ra":"MT22097711","mat":10,"ing":18,"por":6,"cie":7,"est":3,"turmaLabel":"EM"},{"nome":"JOÃO JESUS","unidade":"MADUREIRA","ra":"MT24153793","mat":7,"ing":16,"por":12,"cie":6,"est":3,"turmaLabel":"EM"},{"nome":"MIGUEL CRUZ","unidade":"MADUREIRA","ra":"MT25184144","mat":8,"ing":16,"por":6,"cie":9,"est":4,"turmaLabel":"EM"},{"nome":"MATHEUS MORAES","unidade":"CAMPO GRANDE","ra":"MT25189515","mat":7,"ing":15,"por":5,"cie":7,"est":7,"turmaLabel":"EM"},{"nome":"JOÃO JESUS","unidade":"BANGU","ra":"MT23117971","mat":9,"ing":16,"por":9,"cie":8,"est":2,"turmaLabel":"EM"},{"nome":"IGOR SOUSA","unidade":"BANGU","ra":"MT24156093","mat":8,"ing":14,"por":9,"cie":9,"est":3,"turmaLabel":"EM"},{"nome":"MIGUEL PASSOS","unidade":"CAMPO GRANDE","ra":"MT25178906","mat":5,"ing":18,"por":8,"cie":9,"est":3,"turmaLabel":"EM"},{"nome":"DAVI VIDAL","unidade":"BANGU","ra":"MT25177510","mat":7,"ing":13,"por":7,"cie":8,"est":6,"turmaLabel":"EM"},{"nome":"MAÍRA RODRIGUES","unidade":"MADUREIRA","ra":"MT23122740","mat":4,"ing":13,"por":6,"cie":13,"est":5,"turmaLabel":"EM"},{"nome":"MARIAH SILVA","unidade":"CAMPO GRANDE","ra":"MT25180456","mat":3,"ing":14,"por":7,"cie":9,"est":7,"turmaLabel":"EM"},{"nome":"DAVI SILVA","unidade":"MADUREIRA","ra":"MT25173113","mat":1,"ing":1,"por":15,"cie":15,"est":7,"turmaLabel":"EM"},{"nome":"SOFIA COUTINHO","unidade":"CAMPO GRANDE","ra":"MT25195611","mat":5,"ing":19,"por":8,"cie":9,"est":2,"turmaLabel":"EM"},{"nome":"ANNA PEREIRA","unidade":"ROCHA MIRANDA","ra":"MT22093264","mat":3,"ing":15,"por":10,"cie":5,"est":7,"turmaLabel":"EM"},{"nome":"LAVINIA DALLIER","unidade":"CAMPO GRANDE","ra":"MT25200593","mat":6,"ing":15,"por":7,"cie":8,"est":5,"turmaLabel":"EM"},{"nome":"RHENAN FERREIRA","unidade":"BANGU","ra":"MT25177817","mat":5,"ing":15,"por":6,"cie":11,"est":4,"turmaLabel":"EM"},{"nome":"JULIA FERNANDES","unidade":"TAQUARA","ra":"MT21054119","mat":3,"ing":19,"por":10,"cie":7,"est":3,"turmaLabel":"EM"},{"nome":"LORENZO AZZOLINI","unidade":"CAMPO GRANDE","ra":"MT25192162","mat":5,"ing":19,"por":8,"cie":7,"est":3,"turmaLabel":"EM"},{"nome":"ITALO FILHO","unidade":"CAMPO GRANDE","ra":"MT24149833","mat":4,"ing":12,"por":8,"cie":11,"est":5,"turmaLabel":"EM"},{"nome":"JOAO SANTOS","unidade":"CAMPO GRANDE","ra":"MT25190182","mat":6,"ing":12,"por":8,"cie":9,"est":5,"turmaLabel":"EM"},{"nome":"GABRIEL MARQUES","unidade":"CAMPO GRANDE","ra":"MT25201211","mat":6,"ing":17,"por":4,"cie":8,"est":5,"turmaLabel":"EM"},{"nome":"GUILHERME PEREIRA","unidade":"CAMPO GRANDE","ra":"MT21054481","mat":9,"ing":19,"por":4,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"ANNA AMORIM","unidade":"MADUREIRA","ra":"MT23133424","mat":5,"ing":16,"por":7,"cie":7,"est":5,"turmaLabel":"EM"},{"nome":"JOÃO SILVA","unidade":"NOVA IGUAÇU","ra":"MT24151466","mat":5,"ing":16,"por":7,"cie":7,"est":5,"turmaLabel":"EM"},{"nome":"JUAN BARBOSA","unidade":"TAQUARA","ra":"MT21046784","mat":6,"ing":19,"por":3,"cie":7,"est":5,"turmaLabel":"EM"},{"nome":"JOAO ALVES","unidade":"DUQUE DE CAXIAS","ra":"MT25166265","mat":6,"ing":15,"por":9,"cie":5,"est":5,"turmaLabel":"EM"},{"nome":"PIETRO ALVES","unidade":"CAMPO GRANDE","ra":"MT24160517","mat":9,"ing":14,"por":7,"cie":5,"est":5,"turmaLabel":"EM"},{"nome":"ALEX RODRIGUES","unidade":"BANGU","ra":"MT24163321","mat":3,"ing":7,"por":5,"cie":14,"est":8,"turmaLabel":"EM"},{"nome":"ANNA CRUZ","unidade":"ROCHA MIRANDA","ra":"MT22066880","mat":5,"ing":20,"por":5,"cie":8,"est":3,"turmaLabel":"EM"},{"nome":"MARIA TERRA","unidade":"SÃO JOÃO DE MERITI","ra":"MT21074901","mat":6,"ing":14,"por":6,"cie":10,"est":4,"turmaLabel":"EM"},{"nome":"KAUA PEREIRA","unidade":"BANGU","ra":"MT24153686","mat":6,"ing":19,"por":6,"cie":4,"est":5,"turmaLabel":"EM"},{"nome":"ANTHONY BARRAQUI","unidade":"NOVA IGUAÇU","ra":"MT25171034","mat":7,"ing":16,"por":9,"cie":6,"est":3,"turmaLabel":"EM"},{"nome":"LUIZ SANTOS","unidade":"NOVA IGUAÇU","ra":"MT24146714","mat":6,"ing":14,"por":7,"cie":9,"est":4,"turmaLabel":"EM"},{"nome":"ISADORA TEIXEIRA","unidade":"NOVA IGUAÇU","ra":"MT24161598","mat":7,"ing":20,"por":5,"cie":9,"est":1,"turmaLabel":"EM"},{"nome":"DAVI SOARES","unidade":"TAQUARA","ra":"MT21063441","mat":3,"ing":15,"por":11,"cie":7,"est":4,"turmaLabel":"EM"},{"nome":"GABRIELA FERNANDES","unidade":"SÃO JOÃO DE MERITI","ra":"MT25193483","mat":5,"ing":14,"por":10,"cie":7,"est":4,"turmaLabel":"EM"},{"nome":"GUILHERME CANELLAS","unidade":"CAMPO GRANDE","ra":"MT25182262","mat":4,"ing":19,"por":6,"cie":7,"est":4,"turmaLabel":"EM"},{"nome":"ANA SILVA","unidade":"ROCHA MIRANDA","ra":"MT25201641","mat":6,"ing":18,"por":5,"cie":4,"est":6,"turmaLabel":"EM"},{"nome":"BIANCA PEREIRA","unidade":"ROCHA MIRANDA","ra":"MT24150138","mat":6,"ing":17,"por":8,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"BIANCA PASSO","unidade":"CAMPO GRANDE","ra":"MT23126600","mat":7,"ing":17,"por":7,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"BRUNO DIAS","unidade":"CAMPO GRANDE","ra":"MT25171463","mat":6,"ing":16,"por":6,"cie":9,"est":3,"turmaLabel":"EM"},{"nome":"MIGUEL NOGUEIRA","unidade":"CAMPO GRANDE","ra":"MT24161713","mat":6,"ing":17,"por":6,"cie":8,"est":3,"turmaLabel":"EM"},{"nome":"LUCAS MELO","unidade":"CAMPO GRANDE","ra":"MT26201806","mat":12,"ing":13,"por":5,"cie":7,"est":3,"turmaLabel":"EM"},{"nome":"CAIO SANTOS","unidade":"DUQUE DE CAXIAS","ra":"MT25178088","mat":7,"ing":13,"por":7,"cie":8,"est":4,"turmaLabel":"EM"},{"nome":"JÚLIA JAVANHOLI","unidade":"BANGU","ra":"MT25182783","mat":6,"ing":16,"por":5,"cie":5,"est":6,"turmaLabel":"EM"},{"nome":"JÚLIA MOTTA","unidade":"TAQUARA","ra":"MT21068382","mat":7,"ing":18,"por":8,"cie":4,"est":3,"turmaLabel":"EM"},{"nome":"MANUELA GUIMARAES","unidade":"BANGU","ra":"MT23132327","mat":2,"ing":7,"por":4,"cie":16,"est":7,"turmaLabel":"EM"},{"nome":"NICOLY CABRAL","unidade":"CAMPO GRANDE","ra":"MT24148686","mat":5,"ing":18,"por":6,"cie":6,"est":4,"turmaLabel":"EM"},{"nome":"GABRIEL BRICIO","unidade":"ROCHA MIRANDA","ra":"MT24161150","mat":5,"ing":15,"por":10,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"MARIA LIMA","unidade":"BANGU","ra":"MT25189424","mat":3,"ing":16,"por":6,"cie":8,"est":5,"turmaLabel":"EM"},{"nome":"ELISA SANTOS","unidade":"NOVA IGUAÇU","ra":"MT24163339","mat":6,"ing":14,"por":7,"cie":9,"est":3,"turmaLabel":"EM"},{"nome":"EDUARDO FONSECA","unidade":"NOVA IGUAÇU","ra":"MT25185612","mat":6,"ing":16,"por":6,"cie":8,"est":3,"turmaLabel":"EM"},{"nome":"GABRIEL RAMOS","unidade":"CAMPO GRANDE","ra":"MT22103261","mat":5,"ing":17,"por":6,"cie":5,"est":5,"turmaLabel":"EM"},{"nome":"MIGUEL RUFINO","unidade":"CAMPO GRANDE","ra":"MT24157752","mat":7,"ing":12,"por":6,"cie":6,"est":6,"turmaLabel":"EM"},{"nome":"PEDRO ASSUMPÇÃO","unidade":"BANGU","ra":"MT21056486","mat":4,"ing":17,"por":4,"cie":9,"est":4,"turmaLabel":"EM"},{"nome":"ARTHUR MONTEIRO","unidade":"BANGU","ra":"MT21062476","mat":5,"ing":12,"por":9,"cie":8,"est":4,"turmaLabel":"EM"},{"nome":"YASMIN SANTOS","unidade":"BANGU","ra":"MT25187980","mat":1,"ing":1,"por":11,"cie":15,"est":7,"turmaLabel":"EM"},{"nome":"YASMIM DUARTE","unidade":"BANGU","ra":"MT25189226","mat":8,"ing":15,"por":5,"cie":9,"est":2,"turmaLabel":"EM"},{"nome":"JOÃO SANTOS","unidade":"CAMPO GRANDE","ra":"MT25179326","mat":7,"ing":12,"por":5,"cie":5,"est":7,"turmaLabel":"EM"},{"nome":"THIERRY GOMES","unidade":"MADUREIRA","ra":"MT25165416","mat":4,"ing":15,"por":6,"cie":7,"est":5,"turmaLabel":"EM"},{"nome":"RAFAEL MORTE","unidade":"DUQUE DE CAXIAS","ra":"MT24159998","mat":8,"ing":13,"por":6,"cie":8,"est":3,"turmaLabel":"EM"},{"nome":"EMANUEL SÁ","unidade":"NOVA IGUAÇU","ra":"MT21069059","mat":6,"ing":18,"por":3,"cie":5,"est":5,"turmaLabel":"EM"},{"nome":"JOAO ANDRADE","unidade":"SÃO JOÃO DE MERITI","ra":"MT25180043","mat":2,"ing":19,"por":7,"cie":4,"est":5,"turmaLabel":"EM"},{"nome":"MICHEL FILHO","unidade":"CAMPO GRANDE","ra":"MT25168337","mat":7,"ing":15,"por":6,"cie":7,"est":3,"turmaLabel":"EM"},{"nome":"ANTHONY NUNES","unidade":"CAMPO GRANDE","ra":"MT25191438","mat":1,"ing":1,"por":12,"cie":15,"est":6,"turmaLabel":"EM"},{"nome":"PEDRO ESTRELLA","unidade":"NOVA IGUAÇU","ra":"MT24159261","mat":4,"ing":19,"por":6,"cie":6,"est":3,"turmaLabel":"EM"},{"nome":"HELOISE MAC-CORMICK","unidade":"CAMPO GRANDE","ra":"MT25177189","mat":6,"ing":18,"por":5,"cie":6,"est":3,"turmaLabel":"EM"},{"nome":"RAFAEL MONGE","unidade":"TAQUARA","ra":"MT23130404","mat":5,"ing":17,"por":8,"cie":8,"est":1,"turmaLabel":"EM"},{"nome":"GUSTAVO BRAGA","unidade":"BANGU","ra":"MT22093017","mat":7,"ing":16,"por":3,"cie":7,"est":4,"turmaLabel":"EM"},{"nome":"ANA REIS","unidade":"BANGU","ra":"MT22101828","mat":6,"ing":17,"por":3,"cie":7,"est":4,"turmaLabel":"EM"},{"nome":"ISABELLA SANTOS","unidade":"MADUREIRA","ra":"MT25187436","mat":7,"ing":17,"por":8,"cie":6,"est":1,"turmaLabel":"EM"},{"nome":"MARIA RIBEIRO","unidade":"CAMPO GRANDE","ra":"MT25178898","mat":3,"ing":18,"por":6,"cie":9,"est":2,"turmaLabel":"EM"},{"nome":"PAOLA SOARES","unidade":"TAQUARA","ra":"MT24161796","mat":9,"ing":13,"por":5,"cie":9,"est":2,"turmaLabel":"EM"},{"nome":"PAULO CERQUEIRA","unidade":"CAMPO GRANDE","ra":"MT25193244","mat":7,"ing":18,"por":8,"cie":5,"est":1,"turmaLabel":"EM"},{"nome":"MANUELLA GAMA","unidade":"CAMPO GRANDE","ra":"MT25199092","mat":5,"ing":16,"por":8,"cie":7,"est":2,"turmaLabel":"EM"},{"nome":"JULIAN SOUSA","unidade":"BANGU","ra":"MT25180522","mat":5,"ing":19,"por":5,"cie":4,"est":4,"turmaLabel":"EM"},{"nome":"LETÍCIA SANTOS","unidade":"MADUREIRA","ra":"MT22101463","mat":8,"ing":17,"por":5,"cie":3,"est":4,"turmaLabel":"EM"},{"nome":"BENÍCIO MOTA","unidade":"CAMPO GRANDE","ra":"MT24149981","mat":5,"ing":17,"por":8,"cie":7,"est":1,"turmaLabel":"EM"},{"nome":"GIOVANNA SIMÕES","unidade":"MADUREIRA","ra":"MT23117831","mat":5,"ing":14,"por":6,"cie":7,"est":4,"turmaLabel":"EM"},{"nome":"MARVIN TURLE","unidade":"MADUREIRA","ra":"MT23120504","mat":6,"ing":12,"por":9,"cie":8,"est":2,"turmaLabel":"EM"},{"nome":"LARA MENEZES","unidade":"MADUREIRA","ra":"MT23109010","mat":5,"ing":12,"por":7,"cie":6,"est":5,"turmaLabel":"EM"},{"nome":"CLARA ABREU","unidade":"BANGU","ra":"MT25188913","mat":3,"ing":16,"por":5,"cie":6,"est":5,"turmaLabel":"EM"},{"nome":"PIETRO FERREIRA","unidade":"MADUREIRA","ra":"MT25173550","mat":19,"ing":20,"por":0,"cie":0,"est":0,"turmaLabel":"EM"},{"nome":"CG_MEDIOMIL_SIMULADO_CN_DIA1-21-03-26 0093","unidade":"-","ra":"MT23118888","mat":3,"ing":18,"por":9,"cie":8,"est":0,"turmaLabel":"EM"},{"nome":"JOÃO CHAVES","unidade":"BANGU","ra":"MT25197450","mat":3,"ing":16,"por":6,"cie":8,"est":3,"turmaLabel":"EM"},{"nome":"JULIA SANTOS","unidade":"CAMPO GRANDE","ra":"MT24151300","mat":9,"ing":10,"por":6,"cie":5,"est":5,"turmaLabel":"EM"},{"nome":"FABRICIO SANTOS","unidade":"CAMPO GRANDE","ra":"MT25196627","mat":9,"ing":11,"por":5,"cie":8,"est":3,"turmaLabel":"EM"},{"nome":"RYAN SOUSA","unidade":"SÃO JOÃO DE MERITI","ra":"MT24162984","mat":5,"ing":15,"por":5,"cie":5,"est":5,"turmaLabel":"EM"},{"nome":"MARIA LUSTOSA","unidade":"BANGU","ra":"MT21070560","mat":5,"ing":16,"por":4,"cie":5,"est":5,"turmaLabel":"EM"},{"nome":"MATEUS MORAES","unidade":"TAQUARA","ra":"MT25181496","mat":5,"ing":13,"por":8,"cie":7,"est":3,"turmaLabel":"EM"},{"nome":"JOÃO CUNTA","unidade":"BANGU","ra":"MT24148066","mat":3,"ing":15,"por":8,"cie":7,"est":3,"turmaLabel":"EM"},{"nome":"IZADORA BATISTA","unidade":"DUQUE DE CAXIAS","ra":"MT25196213","mat":5,"ing":19,"por":7,"cie":4,"est":2,"turmaLabel":"EM"},{"nome":"JOÃO FONSECA","unidade":"DUQUE DE CAXIAS","ra":"MT21074075","mat":7,"ing":19,"por":5,"cie":4,"est":2,"turmaLabel":"EM"},{"nome":"ARTHUR LIMA","unidade":"BANGU","ra":"MT25178005","mat":6,"ing":15,"por":5,"cie":4,"est":5,"turmaLabel":"EM"},{"nome":"RICHARD WAN-DALL","unidade":"CAMPO GRANDE","ra":"MT21066568","mat":6,"ing":15,"por":6,"cie":6,"est":3,"turmaLabel":"EM"},{"nome":"ADRIANE LUZ","unidade":"SÃO JOÃO DE MERITI","ra":"MT25187188","mat":4,"ing":8,"por":6,"cie":8,"est":7,"turmaLabel":"EM"},{"nome":"JONATHAN CAMARGO","unidade":"TAQUARA","ra":"MT21061528","mat":4,"ing":16,"por":4,"cie":7,"est":4,"turmaLabel":"EM"},{"nome":"JOÃO GONÇALVES","unidade":"BANGU","ra":"MT25187477","mat":8,"ing":8,"por":9,"cie":6,"est":4,"turmaLabel":"EM"},{"nome":"ALICE GOMES","unidade":"ROCHA MIRANDA","ra":"MT22093470","mat":4,"ing":15,"por":6,"cie":6,"est":4,"turmaLabel":"EM"},{"nome":"ARTHUR DANTAS","unidade":"ROCHA MIRANDA","ra":"MT24153280","mat":6,"ing":19,"por":5,"cie":3,"est":3,"turmaLabel":"EM"},{"nome":"BEATRIZ SILVA","unidade":"CAMPO GRANDE","ra":"MT24153199","mat":3,"ing":17,"por":6,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"MARIA OLIVEIRA","unidade":"CAMPO GRANDE","ra":"MT24155590","mat":5,"ing":13,"por":9,"cie":4,"est":4,"turmaLabel":"EM"},{"nome":"FILIPE DELFINO","unidade":"SÃO JOÃO DE MERITI","ra":"MT24158933","mat":5,"ing":11,"por":6,"cie":7,"est":5,"turmaLabel":"EM"},{"nome":"VINÍCIUS SANTOS","unidade":"NOVA IGUAÇU","ra":"MT24160335","mat":6,"ing":11,"por":6,"cie":9,"est":3,"turmaLabel":"EM"},{"nome":"LUCAS TAVARES","unidade":"CAMPO GRANDE","ra":"MT26202044","mat":3,"ing":13,"por":8,"cie":8,"est":3,"turmaLabel":"EM"},{"nome":"FRANCESCA VENTURA","unidade":"BANGU","ra":"MT24153736","mat":3,"ing":17,"por":4,"cie":5,"est":5,"turmaLabel":"EM"},{"nome":"GIULIANA SILVA","unidade":"BANGU","ra":"MT25174327","mat":4,"ing":15,"por":6,"cie":10,"est":1,"turmaLabel":"EM"},{"nome":"GUILHERME CORRÊA","unidade":"TIJUCA","ra":"MT25172545","mat":5,"ing":17,"por":3,"cie":7,"est":3,"turmaLabel":"EM"},{"nome":"JOSÉ NASCIMENTO","unidade":"CAMPO GRANDE","ra":"MT25185810","mat":6,"ing":13,"por":2,"cie":9,"est":4,"turmaLabel":"EM"},{"nome":"NÍCHOLAS BRITO","unidade":"MADUREIRA","ra":"MT25174590","mat":3,"ing":15,"por":6,"cie":6,"est":4,"turmaLabel":"EM"},{"nome":"BRENO OLIVEIRA","unidade":"BANGU","ra":"MT24153728","mat":5,"ing":15,"por":4,"cie":6,"est":4,"turmaLabel":"EM"},{"nome":"DANIEL SOUZA","unidade":"MADUREIRA","ra":"MT25194267","mat":6,"ing":14,"por":5,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"REBECCA SILVA","unidade":"DUQUE DE CAXIAS","ra":"MT24163313","mat":7,"ing":13,"por":5,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"LEONARDO RIBEIRO","unidade":"BANGU","ra":"MT25198474","mat":8,"ing":17,"por":1,"cie":4,"est":4,"turmaLabel":"EM"},{"nome":"GLADSON JUNIOR","unidade":"BANGU","ra":"MT23118425","mat":1,"ing":1,"por":10,"cie":12,"est":7,"turmaLabel":"EM"},{"nome":"LUCAS FERREIRA","unidade":"TAQUARA","ra":"MT24135394","mat":4,"ing":10,"por":8,"cie":9,"est":3,"turmaLabel":"EM"},{"nome":"MARIA NUNES","unidade":"BANGU","ra":"MT25183864","mat":6,"ing":12,"por":11,"cie":4,"est":2,"turmaLabel":"EM"},{"nome":"MIGUEL SILVA","unidade":"DUQUE DE CAXIAS","ra":"MT25166323","mat":7,"ing":12,"por":6,"cie":6,"est":3,"turmaLabel":"EM"},{"nome":"ISABELA BRAVIM","unidade":"TAQUARA","ra":"MT26203406","mat":3,"ing":13,"por":4,"cie":9,"est":4,"turmaLabel":"EM"},{"nome":"LAURA SILVA","unidade":"RETIRO DOS ARTISTAS","ra":"MT25161639","mat":4,"ing":18,"por":3,"cie":6,"est":3,"turmaLabel":"EM"},{"nome":"LARA MARUJO","unidade":"CAMPO GRANDE","ra":"MT25191461","mat":6,"ing":13,"por":7,"cie":5,"est":3,"turmaLabel":"EM"},{"nome":"SOPHIA PINHEIRO","unidade":"BANGU","ra":"MT23130719","mat":4,"ing":16,"por":6,"cie":5,"est":3,"turmaLabel":"EM"},{"nome":"EMERSON ALVES","unidade":"CAMPO GRANDE","ra":"MT24150070","mat":3,"ing":17,"por":6,"cie":5,"est":3,"turmaLabel":"EM"},{"nome":"ARTHUR LOPES","unidade":"TAQUARA","ra":"MT24156473","mat":6,"ing":16,"por":4,"cie":5,"est":3,"turmaLabel":"EM"},{"nome":"ELOAH LIMA","unidade":"ROCHA MIRANDA","ra":"MT22098651","mat":7,"ing":12,"por":8,"cie":4,"est":3,"turmaLabel":"EM"},{"nome":"EDUARDA SANTOS","unidade":"BANGU","ra":"MT24155517","mat":3,"ing":12,"por":8,"cie":9,"est":2,"turmaLabel":"EM"},{"nome":"GABRIEL COSTA","unidade":"RETIRO DOS ARTISTAS","ra":"MT25166349","mat":7,"ing":12,"por":4,"cie":9,"est":2,"turmaLabel":"EM"},{"nome":"KAIO PEREIRA","unidade":"NOVA IGUAÇU","ra":"MT25200874","mat":2,"ing":14,"por":8,"cie":8,"est":2,"turmaLabel":"EM"},{"nome":"YAN CASTRO","unidade":"MADUREIRA","ra":"MT25178583","mat":4,"ing":14,"por":6,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"MIGUEL LANGER","unidade":"BANGU","ra":"MT25173568","mat":6,"ing":14,"por":4,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"VICENTE DALTRO","unidade":"CAMPO GRANDE","ra":"MT25193269","mat":4,"ing":12,"por":9,"cie":4,"est":4,"turmaLabel":"EM"},{"nome":"ANA OLIVEIRA","unidade":"BANGU","ra":"MT24153702","mat":4,"ing":16,"por":6,"cie":6,"est":2,"turmaLabel":"EM"},{"nome":"JULIA MIGUEL","unidade":"CAMPO GRANDE","ra":"MT24152985","mat":10,"ing":19,"por":2,"cie":3,"est":1,"turmaLabel":"EM"},{"nome":"REBECA NASCIMENTO","unidade":"NOVA IGUAÇU","ra":"MT24158420","mat":5,"ing":15,"por":1,"cie":6,"est":5,"turmaLabel":"EM"},{"nome":"ROGER SANTOS","unidade":"BANGU","ra":"MT24154213","mat":16,"ing":20,"por":0,"cie":0,"est":0,"turmaLabel":"EM"},{"nome":"ANDREY SILVA","unidade":"MADUREIRA","ra":"MT25177064","mat":5,"ing":14,"por":4,"cie":4,"est":5,"turmaLabel":"EM"},{"nome":"GABRIEL ARAUJO","unidade":"TAQUARA","ra":"MT25169343","mat":8,"ing":13,"por":8,"cie":3,"est":2,"turmaLabel":"EM"},{"nome":"BRUNA SILVA","unidade":"MADUREIRA","ra":"MT23117898","mat":4,"ing":15,"por":5,"cie":6,"est":3,"turmaLabel":"EM"},{"nome":"ARTHUR SERRA","unidade":"RETIRO DOS ARTISTAS","ra":"MT25183559","mat":4,"ing":17,"por":3,"cie":9,"est":1,"turmaLabel":"EM"},{"nome":"HEITOR ARAÚJO","unidade":"DUQUE DE CAXIAS","ra":"MT23130875","mat":5,"ing":9,"por":6,"cie":8,"est":4,"turmaLabel":"EM"},{"nome":"CARLOS NAZARETH","unidade":"DUQUE DE CAXIAS","ra":"MT21053574","mat":5,"ing":11,"por":4,"cie":5,"est":6,"turmaLabel":"EM"},{"nome":"MARIA UCHÔA","unidade":"CAMPO GRANDE","ra":"MT24148645","mat":7,"ing":14,"por":5,"cie":4,"est":3,"turmaLabel":"EM"},{"nome":"GUILHERME NONATO","unidade":"DUQUE DE CAXIAS","ra":"MT24151532","mat":5,"ing":17,"por":5,"cie":3,"est":3,"turmaLabel":"EM"},{"nome":"STEFANI CARVALHO","unidade":"BANGU","ra":"MT24142481","mat":4,"ing":12,"por":7,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"EMANUELLE PEREIRA","unidade":"NOVA IGUAÇU","ra":"MT21056049","mat":3,"ing":14,"por":6,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"RAYSSA SANTOS","unidade":"CAMPO GRANDE","ra":"MT26202556","mat":3,"ing":14,"por":8,"cie":6,"est":2,"turmaLabel":"EM"},{"nome":"GABRIELA ALCANTARA","unidade":"CAMPO GRANDE","ra":"MT21062047","mat":3,"ing":12,"por":6,"cie":8,"est":3,"turmaLabel":"EM"},{"nome":"ISABELA CORTES","unidade":"DUQUE DE CAXIAS","ra":"MT25188640","mat":9,"ing":8,"por":4,"cie":8,"est":3,"turmaLabel":"EM"},{"nome":"PEDRO PEREIRA","unidade":"CAMPO GRANDE","ra":"MT25183476","mat":4,"ing":11,"por":7,"cie":4,"est":5,"turmaLabel":"EM"},{"nome":"RAFAEL BARBOSA","unidade":"CAMPO GRANDE","ra":"MT25170143","mat":4,"ing":14,"por":4,"cie":4,"est":5,"turmaLabel":"EM"},{"nome":"SARAH SANTOS","unidade":"TAQUARA","ra":"MT24139420","mat":6,"ing":6,"por":6,"cie":9,"est":4,"turmaLabel":"EM"},{"nome":"JOSE CORREA","unidade":"BANGU","ra":"MT25197781","mat":7,"ing":13,"por":3,"cie":3,"est":5,"turmaLabel":"EM"},{"nome":"MARIA LORETO","unidade":"BANGU","ra":"MT25195421","mat":4,"ing":15,"por":3,"cie":5,"est":4,"turmaLabel":"EM"},{"nome":"ENZO PINHEIRO","unidade":"ROCHA MIRANDA","ra":"MT22057855","mat":15,"ing":19,"por":0,"cie":0,"est":0,"turmaLabel":"EM"},{"nome":"CG_MEDIOMIL_SIMULADO_CN_DIA1-21-03-26,, 0003","unidade":"-","ra":"MT2519143","mat":14,"ing":20,"por":0,"cie":0,"est":0,"turmaLabel":"EM"},{"nome":"DANILO HOLZ","unidade":"BANGU","ra":"MT22090948","mat":7,"ing":14,"por":4,"cie":5,"est":2,"turmaLabel":"EM"},{"nome":"THAWANY COSTA","unidade":"BANGU","ra":"MT25178070","mat":3,"ing":14,"por":3,"cie":5,"est":5,"turmaLabel":"EM"},{"nome":"IGOR BLANC","unidade":"CAMPO GRANDE","ra":"MT24154130","mat":7,"ing":12,"por":4,"cie":8,"est":1,"turmaLabel":"EM"},{"nome":"MIGUEL SOUZA","unidade":"BANGU","ra":"MT21070875","mat":4,"ing":16,"por":3,"cie":5,"est":3,"turmaLabel":"EM"},{"nome":"GABRIEL ULRICHSEN","unidade":"MADUREIRA","ra":"MT25199506","mat":7,"ing":11,"por":6,"cie":4,"est":3,"turmaLabel":"EM"},{"nome":"CHRISTIAN VIRÃES","unidade":"DUQUE DE CAXIAS","ra":"MT24148769","mat":6,"ing":15,"por":3,"cie":4,"est":3,"turmaLabel":"EM"},{"nome":"KAIQUE MONTENEGRO","unidade":"BANGU","ra":"MT24162679","mat":9,"ing":11,"por":5,"cie":3,"est":3,"turmaLabel":"EM"},{"nome":"RUAN PONTES","unidade":"TAQUARA","ra":"MT25170689","mat":4,"ing":14,"por":2,"cie":9,"est":2,"turmaLabel":"EM"},{"nome":"EDUARDO BALLIANA","unidade":"BANGU","ra":"MT25180902","mat":2,"ing":16,"por":2,"cie":6,"est":4,"turmaLabel":"EM"},{"nome":"PEDRO MACHADO","unidade":"MADUREIRA","ra":"MT25195264","mat":4,"ing":10,"por":7,"cie":2,"est":6,"turmaLabel":"EM"},{"nome":"EDUARDO CHEN","unidade":"MADUREIRA","ra":"MT25177320","mat":4,"ing":14,"por":4,"cie":4,"est":4,"turmaLabel":"EM"},{"nome":"JOÃO LOMBA","unidade":"MADUREIRA","ra":"MT25185364","mat":3,"ing":11,"por":9,"cie":3,"est":4,"turmaLabel":"EM"},{"nome":"ANA MUNHÃO","unidade":"ROCHA MIRANDA","ra":"MT22099048","mat":5,"ing":13,"por":5,"cie":6,"est":2,"turmaLabel":"EM"},{"nome":"JOÃO SANTOS","unidade":"ROCHA MIRANDA","ra":"MT25199431","mat":2,"ing":14,"por":8,"cie":2,"est":4,"turmaLabel":"EM"},{"nome":"KLARA COUTO","unidade":"BANGU","ra":"MT25179086","mat":7,"ing":7,"por":5,"cie":8,"est":3,"turmaLabel":"EM"},{"nome":"ISAQUE CARPANEZ","unidade":"CAMPO GRANDE","ra":"MT24142085","mat":7,"ing":13,"por":4,"cie":2,"est":4,"turmaLabel":"EM"},{"nome":"REBEKA OLIVEIRA","unidade":"MADUREIRA","ra":"MT25177338","mat":5,"ing":16,"por":4,"cie":4,"est":2,"turmaLabel":"EM"},{"nome":"BIANCA RIBEIRO","unidade":"BANGU","ra":"MT25194028","mat":1,"ing":1,"por":9,"cie":15,"est":3,"turmaLabel":"EM"},{"nome":"LUÍS RIBEIRO","unidade":"DUQUE DE CAXIAS","ra":"MT25200221","mat":9,"ing":6,"por":1,"cie":6,"est":6,"turmaLabel":"EM"},{"nome":"LUCAS RODRIGUES","unidade":"NOVA IGUAÇU","ra":"MT24149874","mat":7,"ing":13,"por":7,"cie":5,"est":0,"turmaLabel":"EM"}];
+var DATA_9MIL_S2GERAL = [{"nome":"VITOR SANTOS","unidade":"RETIRO DOS ARTISTAS","ra":"MT25178716","mat":8,"ing":19,"por":12,"cie":12,"est":6,"turmaLabel":"9MIL"},{"nome":"JOAO MENEZES","unidade":"RETIRO DOS ARTISTAS","ra":"MT25156944","mat":7,"ing":20,"por":11,"cie":11,"est":7,"turmaLabel":"9MIL"},{"nome":"ARTHUR PINTO","unidade":"BANGU","ra":"MT24165334","mat":7,"ing":19,"por":5,"cie":13,"est":5,"turmaLabel":"9MIL"},{"nome":"GABRIEL FRAZÃO","unidade":"BANGU","ra":"MT23122120","mat":5,"ing":16,"por":5,"cie":11,"est":7,"turmaLabel":"9MIL"},{"nome":"ENRIQUE CUNHA","unidade":"RETIRO DOS ARTISTAS","ra":"MT25152380","mat":6,"ing":17,"por":10,"cie":12,"est":2,"turmaLabel":"9MIL"},{"nome":"LAURA PEREIRA","unidade":"RETIRO DOS ARTISTAS","ra":"MT25156134","mat":7,"ing":19,"por":7,"cie":9,"est":4,"turmaLabel":"9MIL"},{"nome":"PIETRO NERI","unidade":"CAMPO GRANDE","ra":"MT24157315","mat":4,"ing":19,"por":9,"cie":5,"est":7,"turmaLabel":"9MIL"},{"nome":"ÍCARO QUEIROZ","unidade":"CAMPO GRANDE","ra":"MT23106255","mat":5,"ing":18,"por":7,"cie":9,"est":5,"turmaLabel":"9MIL"},{"nome":"JULIA SOUZA","unidade":"TAQUARA","ra":"MT22085856","mat":5,"ing":19,"por":8,"cie":9,"est":3,"turmaLabel":"9MIL"},{"nome":"ALEXANDRE SILVA","unidade":"CAMPO GRANDE","ra":"MT22100119","mat":7,"ing":18,"por":5,"cie":9,"est":4,"turmaLabel":"9MIL"},{"nome":"ARTUR SANTOS","unidade":"DUQUE DE CAXIAS","ra":"MT25188301","mat":5,"ing":12,"por":9,"cie":12,"est":4,"turmaLabel":"9MIL"},{"nome":"GUSTAVO CHAVES","unidade":"ROCHA MIRANDA","ra":"MT22058242","mat":6,"ing":18,"por":8,"cie":8,"est":3,"turmaLabel":"9MIL"},{"nome":"YASMIN RODRIGUES","unidade":"TAQUARA","ra":"MT21070990","mat":8,"ing":15,"por":5,"cie":13,"est":2,"turmaLabel":"9MIL"},{"nome":"WENDELL JUNIOR","unidade":"CAMPO GRANDE","ra":"MT23124530","mat":7,"ing":18,"por":4,"cie":6,"est":6,"turmaLabel":"9MIL"},{"nome":"SAMUEL PASSOS","unidade":"BANGU","ra":"MT23118086","mat":9,"ing":18,"por":6,"cie":8,"est":2,"turmaLabel":"9MIL"},{"nome":"FELIPE COELHO","unidade":"BANGU","ra":"MT22096317","mat":3,"ing":15,"por":6,"cie":13,"est":4,"turmaLabel":"9MIL"},{"nome":"GUILHERME CANUTO","unidade":"TIJUCA","ra":"MT25189630","mat":8,"ing":14,"por":8,"cie":9,"est":3,"turmaLabel":"9MIL"},{"nome":"HEITOR SILVA","unidade":"CAMPO GRANDE","ra":"MT22096010","mat":9,"ing":19,"por":3,"cie":6,"est":4,"turmaLabel":"9MIL"},{"nome":"FERNANDA OLIVEIRA","unidade":"NOVA IGUAÇU","ra":"MT25177924","mat":7,"ing":20,"por":5,"cie":5,"est":4,"turmaLabel":"9MIL"},{"nome":"SOFIA MAGNANI","unidade":"TAQUARA","ra":"MT22097901","mat":6,"ing":19,"por":7,"cie":9,"est":1,"turmaLabel":"9MIL"},{"nome":"JOÃO MARQUES","unidade":"TAQUARA","ra":"MT25166778","mat":4,"ing":14,"por":5,"cie":11,"est":5,"turmaLabel":"9MIL"},{"nome":"CLARISSE COSTA","unidade":"CAMPO GRANDE","ra":"MT24156697","mat":6,"ing":18,"por":3,"cie":10,"est":3,"turmaLabel":"9MIL"},{"nome":"DAVI CHAVES","unidade":"ROCHA MIRANDA","ra":"MT23126949","mat":7,"ing":13,"por":1,"cie":8,"est":7,"turmaLabel":"9MIL"},{"nome":"KRYKON FICKELSCHERER","unidade":"TAQUARA","ra":"MT25193079","mat":3,"ing":13,"por":10,"cie":6,"est":5,"turmaLabel":"9MIL"},{"nome":"MARIANNA OLIVEIRA","unidade":"ROCHA MIRANDA","ra":"MT22095319","mat":3,"ing":10,"por":8,"cie":10,"est":5,"turmaLabel":"9MIL"},{"nome":"DAVI NEVES","unidade":"ROCHA MIRANDA","ra":"MT25173808","mat":8,"ing":17,"por":7,"cie":6,"est":1,"turmaLabel":"9MIL"},{"nome":"ARTHUR NETTO","unidade":"DUQUE DE CAXIAS","ra":"MT24158669","mat":4,"ing":10,"por":5,"cie":13,"est":4,"turmaLabel":"9MIL"},{"nome":"THIAGO RODEGHERI","unidade":"CAMPO GRANDE","ra":"MT22091052","mat":6,"ing":13,"por":10,"cie":8,"est":1,"turmaLabel":"9MIL"},{"nome":"MARINA SILVA","unidade":"CAMPO GRANDE","ra":"MT23119480","mat":6,"ing":19,"por":6,"cie":3,"est":3,"turmaLabel":"9MIL"},{"nome":"ANA PACHECO","unidade":"BANGU","ra":"MT26203489","mat":6,"ing":11,"por":5,"cie":5,"est":7,"turmaLabel":"9MIL"},{"nome":"OTÁVIO SILVA","unidade":"TIJUCA","ra":"MT25200296","mat":7,"ing":16,"por":5,"cie":4,"est":4,"turmaLabel":"9MIL"},{"nome":"LUCAS CALDAS","unidade":"CAMPO GRANDE","ra":"MT22100036","mat":3,"ing":17,"por":7,"cie":3,"est":5,"turmaLabel":"9MIL"},{"nome":"NICOLAS NASCIMENTO","unidade":"SÃO JOÃO DE MERITI","ra":"MT23123730","mat":4,"ing":16,"por":6,"cie":5,"est":4,"turmaLabel":"9MIL"},{"nome":"DAVI CARVALHO","unidade":"BANGU","ra":"MT25177916","mat":7,"ing":10,"por":6,"cie":9,"est":3,"turmaLabel":"9MIL"},{"nome":"HEITOR VILLAS","unidade":"CAMPO GRANDE","ra":"MT25182932","mat":6,"ing":18,"por":7,"cie":6,"est":0,"turmaLabel":"9MIL"},{"nome":"ENZO SAWABINI","unidade":"TAQUARA","ra":"MT24154478","mat":8,"ing":13,"por":5,"cie":6,"est":3,"turmaLabel":"9MIL"},{"nome":"DAVI PUPPIM","unidade":"CAMPO GRANDE","ra":"MT25180423","mat":4,"ing":15,"por":5,"cie":6,"est":4,"turmaLabel":"9MIL"},{"nome":"PEDRO MOREIRA","unidade":"NOVA IGUAÇU","ra":"MT24142705","mat":7,"ing":12,"por":6,"cie":5,"est":4,"turmaLabel":"9MIL"},{"nome":"LUCAS SILVA","unidade":"BANGU","ra":"MT24155558","mat":7,"ing":13,"por":5,"cie":8,"est":2,"turmaLabel":"9MIL"},{"nome":"PEDRO DANTAS","unidade":"BANGU","ra":"MT25178310","mat":5,"ing":15,"por":6,"cie":5,"est":3,"turmaLabel":"9MIL"},{"nome":"LUAN SÁ","unidade":"TAQUARA","ra":"MT23107352","mat":8,"ing":14,"por":6,"cie":6,"est":1,"turmaLabel":"9MIL"},{"nome":"ISAAC ARAUJO","unidade":"BANGU","ra":"MT24153116","mat":5,"ing":14,"por":6,"cie":7,"est":2,"turmaLabel":"9MIL"},{"nome":"LUIZ LEMOS","unidade":"RETIRO DOS ARTISTAS","ra":"MT25172495","mat":6,"ing":11,"por":5,"cie":8,"est":3,"turmaLabel":"9MIL"},{"nome":"ARTHUR MARINS","unidade":"RETIRO DOS ARTISTAS","ra":"MT25178815","mat":5,"ing":15,"por":6,"cie":4,"est":3,"turmaLabel":"9MIL"},{"nome":"GUILHERME HOLLANDA","unidade":"RETIRO DOS ARTISTAS","ra":"MT25151333","mat":6,"ing":11,"por":3,"cie":3,"est":7,"turmaLabel":"9MIL"},{"nome":"THIAGO SANTANA","unidade":"BANGU","ra":"MT25181256","mat":5,"ing":17,"por":5,"cie":4,"est":2,"turmaLabel":"9MIL"},{"nome":"BERNARDO COSTA","unidade":"TIJUCA","ra":"MT25155227","mat":7,"ing":11,"por":4,"cie":7,"est":3,"turmaLabel":"9MIL"},{"nome":"LUNA FERREIRA","unidade":"BANGU","ra":"MT22102156","mat":8,"ing":12,"por":3,"cie":7,"est":2,"turmaLabel":"9MIL"},{"nome":"MARIA DIAS","unidade":"DUQUE DE CAXIAS","ra":"MT25181181","mat":7,"ing":12,"por":6,"cie":5,"est":2,"turmaLabel":"9MIL"},{"nome":"PEDRO COSTA","unidade":"BANGU","ra":"MT23118367","mat":5,"ing":9,"por":7,"cie":4,"est":5,"turmaLabel":"9MIL"},{"nome":"HENRIQUE FERNANDES","unidade":"BANGU","ra":"MT25174806","mat":9,"ing":12,"por":6,"cie":6,"est":0,"turmaLabel":"9MIL"},{"nome":"GUILHERME BENJOINO","unidade":"CAMPO GRANDE","ra":"MT23123359","mat":7,"ing":11,"por":4,"cie":9,"est":1,"turmaLabel":"9MIL"},{"nome":"ESTER COUTO","unidade":"BANGU","ra":"MT25183781","mat":5,"ing":14,"por":6,"cie":3,"est":3,"turmaLabel":"9MIL"},{"nome":"MIGUEL GONÇALVES","unidade":"ROCHA MIRANDA","ra":"MT22076202","mat":3,"ing":13,"por":5,"cie":5,"est":4,"turmaLabel":"9MIL"},{"nome":"RAFAELLA FERREIRA","unidade":"BANGU","ra":"MT23109242","mat":4,"ing":9,"por":5,"cie":3,"est":7,"turmaLabel":"9MIL"},{"nome":"BRENO RODRIGUES","unidade":"TAQUARA","ra":"MT25177882","mat":4,"ing":14,"por":5,"cie":6,"est":2,"turmaLabel":"9MIL"},{"nome":"LUIZA SANTOS","unidade":"DUQUE DE CAXIAS","ra":"MT24160210","mat":15,"ing":18,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"RAFAELA OLIMPIO","unidade":"BANGU","ra":"MT22097612","mat":7,"ing":13,"por":5,"cie":4,"est":2,"turmaLabel":"9MIL"},{"nome":"GABRIEL FERNANDES","unidade":"CAMPO GRANDE","ra":"MT22102024","mat":7,"ing":10,"por":4,"cie":6,"est":3,"turmaLabel":"9MIL"},{"nome":"JOAO ALMEIDA","unidade":"BANGU","ra":"MT25179102","mat":5,"ing":10,"por":7,"cie":5,"est":3,"turmaLabel":"9MIL"},{"nome":"GIOVANNY MELLO","unidade":"CAMPO GRANDE","ra":"MT25183542","mat":5,"ing":13,"por":5,"cie":4,"est":3,"turmaLabel":"9MIL"},{"nome":"JUAN COUTO","unidade":"DUQUE DE CAXIAS","ra":"MT23126006","mat":6,"ing":12,"por":2,"cie":5,"est":4,"turmaLabel":"9MIL"},{"nome":"PEDRO ALMEIDA","unidade":"ROCHA MIRANDA","ra":"MT22059869","mat":6,"ing":11,"por":5,"cie":0,"est":6,"turmaLabel":"9MIL"},{"nome":"STEFANY SANTANA","unidade":"DUQUE DE CAXIAS","ra":"MT24161747","mat":15,"ing":17,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"JOAO LEMOS","unidade":"TAQUARA","ra":"MT25182650","mat":4,"ing":9,"por":6,"cie":7,"est":3,"turmaLabel":"9MIL"},{"nome":"LARA TAMANQUEIRA","unidade":"TAQUARA","ra":"MT25183138","mat":5,"ing":14,"por":5,"cie":4,"est":2,"turmaLabel":"9MIL"},{"nome":"MARIA SOARES","unidade":"CAMPO GRANDE","ra":"MT25179417","mat":1,"ing":13,"por":5,"cie":7,"est":3,"turmaLabel":"9MIL"},{"nome":"ISAAC SILVA","unidade":"DUQUE DE CAXIAS","ra":"MT24154429","mat":4,"ing":11,"por":5,"cie":6,"est":3,"turmaLabel":"9MIL"},{"nome":"9MIL_MD_SIM_21_03_2026 0014","unidade":"-","ra":"MT26204925","mat":4,"ing":8,"por":5,"cie":4,"est":6,"turmaLabel":"9MIL"},{"nome":"CECÍLIA OLIVEIRA","unidade":"CAMPO GRANDE","ra":"MT25177122","mat":5,"ing":13,"por":5,"cie":6,"est":1,"turmaLabel":"9MIL"},{"nome":"SOPHIA ALVES","unidade":"TIJUCA","ra":"MT26204735","mat":3,"ing":9,"por":7,"cie":6,"est":3,"turmaLabel":"9MIL"},{"nome":"JOÃO MACHADO","unidade":"BANGU","ra":"MT25180928","mat":7,"ing":13,"por":3,"cie":2,"est":3,"turmaLabel":"9MIL"},{"nome":"MARIANA LIRA","unidade":"MADUREIRA","ra":"MT23108749","mat":4,"ing":13,"por":7,"cie":4,"est":1,"turmaLabel":"9MIL"},{"nome":"ANA NASCIMENTO","unidade":"BANGU","ra":"MT25186248","mat":3,"ing":15,"por":6,"cie":4,"est":1,"turmaLabel":"9MIL"},{"nome":"ANA SILVA","unidade":"TAQUARA","ra":"MT23129695","mat":8,"ing":9,"por":5,"cie":7,"est":0,"turmaLabel":"9MIL"},{"nome":"ARTHUR SOUZA","unidade":"DUQUE DE CAXIAS","ra":"MT24155061","mat":4,"ing":12,"por":7,"cie":3,"est":2,"turmaLabel":"9MIL"},{"nome":"LUCAS LIMA","unidade":"SÃO JOÃO DE MERITI","ra":"MT25187055","mat":2,"ing":14,"por":5,"cie":6,"est":1,"turmaLabel":"9MIL"},{"nome":"PEDRO TALINA","unidade":"MADUREIRA","ra":"MT24148397","mat":4,"ing":9,"por":4,"cie":8,"est":2,"turmaLabel":"9MIL"},{"nome":"MIGUEL XISTO","unidade":"TAQUARA","ra":"MT22090377","mat":7,"ing":7,"por":4,"cie":7,"est":2,"turmaLabel":"9MIL"},{"nome":"DAVI PIMENTA","unidade":"RETIRO DOS ARTISTAS","ra":"MT25194994","mat":2,"ing":13,"por":9,"cie":3,"est":1,"turmaLabel":"9MIL"},{"nome":"JOÃO SILVA","unidade":"MADUREIRA","ra":"MT23111073","mat":10,"ing":19,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"ISABELLA JUVENAL","unidade":"CAMPO GRANDE","ra":"MT25188848","mat":5,"ing":8,"por":7,"cie":5,"est":2,"turmaLabel":"9MIL"},{"nome":"BENTO BOTELHO","unidade":"RETIRO DOS ARTISTAS","ra":"MT25183591","mat":5,"ing":8,"por":3,"cie":4,"est":5,"turmaLabel":"9MIL"},{"nome":"GABRIEL SANTOS","unidade":"BANGU","ra":"MT25194077","mat":3,"ing":13,"por":1,"cie":6,"est":3,"turmaLabel":"9MIL"},{"nome":"CX-9MILITAR-21-03-2026.0009","unidade":"-","ra":"MT26205109","mat":3,"ing":10,"por":5,"cie":8,"est":1,"turmaLabel":"9MIL"},{"nome":"AIMÉE PARAIZO","unidade":"TAQUARA","ra":"MT22085971","mat":4,"ing":9,"por":2,"cie":9,"est":2,"turmaLabel":"9MIL"},{"nome":"EVELLYN ROCHA","unidade":"CAMPO GRANDE","ra":"MT25190174","mat":2,"ing":12,"por":4,"cie":3,"est":4,"turmaLabel":"9MIL"},{"nome":"LUÍS ALMEIDA","unidade":"CAMPO GRANDE","ra":"MT24149999","mat":4,"ing":7,"por":2,"cie":6,"est":5,"turmaLabel":"9MIL"},{"nome":"ARTHUR LIMA","unidade":"ROCHA MIRANDA","ra":"MT25184987","mat":7,"ing":8,"por":4,"cie":5,"est":2,"turmaLabel":"9MIL"},{"nome":"LUIS FORRESTER","unidade":"TIJUCA","ra":"MT25183369","mat":6,"ing":6,"por":4,"cie":3,"est":5,"turmaLabel":"9MIL"},{"nome":"KAIQUE GIUDICE","unidade":"TAQUARA","ra":"MT25171646","mat":6,"ing":8,"por":3,"cie":5,"est":3,"turmaLabel":"9MIL"},{"nome":"MATHEUS CARVALHO","unidade":"BANGU","ra":"MT25199191","mat":6,"ing":9,"por":2,"cie":2,"est":5,"turmaLabel":"9MIL"},{"nome":"FERNANDO ARAUJO","unidade":"CAMPO GRANDE","ra":"MT22093975","mat":6,"ing":5,"por":3,"cie":6,"est":4,"turmaLabel":"9MIL"},{"nome":"DANIEL SANTOS","unidade":"CAMPO GRANDE","ra":"MT25165457","mat":7,"ing":3,"por":5,"cie":5,"est":4,"turmaLabel":"9MIL"},{"nome":"NILTON PEREIRA","unidade":"MADUREIRA","ra":"MT24145419","mat":2,"ing":8,"por":5,"cie":5,"est":4,"turmaLabel":"9MIL"},{"nome":"ANA THOSI","unidade":"SÃO JOÃO DE MERITI","ra":"MT21047170","mat":2,"ing":13,"por":3,"cie":5,"est":2,"turmaLabel":"9MIL"},{"nome":"GEOVANNA OLIVEIRA","unidade":"DUQUE DE CAXIAS","ra":"MT25170598","mat":9,"ing":11,"por":4,"cie":1,"est":1,"turmaLabel":"9MIL"},{"nome":"ISABELA MACHADO","unidade":"ROCHA MIRANDA","ra":"MT22093504","mat":3,"ing":11,"por":3,"cie":2,"est":4,"turmaLabel":"9MIL"},{"nome":"NICOLLAS OLIVEIRA","unidade":"ROCHA MIRANDA","ra":"MT25188285","mat":4,"ing":10,"por":2,"cie":4,"est":3,"turmaLabel":"9MIL"},{"nome":"GIOVANNA SILVEIRA","unidade":"BANGU","ra":"MT25186917","mat":2,"ing":12,"por":2,"cie":7,"est":1,"turmaLabel":"9MIL"},{"nome":"ALICE COSTA","unidade":"BANGU","ra":"MT24162729","mat":4,"ing":11,"por":3,"cie":5,"est":1,"turmaLabel":"9MIL"},{"nome":"BERNARDO MANES","unidade":"NOVA IGUAÇU","ra":"MT25179078","mat":8,"ing":8,"por":2,"cie":2,"est":3,"turmaLabel":"9MIL"},{"nome":"CALEBE DRUMOND","unidade":"BANGU","ra":"MT23119407","mat":3,"ing":6,"por":5,"cie":7,"est":2,"turmaLabel":"9MIL"},{"nome":"SOPHIA SANTOS","unidade":"BANGU","ra":"MT25191701","mat":3,"ing":11,"por":1,"cie":6,"est":2,"turmaLabel":"9MIL"},{"nome":"MARIA COSTA","unidade":"NOVA IGUAÇU","ra":"MT25193442","mat":8,"ing":17,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"ARTHUR SILVA","unidade":"SÃO JOÃO DE MERITI","ra":"MT21064761","mat":8,"ing":17,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"NATHAN SANT'ANNA","unidade":"TAQUARA","ra":"MT24154395","mat":1,"ing":8,"por":4,"cie":6,"est":3,"turmaLabel":"9MIL"},{"nome":"PAULO NASCIMENTO","unidade":"BANGU","ra":"MT25177106","mat":8,"ing":4,"por":3,"cie":4,"est":3,"turmaLabel":"9MIL"},{"nome":"JORGE CRUZ","unidade":"CAMPO GRANDE","ra":"MT22095491","mat":9,"ing":7,"por":5,"cie":3,"est":0,"turmaLabel":"9MIL"},{"nome":"DAVI MAIA","unidade":"RETIRO DOS ARTISTAS","ra":"MT25187196","mat":6,"ing":4,"por":7,"cie":5,"est":1,"turmaLabel":"9MIL"},{"nome":"ANA OLIVEIRA","unidade":"BANGU","ra":"MT22103568","mat":10,"ing":14,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"BRYAN PAULA","unidade":"BANGU","ra":"MT25181835","mat":4,"ing":8,"por":3,"cie":5,"est":2,"turmaLabel":"9MIL"},{"nome":"LUCAS DALLIER","unidade":"CAMPO GRANDE","ra":"MT25200585","mat":7,"ing":6,"por":3,"cie":4,"est":2,"turmaLabel":"9MIL"},{"nome":"MIGUEL DURADE","unidade":"MADUREIRA","ra":"MT23111883","mat":4,"ing":11,"por":2,"cie":1,"est":3,"turmaLabel":"9MIL"},{"nome":"BRUNNO MENDONÇA","unidade":"MADUREIRA","ra":"MT25180001","mat":10,"ing":13,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"BERNARDO SOARES","unidade":"RETIRO DOS ARTISTAS","ra":"MT25152349","mat":9,"ing":14,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"BERNARDO ANJOS","unidade":"MADUREIRA","ra":"MT25199696","mat":7,"ing":16,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"PEDRO MONDAINI","unidade":"BANGU","ra":"MT23118169","mat":4,"ing":19,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"MATHEUS CAVALCANTI","unidade":"NOVA IGUAÇU","ra":"MT24164501","mat":4,"ing":19,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"NATHAN SOUZA","unidade":"BANGU","ra":"MT25184086","mat":2,"ing":11,"por":2,"cie":1,"est":4,"turmaLabel":"9MIL"},{"nome":"ANDREY SILVA","unidade":"BANGU","ra":"MT25191610","mat":8,"ing":14,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"GIULIA VIANA","unidade":"DUQUE DE CAXIAS","ra":"MT24155251","mat":6,"ing":16,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"CG_9MIL_SIMULADO_CN_DIA1_21-03-26 0030","unidade":"-","ra":"MTERROOO1","mat":5,"ing":17,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"ALÍCIA ARAUJO","unidade":"DUQUE DE CAXIAS","ra":"MT24147118","mat":3,"ing":19,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"ANA SOUSA","unidade":"TAQUARA","ra":"MT24155194","mat":6,"ing":10,"por":2,"cie":2,"est":1,"turmaLabel":"9MIL"},{"nome":"MARIA COSTA","unidade":"MADUREIRA","ra":"MT24160533","mat":10,"ing":11,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"BG_9MIL_SIM2026-03-23 (1) 0006","unidade":"-","ra":"MT23138091","mat":9,"ing":12,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"JOÃO PEREIRA","unidade":"MADUREIRA","ra":"MT25199712","mat":7,"ing":14,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"NICOLAS ROMÃO","unidade":"BANGU","ra":"MT23127517","mat":5,"ing":16,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"NINA PESSANHA","unidade":"BANGU","ra":"MT24150203","mat":10,"ing":10,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"JOAO LOPES","unidade":"BANGU","ra":"MT25183013","mat":6,"ing":14,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"JULIA MACHADO","unidade":"CAMPO GRANDE","ra":"MT22095483","mat":6,"ing":14,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"GIOVANNA BATISTA","unidade":"TAQUARA","ra":"MT25177155","mat":6,"ing":14,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"ESTER SOUZA","unidade":"MADUREIRA","ra":"MT24159527","mat":4,"ing":16,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"ARTHUR RIBEIRO","unidade":"NOVA IGUAÇU","ra":"MT22095467","mat":4,"ing":16,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"ANNA MENDES","unidade":"NOVA IGUAÇU","ra":"MT25199753","mat":8,"ing":11,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"DIOGO MIRANDA","unidade":"ROCHA MIRANDA","ra":"MT23128895","mat":6,"ing":13,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"ALICE MACEDO","unidade":"TAQUARA","ra":"MT25177833","mat":6,"ing":13,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"CARLOS MARQUES","unidade":"BANGU","ra":"MT25182239","mat":5,"ing":14,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"MARIA COSTA","unidade":"DUQUE DE CAXIAS","ra":"MT24158412","mat":5,"ing":13,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"PEDRO SILVA","unidade":"TAQUARA","ra":"MT25196106","mat":5,"ing":13,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"DAVI SALAZAR","unidade":"MADUREIRA","ra":"MT25200700","mat":3,"ing":15,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"MIGUEL BELMIRO","unidade":"SÃO JOÃO DE MERITI","ra":"MT21048822","mat":3,"ing":2,"por":4,"cie":5,"est":2,"turmaLabel":"9MIL"},{"nome":"GABRIEL GOMES","unidade":"BANGU","ra":"MT23122625","mat":5,"ing":5,"por":2,"cie":3,"est":1,"turmaLabel":"9MIL"},{"nome":"SJM_9MIL_SIM_21_03_2026.SJD-0004","unidade":"-","ra":"MT21**58","mat":6,"ing":11,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"VICTOR JESUS","unidade":"TAQUARA","ra":"MT24160327","mat":6,"ing":11,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"CG_9MIL_SIMULADO_CN_DIA1_21-03-26 0006","unidade":"-","ra":"MT23910124","mat":4,"ing":13,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"NICOLAS NASCIMENTO","unidade":"CAMPO GRANDE","ra":"MT25189614","mat":3,"ing":14,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"NATHALY SILVA","unidade":"DUQUE DE CAXIAS","ra":"MT24156754","mat":2,"ing":15,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"TALITA GALATI","unidade":"ROCHA MIRANDA","ra":"MT22093512","mat":7,"ing":9,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"LUIZ SILVA","unidade":"TAQUARA","ra":"MT23123375","mat":6,"ing":10,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"BERNARDO MACHADO","unidade":"CAMPO GRANDE","ra":"MT24161887","mat":3,"ing":13,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"GUILHERME ASSIS","unidade":"CAMPO GRANDE","ra":"MT24158685","mat":3,"ing":13,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"LUCAS AMBROSIO","unidade":"CAMPO GRANDE","ra":"MT25201252","mat":1,"ing":15,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"GUSTAVO DIAS","unidade":"TAQUARA","ra":"MT24149577","mat":3,"ing":12,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"NATHAN FRANCISCO","unidade":"TAQUARA","ra":"MT25195330","mat":4,"ing":10,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"MIGUEL SANTOS","unidade":"SÃO JOÃO DE MERITI","ra":"MT25191321","mat":6,"ing":2,"por":4,"cie":1,"est":0,"turmaLabel":"9MIL"},{"nome":"ARTHUR ROCHA","unidade":"MADUREIRA","ra":"MT23113962","mat":7,"ing":6,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"ERICK SILVA","unidade":"SÃO JOÃO DE MERITI","ra":"MT25185083","mat":5,"ing":8,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"CAUÃ BARATA","unidade":"BANGU","ra":"MT26203760","mat":5,"ing":8,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"MATEUS SANTANA","unidade":"BANGU","ra":"MT22099998","mat":4,"ing":9,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"GUSTAVO NASCIMENTO","unidade":"ROCHA MIRANDA","ra":"MT23118565","mat":4,"ing":9,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"VINÍCIUS CORREA","unidade":"NOVA IGUAÇU","ra":"MT24148603","mat":3,"ing":10,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"MARIANA MOTTA","unidade":"NOVA IGUAÇU","ra":"MT25193848","mat":3,"ing":10,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"JOAO SANCHES","unidade":"CAMPO GRANDE","ra":"MT25198565","mat":2,"ing":11,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"MARIA OLIVEIRA","unidade":"BANGU","ra":"MT25194135","mat":4,"ing":8,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"MARIA LUZ","unidade":"NOVA IGUAÇU","ra":"MT25198342","mat":4,"ing":8,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"EMANUEL MIRANDA","unidade":"ROCHA MIRANDA","ra":"MT22090724","mat":4,"ing":8,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"LARA RODRIGUES","unidade":"CAMPO GRANDE","ra":"MT25185794","mat":3,"ing":9,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"JOÃO MOTTA","unidade":"CAMPO GRANDE","ra":"MT25184797","mat":5,"ing":6,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"JOÃO MATTOS","unidade":"ROCHA MIRANDA","ra":"MT24160830","mat":4,"ing":7,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"9MIL_MD_SIM_21_03_2026 0013","unidade":"-","ra":"MT2620270","mat":3,"ing":8,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"MARCELO PAULA","unidade":"ROCHA MIRANDA","ra":"MT22099840","mat":3,"ing":8,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"SOFIA TRINDADE","unidade":"ROCHA MIRANDA","ra":"MT25197922","mat":3,"ing":8,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"KASSIO CAETANO","unidade":"BANGU","ra":"MT25200536","mat":4,"ing":6,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"ANA RODRIGUES","unidade":"BANGU","ra":"MT21069836","mat":4,"ing":6,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"EMILLY GALLO","unidade":"TAQUARA","ra":"MT22100242","mat":2,"ing":8,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"MARIA SILVA","unidade":"BANGU","ra":"MT25198045","mat":3,"ing":6,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"JOÃO BORGES","unidade":"ROCHA MIRANDA","ra":"MT24155996","mat":3,"ing":6,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"RAIAN OLIVEIRA","unidade":"ROCHA MIRANDA","ra":"MT25168527","mat":4,"ing":4,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"CG_9MIL_SIMULADO_CN_DIA1_21-03-26 0026","unidade":"-","ra":"MT25190470","mat":3,"ing":3,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"},{"nome":"GUSTAVO VIEIRA","unidade":"BANGU","ra":"MT25201377","mat":2,"ing":4,"por":0,"cie":0,"est":0,"turmaLabel":"9MIL"}];
+
+function buildTurmaS2Geral(raw, label){
+  raw.forEach(function(a){
+    a.turmaLabel = label;
+    a.gtot1  = a.mat + a.ing;
+    a.gtot2  = a.por + a.cie + a.est;
+    a.gtotC  = a.gtot1 + a.gtot2;
+    a.aprov1 = a.mat >= 10 && a.ing >= 10;
+    a.aprov2 = a.por >= 10;
+    a.aprovC = a.aprov1 && a.aprov2;
+  });
+  var apv = raw.filter(function(a){ return a.aprovC; }).sort(function(a,b){ return (b.gtotC-a.gtotC)||(b.gtot1-a.gtot1); });
+  var rep = raw.filter(function(a){ return !a.aprovC; }).sort(function(a,b){ return (b.gtotC-a.gtotC)||(b.gtot1-a.gtot1); });
+  var sorted = apv.concat(rep);
+  sorted.forEach(function(a,i){ a.rankC = i+1; });
+  return sorted;
+}
+
+var TEM_S2G = buildTurmaS2Geral(DATA_EM_S2GERAL, 'EM');
+var T9MIL_S2G = buildTurmaS2Geral(DATA_9MIL_S2GERAL, '9MIL');
+
+(function(){
+  var fill = function(list, id) {
+    var sel = document.getElementById(id);
+    if(!sel) return;
+    var unis = [];
+    list.forEach(function(a){ if(unis.indexOf(a.unidade)<0) unis.push(a.unidade); });
+    unis.sort().forEach(function(u){ var o=document.createElement('option'); o.value=u; o.textContent=u; sel.appendChild(o); });
+  };
+  fill(TEM_S2G, 'uniSelEmS2D2');
+  fill(T9MIL_S2G, 'uniSel9milS2D2');
+  fill(TEM_S2G, 'uniSelEmS2dia');
+  fill(T9MIL_S2G, 'uniSel9milS2dia');
+})();
+
+var fEmS2D2 = 'todos', f9milS2D2 = 'todos';
+
+function renderEmS2D2(){
+  renderS2Geral(TEM_S2G, fEmS2D2, 'bodyEmS2D2','statsEmS2D2','totalEmS2D2','aprovEmS2D2','reprovEmS2D2','searchEmS2D2','uniSelEmS2D2');
+}
+function render9milS2D2(){
+  renderS2Geral(T9MIL_S2G, f9milS2D2, 'body9milS2D2','stats9milS2D2','total9milS2D2','aprov9milS2D2','reprov9milS2D2','search9milS2D2','uniSel9milS2D2');
+}
+
+function renderS2Geral(list, filtro, bodyId, statsId, totalId, aprovId, reprovId, searchId, uniSelId){
+  var q = (document.getElementById(searchId).value||'').toLowerCase();
+  var lst = list.filter(function(a){ return !q || a.nome.toLowerCase().indexOf(q)>=0; });
+  if(filtro==='aprov')  lst = lst.filter(function(a){ return a.aprovC; });
+  if(filtro==='reprov') lst = lst.filter(function(a){ return !a.aprovC; });
+  if(filtro==='unidade'){ var v=document.getElementById(uniSelId).value; if(v) lst=lst.filter(function(a){ return a.unidade===v; }); }
+
+  document.getElementById(bodyId).innerHTML = lst.map(function(a){
+    var p=a.rankC, pc=p===1?'g1':p===2?'g2':p===3?'g3':'';
+    var em=p===1?'🥇':p===2?'🥈':p===3?'🥉':p;
+    var rc='ranking-row'+(p<=3?' top3':'');
+    var c1=a.aprov1?'#16a34a':'#dc2626', c2=a.aprov2?'#16a34a':'#dc2626';
+    var st=a.aprovC?'<span class="chip chip-aprov">\u2713 Aprovado</span>'
+      :'<span class="chip chip-reprov">\u2717 '+(!a.aprov1&&!a.aprov2?'Reprovou nos 2':!a.aprov1?'Reprovou no 1\u00b0':'Reprovou no 2\u00b0')+'</span>';
+    return '<tr class="'+rc+'">'
+      +'<td style="text-align:center"><span class="pos-badge '+pc+'">'+em+'</span></td>'
+      +'<td style="padding-left:14px"><span class="aluno-nome">'+a.nome+'</span><span class="aluno-meta">'+a.unidade+'</span></td>'
+      +'<td style="text-align:center"><span style="font-size:20px;font-weight:900;color:'+c1+'">'+a.gtot1+'</span><span style="font-size:11px;color:var(--text3)">/40</span><div style="font-size:10px;color:var(--text3)">M:'+a.mat+' I:'+a.ing+'</div></td>'
+      +'<td style="text-align:center"><span style="font-size:20px;font-weight:900;color:'+c2+'">'+a.gtot2+'</span><span style="font-size:11px;color:var(--text3)">/50q</span><div style="font-size:10px;color:var(--text3)">P:'+a.por+' C:'+a.cie+' E:'+a.est+'</div></td>'
+      +'<td style="font-size:26px;font-weight:900;text-align:center;color:var(--navy)">'+a.gtotC+'<span style="font-size:12px;color:var(--text3)">/90</span></td>'
+      +'<td style="text-align:center">'+st+'</td>'
+      +'</tr>';
+  }).join('');
+
+  var tot=list.length, apvN=list.filter(function(a){ return a.aprovC; }).length;
+  document.getElementById(totalId).textContent=tot;
+  document.getElementById(aprovId).textContent=apvN;
+  document.getElementById(reprovId).textContent=tot-apvN;
+  var avg1=list.reduce(function(s,x){ return s+x.gtot1; },0)/tot;
+  var avg2=list.reduce(function(s,x){ return s+x.gtot2; },0)/tot;
+  document.getElementById(statsId).innerHTML=
+    '<div class="stat-item"><div class="s-label">Total</div><div class="s-val">'+tot+'</div><div class="s-hint">fizeram os 2 dias</div></div>'
+    +'<div class="stat-item"><div class="s-label">Aprovados</div><div class="s-val" style="color:var(--green)">'+apvN+'</div><div class="s-hint">'+Math.round(apvN/tot*100)+'%</div></div>'
+    +'<div class="stat-item"><div class="s-label">Reprovados</div><div class="s-val" style="color:var(--red)">'+(tot-apvN)+'</div><div class="s-hint">'+Math.round((tot-apvN)/tot*100)+'%</div></div>'
+    +'<div class="stat-item"><div class="s-label">Maior Total</div><div class="s-val">'+(list[0]?list[0].gtotC:0)+'</div><div class="s-hint">de 90</div></div>'
+    +'<div class="stat-item"><div class="s-label">Média 1° Dia</div><div class="s-val">'+avg1.toFixed(1)+'</div><div class="s-hint">de 40</div></div>'
+    +'<div class="stat-item"><div class="s-label">Média 2° Dia</div><div class="s-val">'+avg2.toFixed(1)+'</div><div class="s-hint">de 50</div></div>';
+}
+
+function setFEmS2D2(f,btn){
+  fEmS2D2=f;
+  document.getElementById('emS2GeralSection').querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active');
+  document.getElementById('uniWrapEmS2D2').style.display=f==='unidade'?'block':'none';
+  renderEmS2D2();
+}
+function setF9milS2D2(f,btn){
+  f9milS2D2=f;
+  document.getElementById('9milS2GeralSection').querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active');
+  document.getElementById('uniWrap9milS2D2').style.display=f==='unidade'?'block':'none';
+  render9milS2D2();
+}
+
+// ── Ranking 2°Dia (só POR+CIÊ+EST) ─────────────────────────────
+var fEmS2dia = 'todos', f9milS2dia = 'todos';
+
+function buildTurmaS2Dia(raw){
+  var sorted = raw.slice().sort(function(a,b){
+    var a2=a.por+a.cie+a.est, b2=b.por+b.cie+b.est;
+    var apvA=a.por>=10, apvB=b.por>=10;
+    if(apvA!==apvB) return apvB-apvA;
+    return (b2-a2)||(b.por-a.por);
+  });
+  sorted.forEach(function(a,i){
+    a.rank2d = i+1;
+    a.gtot2d = a.por+a.cie+a.est;
+    a.aprov2d = a.por>=10;
+  });
+  return sorted;
+}
+var TEM_S2Dia    = buildTurmaS2Dia(DATA_EM_S2GERAL);
+var T9MIL_S2Dia  = buildTurmaS2Dia(DATA_9MIL_S2GERAL);
+
+function renderEmS2Dia(){
+  renderS2Dia(TEM_S2Dia, fEmS2dia, 'bodyEmS2dia','statsEmS2dia','totalEmS2dia','aprovEmS2dia','reprovEmS2dia','searchEmS2dia','uniSelEmS2dia');
+}
+function render9milS2Dia(){
+  renderS2Dia(T9MIL_S2Dia, f9milS2dia, 'body9milS2dia','stats9milS2dia','total9milS2dia','aprov9milS2dia','reprov9milS2dia','search9milS2dia','uniSel9milS2dia');
+}
+
+function renderS2Dia(list, filtro, bodyId, statsId, totalId, aprovId, reprovId, searchId, uniSelId){
+  var q=(document.getElementById(searchId).value||'').toLowerCase();
+  var lst=list.filter(function(a){ return !q||a.nome.toLowerCase().indexOf(q)>=0; });
+  if(filtro==='aprov')  lst=lst.filter(function(a){ return a.aprov2d; });
+  if(filtro==='reprov') lst=lst.filter(function(a){ return !a.aprov2d; });
+  if(filtro==='unidade'){ var v=document.getElementById(uniSelId).value; if(v) lst=lst.filter(function(a){ return a.unidade===v; }); }
+
+  document.getElementById(bodyId).innerHTML=lst.map(function(a){
+    var p=a.rank2d, pc=p===1?'g1':p===2?'g2':p===3?'g3':'';
+    var em=p===1?'🥇':p===2?'🥈':p===3?'🥉':p;
+    var rc='ranking-row'+(p<=3?' top3':'');
+    var cp=a.por>=10?'#16a34a':'#dc2626';
+    var st=a.aprov2d?'<span class="chip chip-aprov">\u2713 Aprovado</span>'
+      :'<span class="chip chip-reprov">\u2717 Reprovado</span>';
+    return '<tr class="'+rc+'">'
+      +'<td style="text-align:center"><span class="pos-badge '+pc+'">'+em+'</span></td>'
+      +'<td style="padding-left:14px"><span class="aluno-nome">'+a.nome+'</span><span class="aluno-meta">'+a.unidade+'</span></td>'
+      +'<td style="font-size:22px;font-weight:900;text-align:center;color:'+cp+'">'+a.por+'<span style="font-size:11px;color:var(--text3)">/20</span></td>'
+      +'<td style="font-size:22px;font-weight:900;text-align:center;color:var(--navy)">'+a.cie+'<span style="font-size:11px;color:var(--text3)">/18</span></td>'
+      +'<td style="font-size:22px;font-weight:900;text-align:center;color:var(--navy)">'+a.est+'<span style="font-size:11px;color:var(--text3)">/12</span></td>'
+      +'<td style="font-size:26px;font-weight:900;text-align:center;color:var(--navy)">'+a.gtot2d+'<span style="font-size:12px;color:var(--text3)">/50</span></td>'
+      +'<td style="text-align:center">'+st+'</td>'
+      +'</tr>';
+  }).join('');
+
+  var tot=list.length, apvN=list.filter(function(a){ return a.aprov2d; }).length;
+  document.getElementById(totalId).textContent=tot;
+  document.getElementById(aprovId).textContent=apvN;
+  document.getElementById(reprovId).textContent=tot-apvN;
+  var avgP=list.reduce(function(s,x){ return s+x.por; },0)/tot;
+  var avgC=list.reduce(function(s,x){ return s+x.cie; },0)/tot;
+  var avgE=list.reduce(function(s,x){ return s+x.est; },0)/tot;
+  document.getElementById(statsId).innerHTML=
+    '<div class="stat-item"><div class="s-label">Total</div><div class="s-val">'+tot+'</div><div class="s-hint">alunos</div></div>'
+    +'<div class="stat-item"><div class="s-label">Aprovados</div><div class="s-val" style="color:var(--green)">'+apvN+'</div><div class="s-hint">'+Math.round(apvN/tot*100)+'%</div></div>'
+    +'<div class="stat-item"><div class="s-label">Reprovados</div><div class="s-val" style="color:var(--red)">'+(tot-apvN)+'</div><div class="s-hint">'+Math.round((tot-apvN)/tot*100)+'%</div></div>'
+    +'<div class="stat-item"><div class="s-label">Maior 2°Dia</div><div class="s-val">'+(list[0]?list[0].gtot2d:0)+'</div><div class="s-hint">de 50</div></div>'
+    +'<div class="stat-item"><div class="s-label">Média POR</div><div class="s-val">'+avgP.toFixed(1)+'</div><div class="s-hint">de 20</div></div>'
+    +'<div class="stat-item"><div class="s-label">Média CIÊ</div><div class="s-val">'+avgC.toFixed(1)+'</div><div class="s-hint">de 18</div></div>';
+}
+
+function setFEmS2Dia(f,btn){
+  fEmS2dia=f;
+  document.getElementById('emS2D2Section').querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active');
+  document.getElementById('uniWrapEmS2dia').style.display=f==='unidade'?'block':'none';
+  renderEmS2Dia();
+}
+function setF9milS2Dia(f,btn){
+  f9milS2dia=f;
+  document.getElementById('9milS2D2Section').querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active');
+  document.getElementById('uniWrap9milS2dia').style.display=f==='unidade'?'block':'none';
+  render9milS2Dia();
+}
+
 
 
 
@@ -2039,7 +2425,7 @@ function voltar(){
   document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
   document.getElementById(secaoOrigem+'Section').classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  const navMap={'em':'navEm','9mil':'nav9mil','em2':'navEm2','9mil2':'nav9mil2','emC':'navEmC','9milC':'nav9milC','epcar':'navEPCAr','busca':'navBusca','emS2D1':'navEmS2D1','9milS2D1':'nav9milS2D1'};
+  const navMap={'em':'navEm','9mil':'nav9mil','em2':'navEm2','9mil2':'nav9mil2','emC':'navEmC','9milC':'nav9milC','epcar':'navEPCAr','busca':'navBusca','emS2D1':'navEmS2D1','9milS2D1':'nav9milS2D1','emS2D2':'navEmS2D2','9milS2D2':'nav9milS2D2','emS2Geral':'navEmS2Geral','9milS2Geral':'nav9milS2Geral'};
   document.getElementById(navMap[secaoOrigem]||'navEm').classList.add('active');
 }
 
@@ -2614,6 +3000,10 @@ window.addEventListener('DOMContentLoaded', function(){
   render9milC();
   renderEmS2D1();
   render9milS2D1();
+  renderEmS2Dia();
+  render9milS2Dia();
+  renderEmS2D2();
+  render9milS2D2();
   renderEPCAr();
 });
 
@@ -3078,6 +3468,8 @@ const SIMULADO_MAP = {
   'cn_9mil_d2':  { arquivo:'dados/s1_dia2.js',  vars:['DATA_9MIL2','DATA_9MILC'],       turma:'9MIL', dia:2 },
   'cn_em_s2d1':  { arquivo:'dados/s2_dia1.js',  vars:['DATA_EM_S2D1'],                  turma:'EM',   dia:1 },
   'cn_9mil_s2d1':{ arquivo:'dados/s2_dia1.js',  vars:['DATA_9MIL_S2D1'],               turma:'9MIL', dia:1 },
+  'cn_em_s2geral':  { arquivo:'dados/s2_geral.js', vars:['DATA_EM_S2GERAL'],           turma:'EM',   dia:5, range:15 },
+  'cn_9mil_s2geral':{ arquivo:'dados/s2_geral.js', vars:['DATA_9MIL_S2GERAL'],         turma:'9MIL', dia:5, range:15 },
   'epcar':       { arquivo:'dados/epcar.js',     vars:['DATA_EPCAR'],                   turma:'EPCAR',dia:0 },
 };
 
@@ -3112,14 +3504,16 @@ function findCol(headers, candidatos){
 }
 
 // ── Leitura do Excel via SheetJS ───────────────────────────────────
-function lerExcel(file){
+function lerExcel(file, range){
   return new Promise((res,rej)=>{
     const reader = new FileReader();
     reader.onload = e => {
       try {
         const wb = XLSX.read(e.target.result, {type:'array'});
         const ws = wb.Sheets[wb.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+        const opts = {defval:''};
+        if(range !== undefined) opts.range = range;
+        const rows = XLSX.utils.sheet_to_json(ws, opts);
         res(rows);
       } catch(err){ rej(err); }
     };
@@ -3223,6 +3617,51 @@ function parseCND2(rows, turmaLabel){
   return { dia2: sorted2, combined: [...apvC,...repC] };
 }
 
+function parseCNGeral(rows, turmaLabel){
+  if(!rows.length) return [];
+  const h = Object.keys(rows[0]);
+  const cNome = findCol(h,['aluno','nome','name']);
+  const cRa   = findCol(h,['ra','matricula','registro']);
+  const cUni  = findCol(h,['unidade','unid','polo']);
+  const cMat  = findCol(h,['a. mat','a.mat','matematica','mat']);
+  const cIng  = findCol(h,['a. ing','a.ing','ingles','ing']);
+  const cPor  = findCol(h,['a. por','a.por','portugues','por']);
+  const cCie  = findCol(h,['a. ci','a.ci','ciencia','cie']);
+  const cEst  = findCol(h,['a. est','a.est','estudos','est']);
+  if(!cNome||!cMat||!cIng||!cPor){ throw new Error('Colunas não encontradas: Aluno, Mat, Ing, Por'); }
+
+  const uniMap = {'MD':'MADUREIRA','CX':'DUQUE DE CAXIAS','BG':'BANGU','CG':'CAMPO GRANDE',
+    'TQ':'TAQUARA','RT':'RETIRO DOS ARTISTAS','SJ':'SÃO JOÃO DE MERITI',
+    'RM':'ROCHA MIRANDA','NI':'NOVA IGUAÇU','TJ':'TIJUCA'};
+
+  const alunos = rows.filter(r=>r[cNome]).map(r=>({
+    nome:    String(r[cNome]).trim().toUpperCase(),
+    unidade: uniMap[String(r[cUni]||'').trim().toUpperCase()] || String(r[cUni]||'').trim().toUpperCase(),
+    ra:      String(r[cRa]||'').trim(),
+    mat:     Number(r[cMat])||0,
+    ing:     Number(r[cIng])||0,
+    por:     Number(r[cPor])||0,
+    cie:     Number(r[cCie])||0,
+    est:     Number(r[cEst])||0,
+    turmaLabel: turmaLabel,
+  }));
+
+  alunos.forEach(a=>{
+    a.gtot1  = a.mat + a.ing;
+    a.gtot2  = a.por + a.cie + a.est;
+    a.gtotC  = a.gtot1 + a.gtot2;
+    a.aprov1 = a.mat >= 10 && a.ing >= 10;
+    a.aprov2 = a.por >= 10;
+    a.aprovC = a.aprov1 && a.aprov2;
+  });
+
+  const apv = alunos.filter(a=>a.aprovC).sort((a,b)=>(b.gtotC-a.gtotC)||(b.gtot1-a.gtot1));
+  const rep = alunos.filter(a=>!a.aprovC).sort((a,b)=>(b.gtotC-a.gtotC)||(b.gtot1-a.gtot1));
+  const sorted = [...apv,...rep];
+  sorted.forEach((a,i)=>{ a.rankC=i+1; });
+  return sorted;
+}
+
 function parseEPCAr(rows){
   if(!rows.length) return [];
   const h = Object.keys(rows[0]);
@@ -3318,11 +3757,13 @@ async function handleFileUpload(files){
   atMsg('Lendo arquivo...','ok');
   document.getElementById('atPreview').innerHTML='';
   try {
-    const rows = await lerExcel(file);
     const info = SIMULADO_MAP[tipo];
+    const rows = await lerExcel(file, info.range);
     let dados;
     if(tipo==='epcar'){
       dados = parseEPCAr(rows);
+    } else if(info.dia===5){
+      dados = parseCNGeral(rows, info.turma);
     } else if(info.dia===2){
       dados = parseCND2(rows, info.turma);
     } else {
@@ -3350,6 +3791,8 @@ function baixarJS(){
   } else if(info.dia===2){
     conteudo += `const ${info.vars[0]} = ${JSON.stringify(dados.dia2)};\n`;
     conteudo += `const ${info.vars[1]} = ${JSON.stringify(dados.combined)};\n`;
+  } else if(info.dia===5){
+    conteudo += `var ${info.vars[0]} = ${JSON.stringify(dados)};\n`;
   } else {
     conteudo += `const ${info.vars[0]} = ${JSON.stringify(dados)};\n`;
   }
@@ -3540,6 +3983,8 @@ function imprimirDashboard(){
         <optgroup label="CN — 2º Simulado">
           <option value="cn_em_s2d1">EM — 1º Dia (Matemática + Inglês)</option>
           <option value="cn_9mil_s2d1">9MIL — 1º Dia (Matemática + Inglês)</option>
+          <option value="cn_em_s2geral">EM — Geral (Ranking CN MedioMil — todas as disciplinas)</option>
+          <option value="cn_9mil_s2geral">9MIL — Geral (Ranking CN 9Mil — todas as disciplinas)</option>
         </optgroup>
         <optgroup label="EPCAr">
           <option value="epcar">EPCAr — Ranking Geral</option>
