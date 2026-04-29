@@ -1212,10 +1212,10 @@ var T9MIL_S2G = buildTurmaS2Geral(DATA_9MIL_S2GERAL, '9MIL');
 var fEmS2D2 = 'todos', f9milS2D2 = 'todos';
 
 function renderEmS2D2(){
-  renderS2Geral(TEM_S2G, fEmS2D2, 'bodyEmS2D2','statsEmS2D2','totalEmS2D2','aprovEmS2D2','reprovEmS2D2','searchEmS2D2','uniSelEmS2D2','openAlunoC');
+  renderS2Geral(TEM_S2G, fEmS2D2, 'bodyEmS2D2','statsEmS2D2','totalEmS2D2','aprovEmS2D2','reprovEmS2D2','searchEmS2D2','uniSelEmS2D2','openAlunoEmS2Geral');
 }
 function render9milS2D2(){
-  renderS2Geral(T9MIL_S2G, f9milS2D2, 'body9milS2D2','stats9milS2D2','total9milS2D2','aprov9milS2D2','reprov9milS2D2','search9milS2D2','uniSel9milS2D2','openAluno9milC');
+  renderS2Geral(T9MIL_S2G, f9milS2D2, 'body9milS2D2','stats9milS2D2','total9milS2D2','aprov9milS2D2','reprov9milS2D2','search9milS2D2','uniSel9milS2D2','openAluno9milS2Geral');
 }
 
 function renderS2Geral(list, filtro, bodyId, statsId, totalId, aprovId, reprovId, searchId, uniSelId, openFn){
@@ -1489,9 +1489,16 @@ function fecharRAModal(){
 }
 
 // ── ABA NOTAS ──
+// Retorna o dataset correto baseado em secaoOrigem (1°CN vs 2°CN)
+function _getTurma(a){
+  if(secaoOrigem==='9milS2D1') return T9MIL_S2D1;
+  if(secaoOrigem==='emS2D1')   return TEM_S2D1;
+  return a.turmaLabel==='9MIL' ? T9 : TEM;
+}
+
 function buildNotas(){
   const a=atual;
-  const turma = a.turmaLabel==='9MIL' ? T9 : TEM;
+  const turma = _getTurma(a);
   const nota=notaCN(a);
   const matPct=+(a.mat/20*100).toFixed(0);
   const ingPct=+(a.ing/20*100).toFixed(0);
@@ -1500,7 +1507,7 @@ function buildNotas(){
   document.getElementById('pNotas').innerHTML=`
   <div class="card fade-in">
     <div class="card-head"><h2>📊 Resumo de Desempenho</h2></div>
-    <p class="card-sub">Resultado no simulado do 1º Dia — turma ${a.turmaLabel}.</p>
+    <p class="card-sub">Resultado no ${secaoOrigem==='emS2D1'||secaoOrigem==='9milS2D1'?'2º':'1º'} Simulado — 1º Dia — turma ${a.turmaLabel}.</p>
     <div class="stat-grid">
       <div class="stat-item">
         <div class="s-label">Classificação</div>
@@ -1580,12 +1587,80 @@ function buildNotas(){
       <li>Mantenha a consistência e continue praticando questões de provas anteriores do CN</li>
     </ul></div>`}
   </div>`;
+
+  // ── 2°CN: adiciona notas EPCAr ──
+  if(secaoOrigem==='emS2D1'||secaoOrigem==='9milS2D1'){
+    var _epD=(typeof DATA_EPCAR2!=='undefined'&&DATA_EPCAR2&&DATA_EPCAR2.length)?DATA_EPCAR2
+            :(typeof DATA_EPCAR!=='undefined'&&DATA_EPCAR&&DATA_EPCAR.length)?DATA_EPCAR:null;
+    if(_epD){
+      var ea=_epD.find(function(e){return e.nome===a.nome;});
+      var _pN=document.getElementById('pNotas');
+      if(ea){
+        var _tot=_epD.length;
+        var _avgP=_epD.reduce(function(s,x){return s+(x.nota_por||0);},0)/_tot;
+        var _avgM=_epD.reduce(function(s,x){return s+(x.nota_mat||0);},0)/_tot;
+        var _avgI=_epD.reduce(function(s,x){return s+(x.nota_ing||0);},0)/_tot;
+        var _pP=Math.round((ea.nota_por||0)/10*100), _pM=Math.round((ea.nota_mat||0)/10*100), _pI=Math.round((ea.nota_ing||0)/10*100);
+        var _pMed=Math.round((ea.media||0)/10*100), _apEP=ea.status==='Aprovado';
+        var _rkEP=ea.rankFinal||ea.rank||'?';
+        _pN.innerHTML+=`
+        <div class="card fade-in" style="border-top:3px solid #7c3aed">
+          <div class="card-head"><h2>✈️ EPCAr — Desempenho</h2></div>
+          <p class="card-sub">Resultado no EPCAr · Rank #${_rkEP}º de ${_tot} · Corte: 7,65</p>
+          <div class="stat-grid">
+            <div class="stat-item"><div class="s-label">Classificação</div><div class="s-val" style="color:#7c3aed">#${_rkEP}º</div><div class="s-hint">de ${_tot} alunos</div></div>
+            <div class="stat-item"><div class="s-label">Média Geral</div><div class="s-val" style="color:${(ea.media||0)>=7.65?'#16a34a':'#dc2626'}">${(ea.media||0).toFixed(2)}</div><div class="s-hint">corte ≈ 7,65</div></div>
+            <div class="stat-item"><div class="s-label">Aproveitamento</div><div class="s-val">${_pMed}%</div><div class="s-hint">geral</div></div>
+            <div class="stat-item"><div class="s-label">Resultado</div><div class="s-val" style="font-size:28px;padding-top:4px">${_apEP?'✅':'❌'}</div><div class="s-hint">${_apEP?'Aprovado':'Reprovado'}</div></div>
+          </div>
+        </div>
+        <div class="card fade-in">
+          <div class="card-head"><h2>📐 EPCAr — Por Disciplina</h2></div>
+          <p class="card-sub">Mínimo: 8 acertos por disciplina (/16).</p>
+          <table class="dtable">
+            <thead><tr><th>Disciplina</th><th>Acertos</th><th>Nota</th><th>%</th><th>Média Turma</th><th>Diferença</th><th>Situação</th></tr></thead>
+            <tbody>
+              <tr ${(ea.acertos_por||0)<8?'style="background:#fff8f8"':''}>
+                <td>Português <span style="color:var(--text3);font-size:11px">mín. 8</span></td>
+                <td style="font-weight:800">${ea.acertos_por||0}/16</td>
+                <td style="font-weight:800">${(ea.nota_por||0).toFixed(2)}</td>
+                <td><span class="badge ${pBadge(_pP)}">${_pP}%</span></td>
+                <td>${_avgP.toFixed(2)}</td>
+                <td style="font-weight:900;color:${((ea.nota_por||0)-_avgP)>=0?'#16a34a':'#dc2626'}">${((ea.nota_por||0)-_avgP)>=0?'+':''}${((ea.nota_por||0)-_avgP).toFixed(2)}</td>
+                <td>${(ea.acertos_por||0)>=8?'<span class="chip chip-aprov">✓ Aprovado</span>':'<span class="chip chip-reprov">✗ Abaixo</span>'}</td>
+              </tr>
+              <tr ${(ea.acertos_mat||0)<8?'style="background:#fff8f8"':''}>
+                <td>Matemática <span style="color:var(--text3);font-size:11px">mín. 8</span></td>
+                <td style="font-weight:800">${ea.acertos_mat||0}/16</td>
+                <td style="font-weight:800">${(ea.nota_mat||0).toFixed(2)}</td>
+                <td><span class="badge ${pBadge(_pM)}">${_pM}%</span></td>
+                <td>${_avgM.toFixed(2)}</td>
+                <td style="font-weight:900;color:${((ea.nota_mat||0)-_avgM)>=0?'#16a34a':'#dc2626'}">${((ea.nota_mat||0)-_avgM)>=0?'+':''}${((ea.nota_mat||0)-_avgM).toFixed(2)}</td>
+                <td>${(ea.acertos_mat||0)>=8?'<span class="chip chip-aprov">✓ Aprovado</span>':'<span class="chip chip-reprov">✗ Abaixo</span>'}</td>
+              </tr>
+              <tr ${(ea.acertos_ing||0)<8?'style="background:#fff8f8"':''}>
+                <td>Inglês <span style="color:var(--text3);font-size:11px">mín. 8</span></td>
+                <td style="font-weight:800">${ea.acertos_ing||0}/16</td>
+                <td style="font-weight:800">${(ea.nota_ing||0).toFixed(2)}</td>
+                <td><span class="badge ${pBadge(_pI)}">${_pI}%</span></td>
+                <td>${_avgI.toFixed(2)}</td>
+                <td style="font-weight:900;color:${((ea.nota_ing||0)-_avgI)>=0?'#16a34a':'#dc2626'}">${((ea.nota_ing||0)-_avgI)>=0?'+':''}${((ea.nota_ing||0)-_avgI).toFixed(2)}</td>
+                <td>${(ea.acertos_ing||0)>=8?'<span class="chip chip-aprov">✓ Aprovado</span>':'<span class="chip chip-reprov">✗ Abaixo</span>'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>`;
+      } else {
+        _pN.innerHTML+='<div class="card fade-in"><div class="card-head"><h2>✈️ EPCAr</h2></div><p class="card-sub" style="padding:16px;color:var(--text3)">Aluno não encontrado no ranking EPCAr.</p></div>';
+      }
+    }
+  }
 }
 
 // ── ABA GRÁFICO ──
 function buildGrafico(){
   const a=atual;
-  const turma = a.turmaLabel==='9MIL' ? T9 : TEM;
+  const turma = _getTurma(a);
   const topN = a.turmaLabel==='9MIL' ? 20 : 80;
   const topLabel = a.turmaLabel==='9MIL' ? 'Top 20 — 9MIL' : 'Top 80 — EM';
   const topList = turma.list.slice(0, topN);
@@ -1706,7 +1781,7 @@ function buildGrafico(){
 function buildIndicadores(){
   if(!atual) return;
   var a = atual;
-  var turma = a.turmaLabel==='9MIL' ? T9 : TEM;
+  var turma = _getTurma(a);
   var aMatPct = a.mat/20*100, aIngPct = a.ing/20*100, aTotPct = a.gtot/40*100;
   var tMatPct = turma.avgs.mat/20*100, tIngPct = turma.avgs.ing/20*100;
   var tTotPct = (turma.avgs.mat+turma.avgs.ing)/40*100;
@@ -1917,7 +1992,7 @@ function buildIndicadores2(lista){
 function renderCharts(){
   if(!atual) return;
   const a=atual;
-  const turma = a.turmaLabel==='9MIL' ? T9 : TEM;
+  const turma = _getTurma(a);
   const topN = a.turmaLabel==='9MIL' ? 20 : 80;
   const topLabel = a.turmaLabel==='9MIL' ? 'Top 20 — 9MIL' : 'Top 80 — EM';
   const topList = turma.list.slice(0, topN);
@@ -2113,7 +2188,7 @@ function buildRadarEm2(){
 function buildChanceCN(){
   if(!atual) return;
   var a = atual;
-  var turma = a.turmaLabel==='9MIL' ? T9 : TEM;
+  var turma = _getTurma(a);
   var totPct = a.gtot/40*100; // % acerto geral (MAT+ING de 40)
 
   // Cortes
@@ -2530,7 +2605,7 @@ function voltar(){
   document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
   document.getElementById(secaoOrigem+'Section').classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  const navMap={'em':'navEm','9mil':'nav9mil','em2':'navEm2','9mil2':'nav9mil2','emC':'navEmC','9milC':'nav9milC','epcar':'navEPCAr','busca':'navBusca','emS2D1':'navEmS2D1','9milS2D1':'nav9milS2D1','emS2D2':'navEmS2D2','9milS2D2':'nav9milS2D2','emS2Geral':'navEmS2Geral','9milS2Geral':'nav9milS2Geral'};
+  const navMap={'em':'navEm','9mil':'nav9mil','em2':'navEm2','9mil2':'nav9mil2','emC':'navEmC','9milC':'nav9milC','epcar':'navEPCAr','busca':'navBusca','emS2D1':'navEmS2D1','9milS2D1':'nav9milS2D1','emS2D2':'navEmS2D2','9milS2D2':'nav9milS2D2','emS2Geral':'navEmS2Geral','9milS2Geral':'navEmS2Geral'};
   var navId=navMap[secaoOrigem];
   if(!navId&&typeof EXTRA_SIMS!=='undefined'){var xs=EXTRA_SIMS.find(function(s){return s.id===secaoOrigem;});if(xs)navId='nav_'+xs.id;}
   var navEl=document.getElementById(navId||'navGroup1CN');
@@ -2817,6 +2892,43 @@ function buildNotasC(){
   buildIndicadores2(TEMC);
 }
 
+function _buildNotasS2Geral(turmaArr, label){
+  var a=atual2, tot=turmaArr.length;
+  var avgM=turmaArr.reduce(function(s,x){return s+x.mat;},0)/tot;
+  var avgI=turmaArr.reduce(function(s,x){return s+x.ing;},0)/tot;
+  var avgP=turmaArr.reduce(function(s,x){return s+x.por;},0)/tot;
+  var avgC=turmaArr.reduce(function(s,x){return s+x.cie;},0)/tot;
+  var avgE=turmaArr.reduce(function(s,x){return s+x.est;},0)/tot;
+  var pct=+(a.gtotC/90*100).toFixed(1);
+  document.getElementById('pNotas').innerHTML=
+  '<div class="card fade-in">'
+  +'<div class="card-head"><h2>📊 Resumo 2º Simulado — Geral ('+label+')</h2></div>'
+  +'<p class="card-sub">Resultado completo do 2º Simulado CN (1º Dia + 2º Dia).</p>'
+  +'<div class="stat-grid">'
+  +'<div class="stat-item"><div class="s-label">Classificação</div><div class="s-val" style="color:var(--navy)">#'+a.rankC+'º</div><div class="s-hint">de '+tot+' na '+label+'</div></div>'
+  +'<div class="stat-item"><div class="s-label">Total</div><div class="s-val">'+a.gtotC+'</div><div class="s-hint">de 90</div></div>'
+  +'<div class="stat-item"><div class="s-label">Aproveitamento</div><div class="s-val" style="color:'+(pct>=60?'#16a34a':pct>=40?'#d97706':'#dc2626')+'">'+pct+'%</div><div class="s-hint">geral</div></div>'
+  +'<div class="stat-item"><div class="s-label">Resultado</div><div class="s-val" style="font-size:28px">'+(a.aprovC?'✅':'❌')+'</div><div class="s-hint">'+(a.aprovC?'Aprovado nos 2 dias':!a.aprov1?'Reprovou no 1º dia':'Reprovou no 2º dia')+'</div></div>'
+  +'</div></div>'
+  +'<div class="card fade-in">'
+  +'<div class="card-head"><h2>📐 Desempenho por Disciplina — 2º Simulado</h2></div>'
+  +'<div class="disc-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">'
+  +'<div class="disc-card '+(a.aprov1?'pass':'fail')+'" style="grid-column:span 2"><div class="dc-name">1º DIA · MAT+ING · '+a.gtot1+'/40</div><div style="display:flex;gap:16px;justify-content:center;margin-top:6px"><span style="color:'+(a.mat>=10?'#16a34a':'#dc2626')+';font-size:24px;font-weight:900">MAT:'+a.mat+'</span><span style="color:'+(a.ing>=10?'#16a34a':'#dc2626')+';font-size:24px;font-weight:900">ING:'+a.ing+'</span></div></div>'
+  +'<div class="disc-card '+(a.aprov2?'pass':'fail')+'" style="grid-column:span 3"><div class="dc-name">2º DIA · POR+CIÊ+EST · '+a.gtot2+'/50</div><div style="display:flex;gap:12px;justify-content:center;margin-top:6px"><span style="color:'+(a.por>=10?'#16a34a':'#dc2626')+';font-size:22px;font-weight:900">POR:'+a.por+'</span><span style="color:'+(a.cie>=9?'#16a34a':'#dc2626')+';font-size:22px;font-weight:900">CIÊ:'+a.cie+'</span><span style="color:'+(a.est>=6?'#16a34a':'#dc2626')+';font-size:22px;font-weight:900">EST:'+a.est+'</span></div></div>'
+  +'</div>'
+  +'<table class="dtable" style="margin-top:14px">'
+  +'<thead><tr><th>Disciplina</th><th>Acertos</th><th>%</th><th>Média '+label+'</th><th>Diferença</th></tr></thead>'
+  +'<tbody>'
+  +'<tr '+(a.mat<10?'style="background:#fff8f8"':'')+'><td>Matemática (1º)</td><td>'+a.mat+'/20</td><td><span class="badge '+pBadge(+(a.mat/20*100).toFixed(0))+'">'+( +(a.mat/20*100).toFixed(0) )+'%</span></td><td>'+avgM.toFixed(1)+'</td><td style="font-weight:900;color:'+((a.mat-avgM)>=0?'#16a34a':'#dc2626')+'">'+(a.mat-avgM>=0?'+':'')+(a.mat-avgM).toFixed(1)+'</td></tr>'
+  +'<tr '+(a.ing<10?'style="background:#fff8f8"':'')+'><td>Inglês (1º)</td><td>'+a.ing+'/20</td><td><span class="badge '+pBadge(+(a.ing/20*100).toFixed(0))+'">'+( +(a.ing/20*100).toFixed(0) )+'%</span></td><td>'+avgI.toFixed(1)+'</td><td style="font-weight:900;color:'+((a.ing-avgI)>=0?'#16a34a':'#dc2626')+'">'+(a.ing-avgI>=0?'+':'')+(a.ing-avgI).toFixed(1)+'</td></tr>'
+  +'<tr '+(a.por<10?'style="background:#fff8f8"':'')+'><td>Português (2º)</td><td>'+a.por+'/20</td><td><span class="badge '+pBadge(+(a.por/20*100).toFixed(0))+'">'+( +(a.por/20*100).toFixed(0) )+'%</span></td><td>'+avgP.toFixed(1)+'</td><td style="font-weight:900;color:'+((a.por-avgP)>=0?'#16a34a':'#dc2626')+'">'+(a.por-avgP>=0?'+':'')+(a.por-avgP).toFixed(1)+'</td></tr>'
+  +'<tr '+(a.cie<9?'style="background:#fff8f8"':'')+'><td>Ciências (2º)</td><td>'+a.cie+'/18</td><td><span class="badge '+pBadge(+(a.cie/18*100).toFixed(0))+'">'+( +(a.cie/18*100).toFixed(0) )+'%</span></td><td>'+avgC.toFixed(1)+'</td><td style="font-weight:900;color:'+((a.cie-avgC)>=0?'#16a34a':'#dc2626')+'">'+(a.cie-avgC>=0?'+':'')+(a.cie-avgC).toFixed(1)+'</td></tr>'
+  +'<tr '+(a.est<6?'style="background:#fff8f8"':'')+'><td>Est. Sociais (2º)</td><td>'+a.est+'/12</td><td><span class="badge '+pBadge(+(a.est/12*100).toFixed(0))+'">'+( +(a.est/12*100).toFixed(0) )+'%</span></td><td>'+avgE.toFixed(1)+'</td><td style="font-weight:900;color:'+((a.est-avgE)>=0?'#16a34a':'#dc2626')+'">'+(a.est-avgE>=0?'+':'')+(a.est-avgE).toFixed(1)+'</td></tr>'
+  +'</tbody></table></div>';
+}
+function buildNotasEmS2Geral(){ _buildNotasS2Geral(TEM_S2G, 'EM'); }
+function buildNotas9milS2Geral(){ _buildNotasS2Geral(T9MIL_S2G, '9MIL'); }
+
 // ════════════════════════════════════════════════════════
 // MODAL / CONFIRMAR RA — UNIFIED
 // ════════════════════════════════════════════════════════
@@ -2831,7 +2943,8 @@ function confirmarRA(){
   var nome  = modal.dataset.nome;
   var modo  = modal.dataset.modo || '';
   var digitado = document.getElementById('raInput').value.trim().toUpperCase();
-  var byRA = function(a){ return a.nome===nome && (a.ra||a.matricula||'').toUpperCase()===digitado; };
+  var byRA = function(a){ return a.nome===nome && (a.ra||a.matricula||'').trim().toUpperCase()===digitado; };
+  var byRAOnly = function(a){ return !!(digitado) && (a.ra||a.matricula||'').trim().toUpperCase()===digitado; };
   var candidato;
   if     (modo==='dia9mil2')  candidato = T9MIL2.find(byRA);
   else if(modo==='dia9milC')  { candidato=T9MILC.find(byRA); if(!candidato&&typeof T9MIL_S2G!=='undefined') candidato=T9MIL_S2G.find(byRA); }
@@ -2839,10 +2952,27 @@ function confirmarRA(){
   else if(modo==='diaC')      { candidato=TEMC.find(byRA); if(!candidato&&typeof TEM_S2G!=='undefined') candidato=TEM_S2G.find(byRA); }
   else if(modo==='diaEPCAr')  candidato = DATA_EPCAR.find(byRA);
   else if(modo==='diaEPCAr2') candidato = DATA_EPCAR2.find(byRA);
-  else if(modo==='emS2D1')   candidato = (typeof TEM_S2D1!=='undefined'&&TEM_S2D1) ? TEM_S2D1.list.find(byRA) : null;
-  else if(modo==='9milS2D1') candidato = (typeof T9MIL_S2D1!=='undefined'&&T9MIL_S2D1) ? T9MIL_S2D1.list.find(byRA) : null;
+  else if(modo==='emS2D1')    candidato = (typeof TEM_S2D1!=='undefined'&&TEM_S2D1) ? TEM_S2D1.list.find(byRA) : null;
+  else if(modo==='9milS2D1')  candidato = (typeof T9MIL_S2D1!=='undefined'&&T9MIL_S2D1) ? T9MIL_S2D1.list.find(byRA) : null;
+  else if(modo==='emS2Geral') candidato = (typeof TEM_S2G!=='undefined'&&TEM_S2G) ? TEM_S2G.find(byRA) : null;
+  else if(modo==='9milS2Geral') candidato = (typeof T9MIL_S2G!=='undefined'&&T9MIL_S2G) ? T9MIL_S2G.find(byRA) : null;
   else if(modo.startsWith('extraSim:')) { var _xId=modo.slice(10); var _xs=(typeof EXTRA_SIMS!=='undefined')&&EXTRA_SIMS.find(function(s){return s.id===_xId;}); candidato=(_xs&&_xs._built)?_xs._built.list.find(byRA):null; }
   else                        candidato = ALL.find(byRA);
+  // Fallback: busca só pelo RA (sem exigir nome exato), caso haja divergência de nome no dado
+  if(!candidato && digitado){
+    if     (modo==='dia9mil2')  candidato = T9MIL2.find(byRAOnly);
+    else if(modo==='dia9milC')  { candidato=T9MILC.find(byRAOnly); if(!candidato&&typeof T9MIL_S2G!=='undefined') candidato=T9MIL_S2G.find(byRAOnly); }
+    else if(modo==='diaEm2')    candidato = TEM2.find(byRAOnly);
+    else if(modo==='diaC')      { candidato=TEMC.find(byRAOnly); if(!candidato&&typeof TEM_S2G!=='undefined') candidato=TEM_S2G.find(byRAOnly); }
+    else if(modo==='diaEPCAr')  candidato = DATA_EPCAR.find(byRAOnly);
+    else if(modo==='diaEPCAr2') candidato = DATA_EPCAR2.find(byRAOnly);
+    else if(modo==='emS2D1')      candidato = (typeof TEM_S2D1!=='undefined'&&TEM_S2D1) ? TEM_S2D1.list.find(byRAOnly) : null;
+    else if(modo==='9milS2D1')    candidato = (typeof T9MIL_S2D1!=='undefined'&&T9MIL_S2D1) ? T9MIL_S2D1.list.find(byRAOnly) : null;
+    else if(modo==='emS2Geral')   candidato = (typeof TEM_S2G!=='undefined'&&TEM_S2G) ? TEM_S2G.find(byRAOnly) : null;
+    else if(modo==='9milS2Geral') candidato = (typeof T9MIL_S2G!=='undefined'&&T9MIL_S2G) ? T9MIL_S2G.find(byRAOnly) : null;
+    else if(modo.startsWith('extraSim:')){ var _xId2=modo.slice(10); var _xs2=(typeof EXTRA_SIMS!=='undefined')&&EXTRA_SIMS.find(function(s){return s.id===_xId2;}); candidato=(_xs2&&_xs2._built)?_xs2._built.list.find(byRAOnly):null; }
+    else                        candidato = ALL.find(byRAOnly);
+  }
   if(!candidato){
     document.getElementById('raError').style.display='block';
     document.getElementById('raInput').select();
@@ -2971,6 +3101,27 @@ function confirmarRA(){
     return;
   }
 
+  // ── S2Geral ──
+  if(modo==='emS2Geral' || modo==='9milS2Geral'){
+    atual2 = candidato; atual = null;
+    secaoOrigem = modo;
+    document.getElementById('dashNome').textContent = candidato.nome;
+    document.getElementById('dashInfo').textContent = '#'+candidato.rankC+'º · '+(modo==='emS2Geral'?'EM':'9MIL')+' 2ºSim Geral · '+candidato.unidade+' · '+candidato.gtotC+'/90 · '+(candidato.aprovC?'✓ Aprovado':'✗ Reprovado');
+    var ddSG = document.getElementById('destDiv');
+    if(candidato.rankC<=5){ ddSG.style.display='block'; document.getElementById('destText').textContent='#'+candidato.rankC+'º — '+(modo==='emS2Geral'?'EM':'9MIL')+' 2ºSim Geral'; }
+    else ddSG.style.display='none';
+    if(modo==='emS2Geral') buildNotasEmS2Geral(); else buildNotas9milS2Geral();
+    document.getElementById('pGrafico').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">📊 Gráfico disponível em breve.</p></div>';
+    document.getElementById('pIndicadores').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">📈 Indicadores disponíveis em breve.</p></div>';
+    document.getElementById('pChanceEPCAr').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">Chance disponível apenas no ranking Combinado.</p></div>';
+    document.querySelector('[onclick="goTab(\'pChanceEPCAr\',this)"]').textContent='⚓ Chance CN';
+    goTab('pNotas', document.querySelector('.tab-btn'));
+    document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active');});
+    document.getElementById('dashboard').style.display='block';
+    window.scrollTo(0,0);
+    return;
+  }
+
   atual = candidato; atual2 = null;
   secaoOrigem = atual.turmaLabel==='9MIL' ? '9mil' : 'em';
   document.getElementById('dashNome').textContent = atual.nome;
@@ -3051,6 +3202,24 @@ function openAluno9milS2D1(nome){
   const m=document.getElementById('raModal');
   document.getElementById('raInput').value=''; document.getElementById('raError').style.display='none';
   m.dataset.nome=nome; m.dataset.modo='9milS2D1'; m.style.display='flex';
+  setTimeout(()=>document.getElementById('raInput').focus(),100);
+}
+
+function openAlunoEmS2Geral(nome){
+  if(!TEM_S2G) return;
+  const c=TEM_S2G.find(a=>a.nome===nome); if(!c) return;
+  const m=document.getElementById('raModal');
+  document.getElementById('raInput').value=''; document.getElementById('raError').style.display='none';
+  m.dataset.nome=nome; m.dataset.modo='emS2Geral'; m.style.display='flex';
+  setTimeout(()=>document.getElementById('raInput').focus(),100);
+}
+
+function openAluno9milS2Geral(nome){
+  if(!T9MIL_S2G) return;
+  const c=T9MIL_S2G.find(a=>a.nome===nome); if(!c) return;
+  const m=document.getElementById('raModal');
+  document.getElementById('raInput').value=''; document.getElementById('raError').style.display='none';
+  m.dataset.nome=nome; m.dataset.modo='9milS2Geral'; m.style.display='flex';
   setTimeout(()=>document.getElementById('raInput').focus(),100);
 }
 
@@ -4930,7 +5099,7 @@ function imprimirDashboard(){
       style="width:100%;box-sizing:border-box;padding:12px 16px;font-size:15px;font-weight:700;border:2px solid #e5e9f0;border-radius:10px;outline:none;text-transform:uppercase;letter-spacing:1px;font-family:inherit;margin-bottom:8px"
       onfocus="this.style.borderColor='#1e3a5f'" onblur="this.style.borderColor='#e5e9f0'"/>
     <div id="raError" style="display:none;color:#dc2626;font-size:12px;font-weight:700;margin-bottom:10px;padding:8px 12px;background:#fef2f2;border-radius:8px;border:1px solid #fca5a5">
-      ⚠️ Matrícula incorreta. Verifique e tente novamente.
+      ⚠️ Matrícula não encontrada. Verifique se digitou corretamente (ex: MT25173550). Se o aluno constar na planilha mas não aparecer, os dados dele podem não ter sido importados ainda.
     </div>
     <button onclick="confirmarRA()"
       style="width:100%;padding:13px;background:#1e3a5f;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:.5px">
