@@ -6,6 +6,7 @@
 <title>Dashboard Geral CN/EPCAr · Matriz Educação</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="raw_cn_s3.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -302,6 +303,20 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
           <button class="nav-sub-btn" id="nav2cn9milS2D1" onclick="goSec('9milS2D1',this)">1º Dia</button>
           <button class="nav-sub-btn" id="nav2cn9milS2D2" onclick="goSec('9milS2D2',this)">2º Dia</button>
           <button class="nav-sub-btn" id="nav2cn9milS2G"  onclick="goSec('9milS2Geral',this)">Geral</button>
+        </div>
+      </div>
+      <!-- 3º CN Dropdown -->
+      <div class="nav-group" id="navGroup3CN">
+        <button class="nav-btn nav-group-btn" id="navEmS3Geral" onclick="toggleNavGroup('navGroup3CN')">⚓ 3º CN</button>
+        <div class="nav-dropdown">
+          <span class="nav-sub-label">Ensino Médio</span>
+          <button class="nav-sub-btn" id="nav3cnEmS3D1"   onclick="goSec('emS3D1',this)">1º Dia</button>
+          <button class="nav-sub-btn" id="nav3cnEmS3D2"   onclick="goSec('emS3D2',this)">2º Dia</button>
+          <button class="nav-sub-btn" id="nav3cnEmS3G"    onclick="goSec('emS3Geral',this)">Geral</button>
+          <span class="nav-sub-label">CN 9º</span>
+          <button class="nav-sub-btn" id="nav3cn9milS3D1" onclick="goSec('9milS3D1',this)">1º Dia</button>
+          <button class="nav-sub-btn" id="nav3cn9milS3D2" onclick="goSec('9milS3D2',this)">2º Dia</button>
+          <button class="nav-sub-btn" id="nav3cn9milS3G"  onclick="goSec('9milS3Geral',this)">Geral</button>
         </div>
       </div>
       <!-- EPCAr -->
@@ -800,6 +815,302 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
           <th>Situação</th>
         </tr></thead>
         <tbody id="body9milS2D2"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING EM 3º SIMULADO 1º DIA ═══ -->
+<div id="emS3D1Section" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>📘 Ranking EM — 3º Simulado 1º Dia · 02/05/2026</h1>
+      <p>Classificação dos alunos do Ensino Médio no 3º Simulado de Matemática e Inglês (1º Dia). Clique no aluno para ver o relatório individual.</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado = ≥10 em Mat <strong>e</strong> ≥10 em Inglês</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado = abaixo do mínimo em ao menos 1</div>
+      <div class="legend-item">📌 Aprovados primeiro, depois reprovados — ambos por pontuação</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">EM 3º Sim — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="totalEmS3D1">0</span> · Aprovados: <span id="aprovEmS3D1" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprovEmS3D1" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="searchEmS3D1" placeholder="🔍 Buscar pelo nome..." oninput="renderEmS3D1()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setFEmS3D1('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setFEmS3D1('aprov',this)">✅ Aprovados<span class="fb-desc">Passaram em tudo</span></button>
+        <button class="filter-btn" onclick="setFEmS3D1('reprov',this)">❌ Reprovados<span class="fb-desc">Precisam melhorar</span></button>
+        <button class="filter-btn" onclick="setFEmS3D1('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrapEmS3D1" style="display:none;margin-bottom:14px">
+        <select id="uniSelEmS3D1" onchange="renderEmS3D1()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>Matemática <span style="font-weight:500;font-size:10px">(mín. 10/20)</span></th>
+          <th>Inglês <span style="font-weight:500;font-size:10px">(mín. 10/20)</span></th>
+          <th>Total <span style="font-weight:500;font-size:10px">(de 40)</span></th>
+          <th>Status</th>
+        </tr></thead>
+        <tbody id="bodyEmS3D1"></tbody>
+      </table>
+      <div class="stat-grid" id="statsEmS3D1" style="margin-top:20px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING 9MIL 3º SIMULADO 1º DIA ═══ -->
+<div id="9milS3D1Section" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>🎯 Ranking 9MIL — 3º Simulado 1º Dia · 02/05/2026</h1>
+      <p>Classificação dos alunos do 9º Militar no 3º Simulado de Matemática e Inglês (1º Dia). Clique no aluno para ver o relatório individual.</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado = ≥10 em Mat <strong>e</strong> ≥10 em Inglês</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado = abaixo do mínimo em ao menos 1</div>
+      <div class="legend-item">📌 Aprovados primeiro, depois reprovados — ambos por pontuação</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">9MIL 3º Sim — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="total9milS3D1">0</span> · Aprovados: <span id="aprov9milS3D1" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprov9milS3D1" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="search9milS3D1" placeholder="🔍 Buscar pelo nome..." oninput="render9milS3D1()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setF9milS3D1('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setF9milS3D1('aprov',this)">✅ Aprovados<span class="fb-desc">Passaram em tudo</span></button>
+        <button class="filter-btn" onclick="setF9milS3D1('reprov',this)">❌ Reprovados<span class="fb-desc">Precisam melhorar</span></button>
+        <button class="filter-btn" onclick="setF9milS3D1('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrap9milS3D1" style="display:none;margin-bottom:14px">
+        <select id="uniSel9milS3D1" onchange="render9milS3D1()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>Matemática <span style="font-weight:500;font-size:10px">(mín. 10/20)</span></th>
+          <th>Inglês <span style="font-weight:500;font-size:10px">(mín. 10/20)</span></th>
+          <th>Total <span style="font-weight:500;font-size:10px">(de 40)</span></th>
+          <th>Status</th>
+        </tr></thead>
+        <tbody id="body9milS3D1"></tbody>
+      </table>
+      <div class="stat-grid" id="stats9milS3D1" style="margin-top:20px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING EM 3º SIMULADO — 2°DIA ═══ -->
+<div id="emS3D2Section" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>📗 Ranking EM — 3° Simulado 2°Dia · 09/05/2026</h1>
+      <p>Classificação dos alunos do Ensino Médio no 2° Dia do 3° Simulado: Português (20q) + Ciências (18q) + Est. Sociais (12q).</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado = POR ≥ 10</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado = POR abaixo do mínimo</div>
+      <div class="legend-item">POR(20) + CIÊ(18) + EST.SOC(12) = 50 questões</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">EM 3°Sim · 2°Dia — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="totalEmS3dia">0</span> · Aprovados: <span id="aprovEmS3dia" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprovEmS3dia" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="searchEmS3dia" placeholder="🔍 Buscar pelo nome..." oninput="renderEmS3Dia()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setFEmS3Dia('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setFEmS3Dia('aprov',this)">✅ Aprovados<span class="fb-desc">POR ≥ 10</span></button>
+        <button class="filter-btn" onclick="setFEmS3Dia('reprov',this)">❌ Reprovados<span class="fb-desc">Precisam melhorar</span></button>
+        <button class="filter-btn" onclick="setFEmS3Dia('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrapEmS3dia" style="display:none;margin-bottom:14px">
+        <select id="uniSelEmS3dia" onchange="renderEmS3Dia()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <div id="statsEmS3dia" class="stat-grid" style="margin-bottom:16px"></div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>Português<span style="font-weight:500;font-size:10px"> (mín.10/20)</span></th>
+          <th>Ciências<span style="font-weight:500;font-size:10px"> (/18)</span></th>
+          <th>Est. Sociais<span style="font-weight:500;font-size:10px"> (/12)</span></th>
+          <th>Total<span style="font-weight:500;font-size:10px"> (/50)</span></th>
+          <th>Situação</th>
+        </tr></thead>
+        <tbody id="bodyEmS3dia"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING 9MIL 3º SIMULADO — 2°DIA ═══ -->
+<div id="9milS3D2Section" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>📗 Ranking 9MIL — 3° Simulado 2°Dia · 09/05/2026</h1>
+      <p>Classificação dos alunos do 9° Militar no 2° Dia do 3° Simulado: Português (20q) + Ciências (18q) + Est. Sociais (12q).</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado = POR ≥ 10</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado = POR abaixo do mínimo</div>
+      <div class="legend-item">POR(20) + CIÊ(18) + EST.SOC(12) = 50 questões</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">9MIL 3°Sim · 2°Dia — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="total9milS3dia">0</span> · Aprovados: <span id="aprov9milS3dia" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprov9milS3dia" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="search9milS3dia" placeholder="🔍 Buscar pelo nome..." oninput="render9milS3Dia()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setF9milS3Dia('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setF9milS3Dia('aprov',this)">✅ Aprovados<span class="fb-desc">POR ≥ 10</span></button>
+        <button class="filter-btn" onclick="setF9milS3Dia('reprov',this)">❌ Reprovados<span class="fb-desc">Precisam melhorar</span></button>
+        <button class="filter-btn" onclick="setF9milS3Dia('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrap9milS3dia" style="display:none;margin-bottom:14px">
+        <select id="uniSel9milS3dia" onchange="render9milS3Dia()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <div id="stats9milS3dia" class="stat-grid" style="margin-bottom:16px"></div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>Português<span style="font-weight:500;font-size:10px"> (mín.10/20)</span></th>
+          <th>Ciências<span style="font-weight:500;font-size:10px"> (/18)</span></th>
+          <th>Est. Sociais<span style="font-weight:500;font-size:10px"> (/12)</span></th>
+          <th>Total<span style="font-weight:500;font-size:10px"> (/50)</span></th>
+          <th>Situação</th>
+        </tr></thead>
+        <tbody id="body9milS3dia"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING EM 3° SIMULADO — GERAL (1°+2° DIA) ═══ -->
+<div id="emS3GeralSection" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>🏆 3° Sim CN Médio — Ranking Geral (1°+2° Dia)</h1>
+      <p>Classificação consolidada do Ensino Médio no 3° Simulado: 1°Dia (MAT+ING · 40q) + 2°Dia (POR+CIÊ+EST · 50q) = 90 questões.</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado nos dois dias (MAT≥10, ING≥10, POR≥10)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado em pelo menos um dia</div>
+      <div class="legend-item">1°Dia: MAT(20)+ING(20)=40q · 2°Dia: POR(20)+CIÊ(18)+EST(12)=50q · Total: 90q</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">3° Sim Médio — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="totalEmS3D2">0</span> · Aprovados: <span id="aprovEmS3D2" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprovEmS3D2" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="searchEmS3D2" placeholder="🔍 Buscar pelo nome..." oninput="renderEmS3D2()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setFEmS3D2('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setFEmS3D2('aprov',this)">✅ Aprovados<span class="fb-desc">Passaram nos 2 dias</span></button>
+        <button class="filter-btn" onclick="setFEmS3D2('reprov',this)">❌ Reprovados<span class="fb-desc">Falharam em ao menos 1</span></button>
+        <button class="filter-btn" onclick="setFEmS3D2('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrapEmS3D2" style="display:none;margin-bottom:14px">
+        <select id="uniSelEmS3D2" onchange="renderEmS3D2()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <div id="statsEmS3D2" class="stat-grid" style="margin-bottom:16px"></div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>1°Dia<span style="font-weight:500;font-size:10px"> MAT+ING (/40)</span></th>
+          <th>2°Dia<span style="font-weight:500;font-size:10px"> POR+CIÊ+EST (/50)</span></th>
+          <th>Total<span style="font-weight:500;font-size:10px"> (/90)</span></th>
+          <th>Situação</th>
+        </tr></thead>
+        <tbody id="bodyEmS3D2"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ RANKING 9MIL 3° SIMULADO — GERAL (1°+2° DIA) ═══ -->
+<div id="9milS3GeralSection" class="section">
+  <div class="page-wrap fade-in">
+    <div class="page-intro">
+      <h1>🎖️ 3° Sim CN 9° — Ranking Geral (1°+2° Dia)</h1>
+      <p>Classificação consolidada do 9° Militar no 3° Simulado: 1°Dia (MAT+ING · 40q) + 2°Dia (POR+CIÊ+EST · 50q) = 90 questões.</p>
+    </div>
+    <div class="legend-box">
+      <strong>Como ler:</strong>
+      <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>Top 3 em dourado</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16a34a"></div>✓ Aprovado nos dois dias (MAT≥10, ING≥10, POR≥10)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#dc2626"></div>✗ Reprovado em pelo menos um dia</div>
+      <div class="legend-item">1°Dia: MAT(20)+ING(20)=40q · 2°Dia: POR(20)+CIÊ(18)+EST(12)=50q · Total: 90q</div>
+    </div>
+    <div class="ranking-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px">
+        <div>
+          <h2 style="font-size:18px;font-weight:900;color:var(--navy);margin-bottom:2px">3° Sim 9° — Lista de Alunos</h2>
+          <p style="font-size:13px;color:var(--text3)">Total: <span id="total9milS3D2">0</span> · Aprovados: <span id="aprov9milS3D2" style="color:var(--green);font-weight:700">0</span> · Reprovados: <span id="reprov9milS3D2" style="color:var(--red);font-weight:700">0</span></p>
+        </div>
+        <input class="search-input" style="max-width:280px;margin:0" type="text" id="search9milS3D2" placeholder="🔍 Buscar pelo nome..." oninput="render9milS3D2()">
+      </div>
+      <div class="ranking-filters">
+        <button class="filter-btn active" onclick="setF9milS3D2('todos',this)">🏆 Todos<span class="fb-desc">Turma completa</span></button>
+        <button class="filter-btn" onclick="setF9milS3D2('aprov',this)">✅ Aprovados<span class="fb-desc">Passaram nos 2 dias</span></button>
+        <button class="filter-btn" onclick="setF9milS3D2('reprov',this)">❌ Reprovados<span class="fb-desc">Falharam em ao menos 1</span></button>
+        <button class="filter-btn" onclick="setF9milS3D2('unidade',this)">🏫 Por Unidade<span class="fb-desc">Filtrar unidade</span></button>
+      </div>
+      <div id="uniWrap9milS3D2" style="display:none;margin-bottom:14px">
+        <select id="uniSel9milS3D2" onchange="render9milS3D2()" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-weight:600;background:var(--white);cursor:pointer;outline:none;color:var(--text)">
+          <option value="">— Todas as unidades —</option>
+        </select>
+      </div>
+      <div id="stats9milS3D2" class="stat-grid" style="margin-bottom:16px"></div>
+      <table class="ranking-table">
+        <thead><tr>
+          <th style="width:60px;text-align:center">Pos.</th>
+          <th style="text-align:left;padding-left:14px">Aluno</th>
+          <th>1°Dia<span style="font-weight:500;font-size:10px"> MAT+ING (/40)</span></th>
+          <th>2°Dia<span style="font-weight:500;font-size:10px"> POR+CIÊ+EST (/50)</span></th>
+          <th>Total<span style="font-weight:500;font-size:10px"> (/90)</span></th>
+          <th>Situação</th>
+        </tr></thead>
+        <tbody id="body9milS3D2"></tbody>
       </table>
     </div>
   </div>
@@ -1358,6 +1669,143 @@ function buildTurmaS2Dia(raw){
 var TEM_S2Dia    = buildTurmaS2Dia(DATA_EM_S2GERAL);
 var T9MIL_S2Dia  = buildTurmaS2Dia(DATA_9MIL_S2GERAL);
 
+// ════════════════════════════════════════════════════════
+// 3° SIMULADO — FUNÇÕES DE BUILD
+// ════════════════════════════════════════════════════════
+function buildTurmaS3D1(raw, label){
+  raw.forEach(function(a){
+    a.turmaLabel = label;
+    a.ok_mat = a.mat >= 10;
+    a.ok_ing = a.ing >= 10;
+    a.aprov  = a.ok_mat && a.ok_ing;
+    a.gtot   = a.mat + a.ing;
+    a.motivo = !a.ok_mat && !a.ok_ing ? 'Mat e Ingles abaixo do minimo'
+             : !a.ok_mat ? 'Matematica abaixo do minimo'
+             : !a.ok_ing ? 'Ingles abaixo do minimo' : '';
+  });
+  var apv = raw.filter(function(a){ return a.aprov; }).sort(function(a,b){ return (b.gtot-a.gtot)||(b.mat-a.mat); });
+  var rep = raw.filter(function(a){ return !a.aprov; }).sort(function(a,b){ return (b.gtot-a.gtot)||(b.mat-a.mat); });
+  var sorted = apv.concat(rep);
+  sorted.forEach(function(a,i){ a.rank=i+1; });
+  var avg = function(k){ return sorted.reduce(function(s,x){ return s+(x[k]||0); },0)/sorted.length; };
+  return { list: sorted, avgs: {mat:avg('mat'), ing:avg('ing'), gtot:avg('gtot')} };
+}
+
+function buildTurmaS3Geral(raw, label){
+  raw.forEach(function(a){
+    a.turmaLabel = label;
+    a.gtot1  = a.mat + a.ing;
+    a.gtot2  = a.por + a.cie + a.est;
+    a.gtotC  = a.gtot1 + a.gtot2;
+    a.aprov1 = a.mat >= 10 && a.ing >= 10;
+    a.aprov2 = a.por >= 10;
+    a.aprovC = a.aprov1 && a.aprov2;
+  });
+  var apv = raw.filter(function(a){ return a.aprovC; }).sort(function(a,b){ return (b.gtotC-a.gtotC)||(b.gtot1-a.gtot1); });
+  var rep = raw.filter(function(a){ return !a.aprovC; }).sort(function(a,b){ return (b.gtotC-a.gtotC)||(b.gtot1-a.gtot1); });
+  var sorted = apv.concat(rep);
+  sorted.forEach(function(a,i){ a.rankC = i+1; });
+  return sorted;
+}
+
+function buildTurmaS3Dia(raw){
+  var sorted = raw.slice().sort(function(a,b){
+    var a2=a.por+a.cie+a.est, b2=b.por+b.cie+b.est;
+    var apvA=a.por>=10, apvB=b.por>=10;
+    if(apvA!==apvB) return apvB-apvA;
+    return (b2-a2)||(b.por-a.por);
+  });
+  sorted.forEach(function(a,i){
+    a.rank2d = i+1;
+    a.gtot2d = a.por+a.cie+a.est;
+    a.aprov2d = a.por>=10;
+  });
+  return sorted;
+}
+
+var TEM_S3D1   = buildTurmaS3D1(DATA_EM_S3GERAL.map(function(a){return Object.assign({},a);}), 'EM');
+var T9MIL_S3D1 = buildTurmaS3D1(DATA_9MIL_S3GERAL.map(function(a){return Object.assign({},a);}), '9MIL');
+var TEM_S3G    = buildTurmaS3Geral(DATA_EM_S3GERAL, 'EM');
+var T9MIL_S3G  = buildTurmaS3Geral(DATA_9MIL_S3GERAL, '9MIL');
+var TEM_S3Dia  = buildTurmaS3Dia(DATA_EM_S3GERAL);
+var T9MIL_S3Dia = buildTurmaS3Dia(DATA_9MIL_S3GERAL);
+
+(function(){
+  var fill = function(list, id) {
+    var sel = document.getElementById(id);
+    if(!sel) return;
+    var unis = [];
+    list.forEach(function(a){ if(unis.indexOf(a.unidade)<0) unis.push(a.unidade); });
+    unis.sort().forEach(function(u){ var o=document.createElement('option'); o.value=u; o.textContent=u; sel.appendChild(o); });
+  };
+  fill(TEM_S3D1.list,   'uniSelEmS3D1');
+  fill(T9MIL_S3D1.list, 'uniSel9milS3D1');
+  fill(TEM_S3G,         'uniSelEmS3D2');
+  fill(TEM_S3G,         'uniSelEmS3dia');
+  fill(T9MIL_S3G,       'uniSel9milS3D2');
+  fill(T9MIL_S3G,       'uniSel9milS3dia');
+})();
+
+var fEmS3D1 = 'todos', f9milS3D1 = 'todos';
+var fEmS3D2 = 'todos', f9milS3D2 = 'todos';
+var fEmS3dia = 'todos', f9milS3dia = 'todos';
+
+function renderEmS3D1(){ renderRanking(TEM_S3D1.list, TEM_S3D1.avgs, fEmS3D1, 'bodyEmS3D1','statsEmS3D1','totalEmS3D1','aprovEmS3D1','reprovEmS3D1','searchEmS3D1','uniSelEmS3D1','openAlunoEmS3D1'); }
+function render9milS3D1(){ renderRanking(T9MIL_S3D1.list, T9MIL_S3D1.avgs, f9milS3D1, 'body9milS3D1','stats9milS3D1','total9milS3D1','aprov9milS3D1','reprov9milS3D1','search9milS3D1','uniSel9milS3D1','openAluno9milS3D1'); }
+
+function setFEmS3D1(f,btn){
+  fEmS3D1=f;
+  document.getElementById('emS3D1Section').querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active');
+  document.getElementById('uniWrapEmS3D1').style.display=f==='unidade'?'block':'none';
+  renderEmS3D1();
+}
+function setF9milS3D1(f,btn){
+  f9milS3D1=f;
+  document.getElementById('9milS3D1Section').querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active');
+  document.getElementById('uniWrap9milS3D1').style.display=f==='unidade'?'block':'none';
+  render9milS3D1();
+}
+
+function renderEmS3D2(){
+  renderS2Geral(TEM_S3G, fEmS3D2, 'bodyEmS3D2','statsEmS3D2','totalEmS3D2','aprovEmS3D2','reprovEmS3D2','searchEmS3D2','uniSelEmS3D2','openAlunoEmS3Geral');
+}
+function render9milS3D2(){
+  renderS2Geral(T9MIL_S3G, f9milS3D2, 'body9milS3D2','stats9milS3D2','total9milS3D2','aprov9milS3D2','reprov9milS3D2','search9milS3D2','uniSel9milS3D2','openAluno9milS3Geral');
+}
+
+function setFEmS3D2(f,btn){
+  fEmS3D2=f;
+  document.getElementById('emS3GeralSection').querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active');
+  document.getElementById('uniWrapEmS3D2').style.display=f==='unidade'?'block':'none';
+  renderEmS3D2();
+}
+function setF9milS3D2(f,btn){
+  f9milS3D2=f;
+  document.getElementById('9milS3GeralSection').querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active');
+  document.getElementById('uniWrap9milS3D2').style.display=f==='unidade'?'block':'none';
+  render9milS3D2();
+}
+
+function renderEmS3Dia(){
+  renderS2Dia(TEM_S3Dia, fEmS3dia, 'bodyEmS3dia','statsEmS3dia','totalEmS3dia','aprovEmS3dia','reprovEmS3dia','searchEmS3dia','uniSelEmS3dia','openAlunoEmS3D2');
+}
+function render9milS3Dia(){
+  renderS2Dia(T9MIL_S3Dia, f9milS3dia, 'body9milS3dia','stats9milS3dia','total9milS3dia','aprov9milS3dia','reprov9milS3dia','search9milS3dia','uniSel9milS3dia','openAluno9milS3D2');
+}
+
+function setFEmS3Dia(f,btn){
+  fEmS3dia=f;
+  document.getElementById('emS3D2Section').querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active');
+  document.getElementById('uniWrapEmS3dia').style.display=f==='unidade'?'block':'none';
+  renderEmS3Dia();
+}
+function setF9milS3Dia(f,btn){
+  f9milS3dia=f;
+  document.getElementById('9milS3D2Section').querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); }); btn.classList.add('active');
+  document.getElementById('uniWrap9milS3dia').style.display=f==='unidade'?'block':'none';
+  render9milS3Dia();
+}
+
 function renderEmS2Dia(){
   renderS2Dia(TEM_S2Dia, fEmS2dia, 'bodyEmS2dia','statsEmS2dia','totalEmS2dia','aprovEmS2dia','reprovEmS2dia','searchEmS2dia','uniSelEmS2dia','openAlunoC');
 }
@@ -1559,6 +2007,8 @@ function fecharRAModal(){
 function _getTurma(a){
   if(secaoOrigem==='9milS2D1') return T9MIL_S2D1;
   if(secaoOrigem==='emS2D1')   return TEM_S2D1;
+  if(secaoOrigem==='9milS3D1') return T9MIL_S3D1;
+  if(secaoOrigem==='emS3D1')   return TEM_S3D1;
   return a.turmaLabel==='9MIL' ? T9 : TEM;
 }
 
@@ -1573,7 +2023,7 @@ function buildNotas(){
   document.getElementById('pNotas').innerHTML=`
   <div class="card fade-in">
     <div class="card-head"><h2>📊 Resumo de Desempenho</h2></div>
-    <p class="card-sub">Resultado no ${secaoOrigem==='emS2D1'||secaoOrigem==='9milS2D1'?'2º':'1º'} Simulado — 1º Dia — turma ${a.turmaLabel}.</p>
+    <p class="card-sub">Resultado no ${secaoOrigem==='emS2D1'||secaoOrigem==='9milS2D1'?'2º':secaoOrigem==='emS3D1'||secaoOrigem==='9milS3D1'?'3º':'1º'} Simulado — 1º Dia — turma ${a.turmaLabel}.</p>
     <div class="stat-grid">
       <div class="stat-item">
         <div class="s-label">Classificação</div>
@@ -1655,7 +2105,7 @@ function buildNotas(){
   </div>`;
 
   // ── 2°CN: adiciona notas EPCAr ──
-  if(secaoOrigem==='emS2D1'||secaoOrigem==='9milS2D1'){
+  if(secaoOrigem==='emS2D1'||secaoOrigem==='9milS2D1'||secaoOrigem==='emS3D1'||secaoOrigem==='9milS3D1'){
     var _epD=(typeof DATA_EPCAR2!=='undefined'&&DATA_EPCAR2&&DATA_EPCAR2.length)?DATA_EPCAR2
             :(typeof DATA_EPCAR!=='undefined'&&DATA_EPCAR&&DATA_EPCAR.length)?DATA_EPCAR:null;
     if(_epD){
@@ -2702,11 +3152,11 @@ function buildRelatorio(){
   }
 
   // ── CN 1º Dia ──
-  if(secaoOrigem==='em'||secaoOrigem==='9mil'||secaoOrigem==='emS2D1'||secaoOrigem==='9milS2D1'){
+  if(secaoOrigem==='em'||secaoOrigem==='9mil'||secaoOrigem==='emS2D1'||secaoOrigem==='9milS2D1'||secaoOrigem==='emS3D1'||secaoOrigem==='9milS3D1'){
     var a=atual;
     var turma=_getTurma(a);
     var N=turma.list.length;
-    var simLabel=(secaoOrigem==='emS2D1'||secaoOrigem==='9milS2D1')?'2º Simulado — 1º Dia':'1º Simulado — 1º Dia';
+    var simLabel=(secaoOrigem==='emS2D1'||secaoOrigem==='9milS2D1')?'2º Simulado — 1º Dia':(secaoOrigem==='emS3D1'||secaoOrigem==='9milS3D1')?'3º Simulado — 1º Dia':'1º Simulado — 1º Dia';
     var aprovado=a.aprov;
     var pTotal=+(a.gtot/40*100).toFixed(1);
     html+=banner(aprovado,simLabel+' ('+a.turmaLabel+')','Total: <strong>'+a.gtot+'/40</strong>',pTotal);
@@ -2760,10 +3210,16 @@ function buildRelatorio(){
   }
 
   // ── CN Combinado / Geral ──
-  if(secaoOrigem==='emC'||secaoOrigem==='9milC'||secaoOrigem==='emS2Geral'||secaoOrigem==='9milS2Geral'){
+  if(secaoOrigem==='emC'||secaoOrigem==='9milC'||secaoOrigem==='emS2Geral'||secaoOrigem==='9milS2Geral'||secaoOrigem==='emS3Geral'||secaoOrigem==='9milS3Geral'||secaoOrigem==='emS3D2'||secaoOrigem==='9milS3D2'){
     var a=atual2;
-    var is9mil=secaoOrigem==='9milC'||secaoOrigem==='9milS2Geral';
-    var rawList=is9mil?(secaoOrigem==='9milC'?(typeof T9MILC!=='undefined'?T9MILC:[]):(typeof T9MIL_S2G!=='undefined'?T9MIL_S2G:[])):(secaoOrigem==='emC'?(typeof TEMC!=='undefined'?TEMC:[]):(typeof TEM_S2G!=='undefined'?TEM_S2G:[]));
+    var is9mil=secaoOrigem==='9milC'||secaoOrigem==='9milS2Geral'||secaoOrigem==='9milS3Geral'||secaoOrigem==='9milS3D2';
+    var rawList;
+    if(secaoOrigem==='9milC') rawList=(typeof T9MILC!=='undefined'?T9MILC:[]);
+    else if(secaoOrigem==='emC') rawList=(typeof TEMC!=='undefined'?TEMC:[]);
+    else if(secaoOrigem==='9milS2Geral') rawList=(typeof T9MIL_S2G!=='undefined'?T9MIL_S2G:[]);
+    else if(secaoOrigem==='emS2Geral') rawList=(typeof TEM_S2G!=='undefined'?TEM_S2G:[]);
+    else if(secaoOrigem==='9milS3Geral'||secaoOrigem==='9milS3D2') rawList=(typeof T9MIL_S3G!=='undefined'?T9MIL_S3G:[]);
+    else rawList=(typeof TEM_S3G!=='undefined'?TEM_S3G:[]);
     var tArr=(rawList&&rawList.list)?rawList.list:(rawList||[]);
     var N=tArr.length||1;
     var avgMat=+(tArr.reduce(function(s,x){return s+(x.mat||0);},0)/N).toFixed(1);
@@ -2773,7 +3229,7 @@ function buildRelatorio(){
     var avgEst=+(tArr.reduce(function(s,x){return s+(x.est||0);},0)/N).toFixed(1);
     var avgTot=+(tArr.reduce(function(s,x){return s+(x.gtotC||0);},0)/N).toFixed(1);
     var aprovado=a.aprovC;
-    var simLabel=(secaoOrigem==='emS2Geral'||secaoOrigem==='9milS2Geral')?'2º Simulado — Geral':'1º Simulado — Geral';
+    var simLabel=(secaoOrigem==='emS2Geral'||secaoOrigem==='9milS2Geral')?'2º Simulado — Geral':(secaoOrigem==='emS3Geral'||secaoOrigem==='9milS3Geral'||secaoOrigem==='emS3D2'||secaoOrigem==='9milS3D2')?'3º Simulado — Geral':'1º Simulado — Geral';
     var pTotal=+(a.gtotC/90*100).toFixed(1);
     html+=banner(aprovado,simLabel,'Total: <strong>'+a.gtotC+'/90</strong>',pTotal);
     html+='<div class="card fade-in"><h3 style="font-size:16px;font-weight:800;color:var(--navy);margin-bottom:10px">🏆 Resultado</h3>';
@@ -2947,7 +3403,7 @@ function voltar(){
   document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
   document.getElementById(secaoOrigem+'Section').classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  const navMap={'em':'navEm','9mil':'nav9mil','em2':'navEm2','9mil2':'nav9mil2','emC':'navEmC','9milC':'nav9milC','epcar':'navEPCAr','busca':'navBusca','emS2D1':'navEmS2D1','9milS2D1':'nav9milS2D1','emS2D2':'navEmS2D2','9milS2D2':'nav9milS2D2','emS2Geral':'navEmS2Geral','9milS2Geral':'navEmS2Geral'};
+  const navMap={'em':'navEm','9mil':'nav9mil','em2':'navEm2','9mil2':'nav9mil2','emC':'navEmC','9milC':'nav9milC','epcar':'navEPCAr','busca':'navBusca','emS2D1':'navEmS2D1','9milS2D1':'nav9milS2D1','emS2D2':'navEmS2D2','9milS2D2':'nav9milS2D2','emS2Geral':'navEmS2Geral','9milS2Geral':'navEmS2Geral','emS3D1':'navEmS3Geral','9milS3D1':'navEmS3Geral','emS3D2':'navEmS3Geral','9milS3D2':'navEmS3Geral','emS3Geral':'navEmS3Geral','9milS3Geral':'navEmS3Geral'};
   var navId=navMap[secaoOrigem];
   if(!navId&&typeof EXTRA_SIMS!=='undefined'){var xs=EXTRA_SIMS.find(function(s){return s.id===secaoOrigem;});if(xs)navId='nav_'+xs.id;}
   var navEl=document.getElementById(navId||'navGroup1CN');
@@ -3270,6 +3726,16 @@ function _buildNotasS2Geral(turmaArr, label){
 }
 function buildNotasEmS2Geral(){ _buildNotasS2Geral(TEM_S2G, 'EM'); }
 function buildNotas9milS2Geral(){ _buildNotasS2Geral(T9MIL_S2G, '9MIL'); }
+function buildNotasEmS3Geral(){
+  _buildNotasS2Geral(TEM_S3G, 'EM');
+  var p=document.getElementById('pNotas');
+  if(p) p.innerHTML=p.innerHTML.replace(/2º Simulado/g,'3º Simulado');
+}
+function buildNotas9milS3Geral(){
+  _buildNotasS2Geral(T9MIL_S3G, '9MIL');
+  var p=document.getElementById('pNotas');
+  if(p) p.innerHTML=p.innerHTML.replace(/2º Simulado/g,'3º Simulado');
+}
 
 // ════════════════════════════════════════════════════════
 // MODAL / CONFIRMAR RA — UNIFIED
@@ -3298,6 +3764,12 @@ function confirmarRA(){
   else if(modo==='9milS2D1')  candidato = (typeof T9MIL_S2D1!=='undefined'&&T9MIL_S2D1) ? T9MIL_S2D1.list.find(byRA) : null;
   else if(modo==='emS2Geral') candidato = (typeof TEM_S2G!=='undefined'&&TEM_S2G) ? TEM_S2G.find(byRA) : null;
   else if(modo==='9milS2Geral') candidato = (typeof T9MIL_S2G!=='undefined'&&T9MIL_S2G) ? T9MIL_S2G.find(byRA) : null;
+  else if(modo==='emS3D1')    candidato = (typeof TEM_S3D1!=='undefined'&&TEM_S3D1) ? TEM_S3D1.list.find(byRA) : null;
+  else if(modo==='9milS3D1')  candidato = (typeof T9MIL_S3D1!=='undefined'&&T9MIL_S3D1) ? T9MIL_S3D1.list.find(byRA) : null;
+  else if(modo==='emS3Geral') candidato = (typeof TEM_S3G!=='undefined'&&TEM_S3G) ? TEM_S3G.find(byRA) : null;
+  else if(modo==='9milS3Geral') candidato = (typeof T9MIL_S3G!=='undefined'&&T9MIL_S3G) ? T9MIL_S3G.find(byRA) : null;
+  else if(modo==='emS3D2')    candidato = (typeof TEM_S3Dia!=='undefined'&&TEM_S3Dia) ? TEM_S3Dia.find(byRA) : null;
+  else if(modo==='9milS3D2')  candidato = (typeof T9MIL_S3Dia!=='undefined'&&T9MIL_S3Dia) ? T9MIL_S3Dia.find(byRA) : null;
   else if(modo.startsWith('extraSim:')) { var _xId=modo.slice(10); var _xs=(typeof EXTRA_SIMS!=='undefined')&&EXTRA_SIMS.find(function(s){return s.id===_xId;}); candidato=(_xs&&_xs._built)?_xs._built.list.find(byRA):null; }
   else                        candidato = ALL.find(byRA);
   // Fallback: busca só pelo RA (sem exigir nome exato), caso haja divergência de nome no dado
@@ -3312,6 +3784,12 @@ function confirmarRA(){
     else if(modo==='9milS2D1')    candidato = (typeof T9MIL_S2D1!=='undefined'&&T9MIL_S2D1) ? T9MIL_S2D1.list.find(byRAOnly) : null;
     else if(modo==='emS2Geral')   candidato = (typeof TEM_S2G!=='undefined'&&TEM_S2G) ? TEM_S2G.find(byRAOnly) : null;
     else if(modo==='9milS2Geral') candidato = (typeof T9MIL_S2G!=='undefined'&&T9MIL_S2G) ? T9MIL_S2G.find(byRAOnly) : null;
+    else if(modo==='emS3D1')      candidato = (typeof TEM_S3D1!=='undefined'&&TEM_S3D1) ? TEM_S3D1.list.find(byRAOnly) : null;
+    else if(modo==='9milS3D1')    candidato = (typeof T9MIL_S3D1!=='undefined'&&T9MIL_S3D1) ? T9MIL_S3D1.list.find(byRAOnly) : null;
+    else if(modo==='emS3Geral')   candidato = (typeof TEM_S3G!=='undefined'&&TEM_S3G) ? TEM_S3G.find(byRAOnly) : null;
+    else if(modo==='9milS3Geral') candidato = (typeof T9MIL_S3G!=='undefined'&&T9MIL_S3G) ? T9MIL_S3G.find(byRAOnly) : null;
+    else if(modo==='emS3D2')      candidato = (typeof TEM_S3Dia!=='undefined'&&TEM_S3Dia) ? TEM_S3Dia.find(byRAOnly) : null;
+    else if(modo==='9milS3D2')    candidato = (typeof T9MIL_S3Dia!=='undefined'&&T9MIL_S3Dia) ? T9MIL_S3Dia.find(byRAOnly) : null;
     else if(modo.startsWith('extraSim:')){ var _xId2=modo.slice(10); var _xs2=(typeof EXTRA_SIMS!=='undefined')&&EXTRA_SIMS.find(function(s){return s.id===_xId2;}); candidato=(_xs2&&_xs2._built)?_xs2._built.list.find(byRAOnly):null; }
     else                        candidato = ALL.find(byRAOnly);
   }
@@ -3464,6 +3942,66 @@ function confirmarRA(){
     return;
   }
 
+  // ── S3D1 ──
+  if(modo==='emS3D1' || modo==='9milS3D1'){
+    atual = candidato; atual2 = null;
+    secaoOrigem = modo;
+    document.getElementById('dashNome').textContent = atual.nome;
+    document.getElementById('dashInfo').textContent = '#'+(atual.rank||'?')+'º · '+atual.turmaLabel+' 3ºSim 1ºDia · '+atual.unidade+' · '+(atual.gtot||0)+' pts · '+(atual.aprov?'✓ Aprovado':'✗ '+atual.motivo);
+    var ddS3=document.getElementById('destDiv');
+    if(atual.rank&&atual.rank<=5){ ddS3.style.display='block'; document.getElementById('destText').textContent='#'+atual.rank+'º — '+atual.turmaLabel+' 3ºSim 1ºDia'; }
+    else ddS3.style.display='none';
+    buildNotas(); buildGrafico(); buildIndicadores();
+    buildChanceCN(); buildPlano();
+    document.querySelector('[onclick="goTab(\'pChanceEPCAr\',this)"]').textContent='⚓ Chance CN';
+    goTab('pNotas', document.querySelector('.tab-btn'));
+    document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active');});
+    document.getElementById('dashboard').style.display='block';
+    window.scrollTo(0,0);
+    return;
+  }
+
+  // ── S3Geral ──
+  if(modo==='emS3Geral' || modo==='9milS3Geral'){
+    atual2 = candidato; atual = null;
+    secaoOrigem = modo;
+    document.getElementById('dashNome').textContent = candidato.nome;
+    document.getElementById('dashInfo').textContent = '#'+candidato.rankC+'º · '+(modo==='emS3Geral'?'EM':'9MIL')+' 3ºSim Geral · '+candidato.unidade+' · '+candidato.gtotC+'/90 · '+(candidato.aprovC?'✓ Aprovado':'✗ Reprovado');
+    var ddS3G=document.getElementById('destDiv');
+    if(candidato.rankC<=5){ ddS3G.style.display='block'; document.getElementById('destText').textContent='#'+candidato.rankC+'º — '+(modo==='emS3Geral'?'EM':'9MIL')+' 3ºSim Geral'; }
+    else ddS3G.style.display='none';
+    if(modo==='emS3Geral') buildNotasEmS3Geral(); else buildNotas9milS3Geral();
+    document.getElementById('pGrafico').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">📊 Gráfico disponível em breve.</p></div>';
+    buildIndicadores2(modo==='emS3Geral' ? TEM_S3G : T9MIL_S3G);
+    buildChanceCNCombi();
+    document.querySelector('[onclick="goTab(\'pChanceEPCAr\',this)"]').textContent='⚓ Chance CN';
+    goTab('pNotas', document.querySelector('.tab-btn'));
+    document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active');});
+    document.getElementById('dashboard').style.display='block';
+    window.scrollTo(0,0);
+    return;
+  }
+
+  // ── S3D2 ──
+  if(modo==='emS3D2' || modo==='9milS3D2'){
+    atual2 = candidato; atual = null;
+    secaoOrigem = modo;
+    document.getElementById('dashNome').textContent = candidato.nome;
+    document.getElementById('dashInfo').textContent = '#'+(candidato.rank2d||'?')+'º · '+(modo==='emS3D2'?'EM':'9MIL')+' 3ºSim 2ºDia · '+candidato.unidade+' · '+(candidato.gtot2d||0)+'/50';
+    var ddS3D2=document.getElementById('destDiv');
+    if(candidato.rank2d&&candidato.rank2d<=5){ ddS3D2.style.display='block'; document.getElementById('destText').textContent='#'+candidato.rank2d+'º — '+(modo==='emS3D2'?'EM':'9MIL')+' 3ºSim 2ºDia'; }
+    else ddS3D2.style.display='none';
+    if(modo==='emS3D2') buildNotasEmS3Geral(); else buildNotas9milS3Geral();
+    document.getElementById('pGrafico').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">📊 Gráfico disponível em breve.</p></div>';
+    buildIndicadores2(modo==='emS3D2' ? TEM_S3G : T9MIL_S3G);
+    document.querySelector('[onclick="goTab(\'pChanceEPCAr\',this)"]').textContent='⚓ Chance CN';
+    goTab('pNotas', document.querySelector('.tab-btn'));
+    document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active');});
+    document.getElementById('dashboard').style.display='block';
+    window.scrollTo(0,0);
+    return;
+  }
+
   atual = candidato; atual2 = null;
   secaoOrigem = atual.turmaLabel==='9MIL' ? '9mil' : 'em';
   document.getElementById('dashNome').textContent = atual.nome;
@@ -3519,6 +4057,14 @@ function openAluno(nome){
     var c2=T9MIL_S2D1.list.find(a=>a.nome===nome);
     if(c2){ candidato=c2; modo='9milS2D1'; }
   }
+  if(!candidato && typeof TEM_S3G!=='undefined' && TEM_S3G){
+    var c3=TEM_S3G.find(a=>a.nome===nome);
+    if(c3){ candidato=c3; modo='emS3Geral'; }
+  }
+  if(!candidato && typeof T9MIL_S3G!=='undefined' && T9MIL_S3G){
+    var c4=T9MIL_S3G.find(a=>a.nome===nome);
+    if(c4){ candidato=c4; modo='9milS3Geral'; }
+  }
   if(!candidato) return;
   const modal = document.getElementById('raModal');
   document.getElementById('raInput').value='';
@@ -3562,6 +4108,60 @@ function openAluno9milS2Geral(nome){
   const m=document.getElementById('raModal');
   document.getElementById('raInput').value=''; document.getElementById('raError').style.display='none';
   m.dataset.nome=nome; m.dataset.modo='9milS2Geral'; m.style.display='flex';
+  setTimeout(()=>document.getElementById('raInput').focus(),100);
+}
+
+function openAlunoEmS3D1(nome){
+  if(!TEM_S3D1) return;
+  const c=TEM_S3D1.list.find(a=>a.nome===nome); if(!c) return;
+  const m=document.getElementById('raModal');
+  document.getElementById('raInput').value=''; document.getElementById('raError').style.display='none';
+  m.dataset.nome=nome; m.dataset.modo='emS3D1'; m.style.display='flex';
+  setTimeout(()=>document.getElementById('raInput').focus(),100);
+}
+
+function openAluno9milS3D1(nome){
+  if(!T9MIL_S3D1) return;
+  const c=T9MIL_S3D1.list.find(a=>a.nome===nome); if(!c) return;
+  const m=document.getElementById('raModal');
+  document.getElementById('raInput').value=''; document.getElementById('raError').style.display='none';
+  m.dataset.nome=nome; m.dataset.modo='9milS3D1'; m.style.display='flex';
+  setTimeout(()=>document.getElementById('raInput').focus(),100);
+}
+
+function openAlunoEmS3Geral(nome){
+  if(!TEM_S3G) return;
+  const c=TEM_S3G.find(a=>a.nome===nome); if(!c) return;
+  const m=document.getElementById('raModal');
+  document.getElementById('raInput').value=''; document.getElementById('raError').style.display='none';
+  m.dataset.nome=nome; m.dataset.modo='emS3Geral'; m.style.display='flex';
+  setTimeout(()=>document.getElementById('raInput').focus(),100);
+}
+
+function openAluno9milS3Geral(nome){
+  if(!T9MIL_S3G) return;
+  const c=T9MIL_S3G.find(a=>a.nome===nome); if(!c) return;
+  const m=document.getElementById('raModal');
+  document.getElementById('raInput').value=''; document.getElementById('raError').style.display='none';
+  m.dataset.nome=nome; m.dataset.modo='9milS3Geral'; m.style.display='flex';
+  setTimeout(()=>document.getElementById('raInput').focus(),100);
+}
+
+function openAlunoEmS3D2(nome){
+  if(!TEM_S3Dia) return;
+  const c=TEM_S3Dia.find(a=>a.nome===nome); if(!c) return;
+  const m=document.getElementById('raModal');
+  document.getElementById('raInput').value=''; document.getElementById('raError').style.display='none';
+  m.dataset.nome=nome; m.dataset.modo='emS3D2'; m.style.display='flex';
+  setTimeout(()=>document.getElementById('raInput').focus(),100);
+}
+
+function openAluno9milS3D2(nome){
+  if(!T9MIL_S3Dia) return;
+  const c=T9MIL_S3Dia.find(a=>a.nome===nome); if(!c) return;
+  const m=document.getElementById('raModal');
+  document.getElementById('raInput').value=''; document.getElementById('raError').style.display='none';
+  m.dataset.nome=nome; m.dataset.modo='9milS3D2'; m.style.display='flex';
   setTimeout(()=>document.getElementById('raInput').focus(),100);
 }
 
@@ -3989,6 +4589,12 @@ window.addEventListener('DOMContentLoaded', function(){
   render9milS2Dia();
   renderEmS2D2();
   render9milS2D2();
+  renderEmS3D1();
+  render9milS3D1();
+  renderEmS3Dia();
+  render9milS3Dia();
+  renderEmS3D2();
+  render9milS3D2();
   renderEPCAr();
   renderEPCAr2();
   // Extra sims engine
@@ -5626,3 +6232,9 @@ function imprimirDashboard(){
 
 </body>
 </html>
+
+
+
+
+
+
