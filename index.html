@@ -3238,6 +3238,24 @@ function buildClassif(){
   var _s2g9=typeof T9MIL_S2G!=='undefined'&&T9MIL_S2G?find(T9MIL_S2G):null;
   if(_s2g9) rows.push({label:'2º Sim · Geral 9MIL',rank:_s2g9.rankC,pts:_s2g9.gtotC,max:90,aprov:!!_s2g9.aprovC,turma:'9MIL'});
 
+  // 3º Sim 1º Dia
+  var _s3d1em=typeof TEM_S3D1!=='undefined'&&TEM_S3D1?find(TEM_S3D1.list||TEM_S3D1):null;
+  if(_s3d1em) rows.push({label:'3º Sim · 1º Dia EM',rank:_s3d1em.rank,pts:_s3d1em.gtot,max:40,aprov:!!_s3d1em.aprov,turma:'EM'});
+  var _s3d19=typeof T9MIL_S3D1!=='undefined'&&T9MIL_S3D1?find(T9MIL_S3D1.list||T9MIL_S3D1):null;
+  if(_s3d19) rows.push({label:'3º Sim · 1º Dia 9MIL',rank:_s3d19.rank,pts:_s3d19.gtot,max:40,aprov:!!_s3d19.aprov,turma:'9MIL'});
+
+  // 3º Sim 2º Dia
+  var _s3d2em=typeof TEM_S3Dia!=='undefined'&&TEM_S3Dia?find(TEM_S3Dia):null;
+  if(_s3d2em) rows.push({label:'3º Sim · 2º Dia EM',rank:_s3d2em.rank2d,pts:_s3d2em.gtot2d,max:50,aprov:!!_s3d2em.aprov2d,turma:'EM'});
+  var _s3d29=typeof T9MIL_S3Dia!=='undefined'&&T9MIL_S3Dia?find(T9MIL_S3Dia):null;
+  if(_s3d29) rows.push({label:'3º Sim · 2º Dia 9MIL',rank:_s3d29.rank2d,pts:_s3d29.gtot2d,max:50,aprov:!!_s3d29.aprov2d,turma:'9MIL'});
+
+  // 3º Sim Geral
+  var _s3gem=typeof TEM_S3G!=='undefined'&&TEM_S3G?find(TEM_S3G):null;
+  if(_s3gem) rows.push({label:'3º Sim · Geral EM',rank:_s3gem.rankC,pts:_s3gem.gtotC,max:90,aprov:!!_s3gem.aprovC,turma:'EM'});
+  var _s3g9=typeof T9MIL_S3G!=='undefined'&&T9MIL_S3G?find(T9MIL_S3G):null;
+  if(_s3g9) rows.push({label:'3º Sim · Geral 9MIL',rank:_s3g9.rankC,pts:_s3g9.gtotC,max:90,aprov:!!_s3g9.aprovC,turma:'9MIL'});
+
   // Extra Sims
   if(typeof EXTRA_SIMS!=='undefined'){
     EXTRA_SIMS.forEach(function(xs){
