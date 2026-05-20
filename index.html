@@ -2706,117 +2706,64 @@ function buildRadarEm2(){
 // CHANCE CN / EPCAr — dashboard 1º Dia
 // ═══════════════════════════════════════════════════════
 function buildChanceCN(){
-  if(!atual) return;
-  var a = atual;
-  var turma = _getTurma(a);
-  var totPct = a.gtot/40*100; // % acerto geral (MAT+ING de 40)
-
-  // Cortes
-  var corteCN   = 74;   // 7,40 × 10 = 74%
-  var corteEPCAr= 76.5; // 7,65 × 10 = 76,5%
-
-  // Chance de aprovação: 0% abaixo de 40%, linear até 100% no corte
-  function calcChance(pct, corte){
-    if(!a.ok_mat || !a.ok_ing) return Math.min(pct>=corte?100:pct<40?0:Math.round((pct-40)/(corte-40)*100), 20);
-    if(pct>=corte) return 100;
-    if(pct<40) return 0;
-    return Math.round((pct-40)/(corte-40)*100);
-  }
-  var chanceCN    = calcChance(totPct, corteCN);
-  var chanceEPCAr = calcChance(totPct, corteEPCAr);
-
-  function fCor(c){return c>=80?'#16a34a':c>=50?'#d97706':c>=20?'#f97316':'#dc2626';}
-  function fLbl(c){return c>=80?'Alta':c>=50?'Moderada':c>=20?'Baixa':'Muito baixa';}
-
-  function cardChance(titulo, icone, chance, corte, cor){
-    var notaEst = (totPct/10).toFixed(2);
-    var faltam  = Math.abs(corte/10 - totPct/10).toFixed(2);
-    var ok      = totPct >= corte;
-    var h='';
-    h+='<div class="card fade-in">';
-    h+='<div class="card-head"><h2>'+icone+' Chance de Aprovação — '+titulo+'</h2></div>';
-    h+='<p class="card-sub">Corte '+titulo+': <strong>'+(corte/10).toFixed(2)+'</strong> = 100% de chance. Baseado nos acertos do 1º Dia (MAT+ING).</p>';
-    h+='<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin:16px 0">';
-    h+='<div style="text-align:center;min-width:110px"><div style="font-size:60px;font-weight:900;color:'+fCor(chance)+';line-height:1">'+chance+'%</div>';
-    h+='<div style="font-size:13px;font-weight:700;color:'+fCor(chance)+'">'+fLbl(chance)+'</div></div>';
-    h+='<div style="flex:1;min-width:200px">';
-    h+='<div style="background:#e5e9f0;border-radius:8px;height:22px;position:relative;margin-bottom:12px">';
-    h+='<div style="background:'+fCor(chance)+';height:22px;border-radius:8px;width:'+chance+'%"></div>';
-    h+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;text-shadow:0 1px 2px rgba(0,0,0,.5)">'+chance+'%</div></div>';
-    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">';
-    h+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">Nota estimada</div><div style="font-weight:900;font-size:18px;color:'+(ok?'#16a34a':'#dc2626')+'">'+notaEst+'</div></div>';
-    h+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">Corte '+titulo+'</div><div style="font-weight:900;font-size:18px">'+(corte/10).toFixed(2)+'</div></div>';
-    h+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">Seus acertos</div><div style="font-weight:900;font-size:18px">'+a.gtot+'/40</div></div>';
-    h+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">'+(ok?'Sobram':'Faltam')+'</div><div style="font-weight:900;font-size:18px;color:'+(ok?'#16a34a':'#dc2626')+'">'+faltam+' pts</div></div>';
-    h+='</div></div></div>';
-    if(!a.ok_mat||!a.ok_ing){
-      h+='<div style="margin-top:10px;padding:8px 12px;background:#fef2f2;border-left:3px solid #dc2626;border-radius:6px;font-size:12px;font-weight:700;color:#b91c1c">⚠️ Eliminado por mínimo: precisa ≥10 em MAT e ING</div>';
-    }
-    h+='</div>';
-    return h;
-  }
-
-  var hc='';
-  hc += cardChance('CN', '⚓', chanceCN, corteCN, '#1e3a5f');
-  hc += cardChance('EPCAr', '✈️', chanceEPCAr, corteEPCAr, '#7c3aed');
-
-  document.getElementById('pChanceEPCAr').innerHTML=hc;
+  document.getElementById('pChanceEPCAr').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">⚓ Chance CN disponível apenas no resultado <strong>Geral (1º + 2º Dia)</strong>. Acesse o ranking Geral para ver sua chance de aprovação.</p></div>';
 }
 
-// Chance para CN Combinado (atual2 tem mat+ing do 1º dia)
+// Chance para CN Geral (usa nota combinada 1º+2º Dia, 90 questões)
 function buildChanceCNCombi(){
   if(!atual2) return;
   var a = atual2;
-  // Usa os acertos do 1º dia (mat+ing de 40) para estimar nota
-  var gtot1 = (a.mat||0)+(a.ing||0);
-  var totPct = gtot1/40*100;
+  var totPct = (a.gtotC||0)/90*100;
   var ok_mat = (a.mat||0) >= 10;
   var ok_ing = (a.ing||0) >= 10;
+  var ok_por = (a.por||0) >= 10;
+  var ok_cie = (a.cie||0) >= 9;
+  var ok_est = (a.est||0) >= 6;
+  var okAll  = ok_mat && ok_ing && ok_por && ok_cie && ok_est;
 
-  var corteCN    = 74;
-  var corteEPCAr = 76.5;
+  var corteCN = 74;
 
   function calcChance(pct, corte){
-    if(!ok_mat || !ok_ing) return Math.min(pct>=corte?100:pct<40?0:Math.round((pct-40)/(corte-40)*100), 20);
+    if(!okAll) return Math.min(pct>=corte?100:pct<40?0:Math.round((pct-40)/(corte-40)*100), 20);
     if(pct>=corte) return 100;
     if(pct<40) return 0;
     return Math.round((pct-40)/(corte-40)*100);
   }
-  var chanceCN    = calcChance(totPct, corteCN);
-  var chanceEPCAr = calcChance(totPct, corteEPCAr);
+  var chanceCN = calcChance(totPct, corteCN);
 
   function fCor(c){return c>=80?'#16a34a':c>=50?'#d97706':c>=20?'#f97316':'#dc2626';}
   function fLbl(c){return c>=80?'Alta':c>=50?'Moderada':c>=20?'Baixa':'Muito baixa';}
 
-  function cardChance(titulo, icone, chance, corte){
-    var notaEst = (totPct/10).toFixed(2);
-    var faltam  = Math.abs(corte/10 - totPct/10).toFixed(2);
-    var ok      = totPct >= corte;
-    var h='';
-    h+='<div class="card fade-in">';
-    h+='<div class="card-head"><h2>'+icone+' Chance de Aprovação — '+titulo+'</h2></div>';
-    h+='<p class="card-sub">Corte '+titulo+': <strong>'+(corte/10).toFixed(2)+'</strong> = 100% de chance. Baseado nos acertos do 1º Dia (MAT+ING).</p>';
-    h+='<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin:16px 0">';
-    h+='<div style="text-align:center;min-width:110px"><div style="font-size:60px;font-weight:900;color:'+fCor(chance)+';line-height:1">'+chance+'%</div>';
-    h+='<div style="font-size:13px;font-weight:700;color:'+fCor(chance)+'">'+fLbl(chance)+'</div></div>';
-    h+='<div style="flex:1;min-width:200px">';
-    h+='<div style="background:#e5e9f0;border-radius:8px;height:22px;position:relative;margin-bottom:12px">';
-    h+='<div style="background:'+fCor(chance)+';height:22px;border-radius:8px;width:'+chance+'%"></div>';
-    h+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;text-shadow:0 1px 2px rgba(0,0,0,.5)">'+chance+'%</div></div>';
-    h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">';
-    h+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">Nota estimada</div><div style="font-weight:900;font-size:18px;color:'+(ok?'#16a34a':'#dc2626')+'">'+notaEst+'</div></div>';
-    h+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">Corte '+titulo+'</div><div style="font-weight:900;font-size:18px">'+(corte/10).toFixed(2)+'</div></div>';
-    h+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">MAT+ING (1º dia)</div><div style="font-weight:900;font-size:18px">'+gtot1+'/40</div></div>';
-    h+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">'+(ok?'Sobram':'Faltam')+'</div><div style="font-weight:900;font-size:18px;color:'+(ok?'#16a34a':'#dc2626')+'">'+faltam+' pts</div></div>';
-    h+='</div></div></div>';
-    if(!ok_mat||!ok_ing){
-      h+='<div style="margin-top:10px;padding:8px 12px;background:#fef2f2;border-left:3px solid #dc2626;border-radius:6px;font-size:12px;font-weight:700;color:#b91c1c">⚠️ Eliminado por mínimo: precisa ≥10 em MAT e ING</div>';
-    }
-    h+='</div>';
-    return h;
+  var notaEst = (totPct/10).toFixed(2);
+  var faltam  = Math.abs(corteCN/10 - totPct/10).toFixed(2);
+  var ok      = totPct >= corteCN;
+  var hc='';
+  hc+='<div class="card fade-in">';
+  hc+='<div class="card-head"><h2>⚓ Chance de Aprovação — CN</h2></div>';
+  hc+='<p class="card-sub">Corte CN: <strong>'+(corteCN/10).toFixed(2)+'</strong> = 100% de chance. Baseado na nota geral (1º + 2º Dia · '+(a.gtotC||0)+'/90).</p>';
+  hc+='<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin:16px 0">';
+  hc+='<div style="text-align:center;min-width:110px"><div style="font-size:60px;font-weight:900;color:'+fCor(chanceCN)+';line-height:1">'+chanceCN+'%</div>';
+  hc+='<div style="font-size:13px;font-weight:700;color:'+fCor(chanceCN)+'">'+fLbl(chanceCN)+'</div></div>';
+  hc+='<div style="flex:1;min-width:200px">';
+  hc+='<div style="background:#e5e9f0;border-radius:8px;height:22px;position:relative;margin-bottom:12px">';
+  hc+='<div style="background:'+fCor(chanceCN)+';height:22px;border-radius:8px;width:'+chanceCN+'%"></div>';
+  hc+='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;text-shadow:0 1px 2px rgba(0,0,0,.5)">'+chanceCN+'%</div></div>';
+  hc+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">';
+  hc+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">Nota estimada</div><div style="font-weight:900;font-size:18px;color:'+(ok?'#16a34a':'#dc2626')+'">'+notaEst+'</div></div>';
+  hc+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">Corte CN</div><div style="font-weight:900;font-size:18px">'+(corteCN/10).toFixed(2)+'</div></div>';
+  hc+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">Total acertos</div><div style="font-weight:900;font-size:18px">'+(a.gtotC||0)+'/90</div></div>';
+  hc+='<div style="background:var(--bg);border-radius:8px;padding:8px"><div style="color:var(--text3)">'+(ok?'Sobram':'Faltam')+'</div><div style="font-weight:900;font-size:18px;color:'+(ok?'#16a34a':'#dc2626')+'">'+faltam+' pts</div></div>';
+  hc+='</div></div></div>';
+  if(!okAll){
+    var falhas=[];
+    if(!ok_mat) falhas.push('MAT ('+(a.mat||0)+'/20, mín.10)');
+    if(!ok_ing) falhas.push('ING ('+(a.ing||0)+'/20, mín.10)');
+    if(!ok_por) falhas.push('POR ('+(a.por||0)+'/20, mín.10)');
+    if(!ok_cie) falhas.push('CIÊ ('+(a.cie||0)+'/18, mín.9)');
+    if(!ok_est) falhas.push('EST ('+(a.est||0)+'/12, mín.6)');
+    hc+='<div style="margin-top:10px;padding:8px 12px;background:#fef2f2;border-left:3px solid #dc2626;border-radius:6px;font-size:12px;font-weight:700;color:#b91c1c">⚠️ Eliminado por mínimo: '+falhas.join(', ')+'</div>';
   }
-
-  var hc = cardChance('CN','⚓',chanceCN,corteCN) + cardChance('EPCAr','✈️',chanceEPCAr,corteEPCAr);
+  hc+='</div>';
   document.getElementById('pChanceEPCAr').innerHTML=hc;
 }
 
@@ -3938,6 +3885,7 @@ function confirmarRA(){
     document.getElementById('pGrafico').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">📊 Gráfico disponível em breve.</p></div>';
     buildIndicadores2(modo==='emS2Geral' ? TEM_S2G : T9MIL_S2G);
     buildChanceCNCombi();
+    buildPlano2();
     document.querySelector('[onclick="goTab(\'pChanceEPCAr\',this)"]').textContent='⚓ Chance CN';
     goTab('pNotas', document.querySelector('.tab-btn'));
     document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active');});
@@ -3978,6 +3926,7 @@ function confirmarRA(){
     document.getElementById('pGrafico').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">📊 Gráfico disponível em breve.</p></div>';
     buildIndicadores2(modo==='emS3Geral' ? TEM_S3G : T9MIL_S3G);
     buildChanceCNCombi();
+    buildPlano2();
     document.querySelector('[onclick="goTab(\'pChanceEPCAr\',this)"]').textContent='⚓ Chance CN';
     goTab('pNotas', document.querySelector('.tab-btn'));
     document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active');});
@@ -3998,6 +3947,8 @@ function confirmarRA(){
     if(modo==='emS3D2') buildNotasEmS3Geral(); else buildNotas9milS3Geral();
     document.getElementById('pGrafico').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">📊 Gráfico disponível em breve.</p></div>';
     buildIndicadores2(modo==='emS3D2' ? TEM_S3G : T9MIL_S3G);
+    buildChanceCNCombi();
+    buildPlano2();
     document.querySelector('[onclick="goTab(\'pChanceEPCAr\',this)"]').textContent='⚓ Chance CN';
     goTab('pNotas', document.querySelector('.tab-btn'));
     document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active');});
@@ -4538,8 +4489,77 @@ function _xsim_buildDashboard(cand, sim) {
   '</div>';
   document.getElementById('pGrafico').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">Gráfico disponível nos simulados principais.</p></div>';
   document.getElementById('pIndicadores').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">Indicadores disponíveis nos simulados principais.</p></div>';
-  document.getElementById('pChanceEPCAr').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">Chance disponível apenas nos rankings combinados.</p></div>';
-  document.getElementById('pPlano').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">Plano de estudos disponível nos simulados principais.</p></div>';
+  document.getElementById('pChanceEPCAr').innerHTML='<div class="card fade-in"><p style="padding:20px;color:var(--text2)">⚓ Chance CN disponível apenas no resultado <strong>Geral (1º + 2º Dia)</strong>. Acesse o ranking Geral para ver sua chance de aprovação.</p></div>';
+  // Plano de estudos para extra sim
+  (function(){
+    var matPct=(a.mat||0)/20*100, ingPct=(a.ing||0)/20*100;
+    var difs;
+    if(sim.tipo==='geral'){
+      var porPct=(a.por||0)/20*100, ciePct=(a.cie||0)/18*100, estPct=(a.est||0)/12*100;
+      difs=[
+        {n:'Matemática',cod:'MAT',dif:Math.round(100-matPct),pct:matPct,nota:(a.mat||0)+'/20',emoji:'📐',cor:'#3b82f6',bg:'#eff6ff',border:'#bfdbfe'},
+        {n:'Inglês',cod:'ING',dif:Math.round(100-ingPct),pct:ingPct,nota:(a.ing||0)+'/20',emoji:'📝',cor:'#8b5cf6',bg:'#f5f3ff',border:'#ddd6fe'},
+        {n:'Português',cod:'POR',dif:Math.round(100-porPct),pct:porPct,nota:(a.por||0)+'/20',emoji:'🖊️',cor:'#059669',bg:'#ecfdf5',border:'#a7f3d0'},
+        {n:'Ciências',cod:'CIÊ',dif:Math.round(100-ciePct),pct:ciePct,nota:(a.cie||0)+'/18',emoji:'🔬',cor:'#d97706',bg:'#fffbeb',border:'#fde68a'},
+        {n:'Est. Sociais',cod:'EST',dif:Math.round(100-estPct),pct:estPct,nota:(a.est||0)+'/12',emoji:'🌍',cor:'#dc2626',bg:'#fef2f2',border:'#fca5a5'}
+      ];
+    } else {
+      difs=[
+        {n:'Matemática',cod:'MAT',dif:Math.round(100-matPct),pct:matPct,nota:(a.mat||0)+'/20',emoji:'📐',cor:'#3b82f6',bg:'#eff6ff',border:'#bfdbfe'},
+        {n:'Inglês',cod:'ING',dif:Math.round(100-ingPct),pct:ingPct,nota:(a.ing||0)+'/20',emoji:'📝',cor:'#8b5cf6',bg:'#f5f3ff',border:'#ddd6fe'},
+        {n:'Português',cod:'POR',dif:55,pct:null,nota:'2º Dia',emoji:'🖊️',cor:'#059669',bg:'#ecfdf5',border:'#a7f3d0'},
+        {n:'Ciências',cod:'CIÊ',dif:60,pct:null,nota:'2º Dia',emoji:'🔬',cor:'#d97706',bg:'#fffbeb',border:'#fde68a'},
+        {n:'Est. Sociais',cod:'EST',dif:50,pct:null,nota:'2º Dia',emoji:'🌍',cor:'#dc2626',bg:'#fef2f2',border:'#fca5a5'}
+      ];
+    }
+    difs.sort(function(x,y){return y.dif-x.dif;});
+    var totDif=difs.reduce(function(s,d){return s+d.dif;},0)||1;
+    var slots=difs.map(function(d){return Math.max(1,Math.round(d.dif/totDif*15));});
+    var soma=slots.reduce(function(s,v){return s+v;},0);
+    while(soma>15){var mx=0;for(var si=1;si<slots.length;si++) if(slots[si]>slots[mx]) mx=si;slots[mx]--;soma--;}
+    while(soma<15){var mn=0;for(var si=1;si<slots.length;si++) if(difs[si].dif>difs[mn].dif) mn=si;slots[mn]++;soma++;}
+    difs.forEach(function(d,i){d.sessions=slots[i];});
+    var pool=[]; difs.forEach(function(d){for(var i=0;i<d.sessions;i++) pool.push(d);});
+    var diasP=['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira'];
+    var gradeP=[],usedP=pool.slice();
+    for(var dd=0;dd<5;dd++){
+      var ds=[],rem=usedP.slice(),add={};
+      for(var ii=0;ii<rem.length&&ds.length<3;ii++){if(!add[rem[ii].cod]){add[rem[ii].cod]=true;ds.push(rem[ii]);rem.splice(ii,1);ii--;}}
+      for(var ii=0;ii<rem.length&&ds.length<3;ii++){ds.push(rem[ii]);rem.splice(ii,1);ii--;}
+      gradeP.push(ds);usedP=rem;
+    }
+    var hp='<div class="card fade-in"><div class="card-head"><h2>📅 Plano de Estudos Semanal</h2></div>';
+    hp+='<p class="card-sub">Grade personalizada pela dificuldade · <strong>3 matérias por dia · 2h cada = 6h/dia</strong> · Segunda a Sexta</p>';
+    hp+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:16px 0">';
+    difs.forEach(function(d){
+      hp+='<div style="border-radius:12px;padding:14px;text-align:center;border:2px solid '+d.border+';background:'+d.bg+'">';
+      hp+='<div style="font-size:20px;margin-bottom:4px">'+d.emoji+'</div>';
+      hp+='<div style="font-size:12px;font-weight:800;color:'+d.cor+';margin-bottom:4px">'+d.n+'</div>';
+      hp+='<div style="font-size:28px;font-weight:900;color:'+d.cor+';line-height:1">'+d.sessions+'×</div>';
+      hp+='<div style="font-size:10px;color:var(--text3);margin-top:2px">sessões/semana</div>';
+      if(d.pct!==null) hp+='<div style="margin-top:6px;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700;background:'+(d.pct>=74?'#dcfce7':d.pct>=50?'#fef9c3':'#fee2e2')+';color:'+(d.pct>=74?'#15803d':d.pct>=50?'#a16207':'#b91c1c')+'">'+d.nota+' · '+d.pct.toFixed(0)+'%</div>';
+      else hp+='<div style="margin-top:6px;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700;background:#e0e7ef;color:#374151">'+d.nota+'</div>';
+      if(d.dif>=65) hp+='<div style="margin-top:4px;font-size:10px;font-weight:800;color:#dc2626">🔴 URGENTE</div>';
+      hp+='</div>';
+    });
+    hp+='</div>';
+    hp+='<div style="overflow-x:auto;margin-top:4px">';
+    hp+='<table style="width:100%;border-collapse:separate;border-spacing:0;border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow)">';
+    hp+='<thead><tr style="background:var(--navy)"><th style="color:white;padding:12px 14px;text-align:left;font-size:12px;font-weight:800;width:130px">Dia</th>';
+    hp+='<th style="color:white;padding:12px 10px;text-align:center;font-size:12px;font-weight:800">Sessão 1 · 2h</th>';
+    hp+='<th style="color:white;padding:12px 10px;text-align:center;font-size:12px;font-weight:800">Sessão 2 · 2h</th>';
+    hp+='<th style="color:white;padding:12px 10px;text-align:center;font-size:12px;font-weight:800">Sessão 3 · 2h</th>';
+    hp+='<th style="color:white;padding:12px 10px;text-align:center;font-size:12px;font-weight:800">Total</th></tr></thead><tbody>';
+    gradeP.forEach(function(mats,di){
+      hp+='<tr style="background:'+(di%2===0?'var(--white)':'var(--bg)')+'"><td style="padding:12px 14px;font-weight:800;color:var(--navy);font-size:13px;border-bottom:1px solid var(--border)">'+diasP[di]+'</td>';
+      mats.forEach(function(m){hp+='<td style="padding:10px;text-align:center;border-bottom:1px solid var(--border)"><span style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:800;background:'+m.bg+';color:'+m.cor+';border:1px solid '+m.border+'">'+m.emoji+' '+m.n+'</span></td>';});
+      hp+='<td style="padding:10px;text-align:center;font-weight:900;color:var(--navy);font-size:14px;border-bottom:1px solid var(--border)">6h</td></tr>';
+    });
+    hp+='</tbody><tfoot><tr style="background:#f0fdf4"><td style="padding:12px 14px;font-weight:900;color:#14532d;font-size:13px">Total Semanal</td>';
+    hp+='<td colspan="3" style="text-align:center;font-weight:700;color:#15803d;font-size:13px">15 sessões de 2h cada</td>';
+    hp+='<td style="text-align:center;font-weight:900;color:#14532d;font-size:16px">30h</td></tr></tfoot></table></div></div>';
+    document.getElementById('pPlano').innerHTML=hp;
+  })();
   document.querySelector('[onclick="goTab(\'pChanceEPCAr\',this)"]').textContent='⚓ Chance CN';
 }
 
