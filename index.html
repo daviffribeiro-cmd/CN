@@ -270,7 +270,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
       </div>
       <div class="hdr-chip">
         <div class="hdr-chip-lbl">Simulados EPCAr</div>
-        <div class="hdr-chip-num">2</div>
+        <div class="hdr-chip-num">3</div>
         <div class="hdr-chip-sub">realizados</div>
       </div>
     </div>
@@ -2160,7 +2160,8 @@ function buildNotas(){
 
   // ── 2°CN: adiciona notas EPCAr ──
   if(secaoOrigem==='emS2D1'||secaoOrigem==='9milS2D1'||secaoOrigem==='emS3D1'||secaoOrigem==='9milS3D1'){
-    var _epD=(typeof DATA_EPCAR2!=='undefined'&&DATA_EPCAR2&&DATA_EPCAR2.length)?DATA_EPCAR2
+    var _epD=(typeof DATA_EPCAR3!=='undefined'&&DATA_EPCAR3&&DATA_EPCAR3.length)?DATA_EPCAR3
+            :(typeof DATA_EPCAR2!=='undefined'&&DATA_EPCAR2&&DATA_EPCAR2.length)?DATA_EPCAR2
             :(typeof DATA_EPCAR!=='undefined'&&DATA_EPCAR&&DATA_EPCAR.length)?DATA_EPCAR:null;
     if(_epD){
       var ea=_epD.find(function(e){return e.nome===a.nome;});
@@ -3325,6 +3326,10 @@ function buildClassif(){
   if(typeof DATA_EPCAR2!=='undefined'&&DATA_EPCAR2&&DATA_EPCAR2.length){
     var ep2=find(DATA_EPCAR2);
     if(ep2) epRows.push({label:'2º Sim EPCAr',rank:ep2.rankFinal||ep2.rank,media:ep2.media,aprov:ep2.status==='Aprovado'});
+  }
+  if(typeof DATA_EPCAR3!=='undefined'&&DATA_EPCAR3&&DATA_EPCAR3.length){
+    var ep3=find(DATA_EPCAR3);
+    if(ep3) epRows.push({label:'3º Sim EPCAr',rank:ep3.rankFinal||ep3.rank,media:ep3.media,aprov:ep3.status==='Aprovado'});
   }
 
   if(!rows.length&&!epRows.length){
