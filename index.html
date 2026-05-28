@@ -4429,26 +4429,8 @@ function confirmarRA(){
     else if(modo==='9milS3Geral') candidato = (typeof T9MIL_S3G!=='undefined'&&T9MIL_S3G) ? T9MIL_S3G.find(byRAOnly) : null;
     else if(modo==='emS3D2')      candidato = (typeof TEM_S3Dia!=='undefined'&&TEM_S3Dia) ? TEM_S3Dia.find(byRAOnly) : null;
     else if(modo==='9milS3D2')    candidato = (typeof T9MIL_S3Dia!=='undefined'&&T9MIL_S3Dia) ? T9MIL_S3Dia.find(byRAOnly) : null;
-    else   // EPCAr 4
-  if(modo==='diaEPCAr4'){
-    atualEPCAr = candidato; atual = null; atual2 = null;
-    secaoOrigem = 'epcar4';
-    document.getElementById('dashNome').textContent = candidato.nome;
-    document.getElementById('dashInfo').textContent = '#'+candidato.rankFinal+' - EPCAr 4 Sim - '+candidato.unidade+' - Media: '+candidato.media.toFixed(2);
-    var ddE4 = document.getElementById('destDiv');
-    if(candidato.rankFinal<=5){ ddE4.style.display='block'; document.getElementById('destText').textContent='#'+candidato.rankFinal+' no EPCAr 4 Sim!'; }
-    else ddE4.style.display='none';
-    buildNotasEPCAr4();
-    document.querySelector('[onclick="goTab(\'pChanceEPCAr\',this)"]').textContent='Chance EPCAr';
-    goTab('pNotas', document.querySelector('.tab-btn'));
-    document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active');});
-    document.getElementById('dashboard').style.display='block';
-    window.scrollTo(0,0);
-    return;
-  }
-
-if(modo.startsWith('extraSim:')){ var _xId2=modo.slice(10); var _xs2=(typeof EXTRA_SIMS!=='undefined')&&EXTRA_SIMS.find(function(s){return s.id===_xId2;}); candidato=(_xs2&&_xs2._built)?_xs2._built.list.find(byRAOnly):null; }
-    else                        candidato = ALL.find(byRAOnly);
+    if(modo.startsWith('extraSim:')){ var _xId2=modo.slice(10); var _xs2=(typeof EXTRA_SIMS!=='undefined')&&EXTRA_SIMS.find(function(s){return s.id===_xId2;}); candidato=(_xs2&&_xs2._built)?_xs2._built.list.find(byRAOnly):null; }
+    else if(modo!=='diaEPCAr4')   candidato = ALL.find(byRAOnly);
   }
   if(!candidato){
     document.getElementById('raError').style.display='block';
@@ -4506,6 +4488,24 @@ if(modo.startsWith('extraSim:')){ var _xId2=modo.slice(10); var _xs2=(typeof EXT
     else ddE3.style.display='none';
     buildNotasEPCAr3();
     document.querySelector('[onclick="goTab(\'pChanceEPCAr\',this)"]').textContent='✈️ Chance EPCAr';
+    goTab('pNotas', document.querySelector('.tab-btn'));
+    document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active');});
+    document.getElementById('dashboard').style.display='block';
+    window.scrollTo(0,0);
+    return;
+  }
+
+  // EPCAr 4
+  if(modo==='diaEPCAr4'){
+    atualEPCAr = candidato; atual = null; atual2 = null;
+    secaoOrigem = 'epcar4';
+    document.getElementById('dashNome').textContent = candidato.nome;
+    document.getElementById('dashInfo').textContent = '#'+candidato.rankFinal+' - EPCAr 4 Sim - '+candidato.unidade+' - Media: '+candidato.media.toFixed(2);
+    var ddE4 = document.getElementById('destDiv');
+    if(candidato.rankFinal<=5){ ddE4.style.display='block'; document.getElementById('destText').textContent='#'+candidato.rankFinal+' no EPCAr 4 Sim!'; }
+    else ddE4.style.display='none';
+    buildNotasEPCAr4();
+    document.querySelector('[onclick="goTab(\'pChanceEPCAr\',this)"]').textContent='Chance EPCAr';
     goTab('pNotas', document.querySelector('.tab-btn'));
     document.querySelectorAll('.section').forEach(function(x){x.classList.remove('active');});
     document.getElementById('dashboard').style.display='block';
@@ -6213,6 +6213,102 @@ function buildNotasEPCAr4(){
   });
   hc+='</tbody></table></div></div>';
   document.getElementById('pChanceEPCAr').innerHTML=hc;
+
+  // ABA PLANO
+  var planD=[
+    {n:'Português',cod:'POR',nota:a.nota_por,pct:aPct,emoji:'🖊️',cor:'#059669',bg:'#ecfdf5',border:'#a7f3d0'},
+    {n:'Matemática',cod:'MAT',nota:a.nota_mat,pct:aMPct,emoji:'📐',cor:'#3b82f6',bg:'#eff6ff',border:'#bfdbfe'},
+    {n:'Inglês',cod:'ING',nota:a.nota_ing,pct:aIPct,emoji:'📝',cor:'#8b5cf6',bg:'#f5f3ff',border:'#ddd6fe'}
+  ];
+  planD.forEach(function(d){d.dif=Math.round(100-d.pct);});
+  planD.sort(function(x,y){return y.dif-x.dif;});
+  var totDif=planD.reduce(function(s,d){return s+d.dif;},0)||1;
+  var slots=planD.map(function(d){return Math.max(1,Math.round(d.dif/totDif*15));});
+  var soma=slots.reduce(function(s,v){return s+v;},0);
+  while(soma>15){var mx=0;for(var si=1;si<slots.length;si++) if(slots[si]>slots[mx]) mx=si;slots[mx]--;soma--;}
+  while(soma<15){var mn=0;for(var si=1;si<slots.length;si++) if(planD[si].dif>planD[mn].dif) mn=si;slots[mn]++;soma++;}
+  planD.forEach(function(d,i){d.sessions=slots[i];});
+  var pool2=[];
+  planD.forEach(function(d){for(var i=0;i<d.sessions;i++) pool2.push(d);});
+  var diasP=['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira'];
+  var gradeP=[], usedP=pool2.slice();
+  for(var dd=0;dd<5;dd++){
+    var ds=[],rem=usedP.slice(),add={};
+    for(var ii=0;ii<rem.length&&ds.length<3;ii++){if(!add[rem[ii].cod]){add[rem[ii].cod]=true;ds.push(rem[ii]);rem.splice(ii,1);ii--;}}
+    for(var ii=0;ii<rem.length&&ds.length<3;ii++){ds.push(rem[ii]);rem.splice(ii,1);ii--;}
+    gradeP.push(ds);usedP=rem;
+  }
+  var hp='<div class="card fade-in"><div class="card-head"><h2>📅 Plano de Estudos Semanal — EPCAr</h2></div>';
+  hp+='<p class="card-sub">Grade personalizada pela dificuldade · <strong>3 matérias por dia · 2h cada = 6h/dia</strong> · Segunda a Sexta</p>';
+  hp+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:16px 0">';
+  planD.forEach(function(d){
+    var urg=d.dif>=65;
+    hp+='<div style="border-radius:12px;padding:14px;text-align:center;border:2px solid '+d.border+';background:'+d.bg+'">';
+    hp+='<div style="font-size:20px;margin-bottom:4px">'+d.emoji+'</div>';
+    hp+='<div style="font-size:12px;font-weight:800;color:'+d.cor+';margin-bottom:4px">'+d.n+'</div>';
+    hp+='<div style="font-size:28px;font-weight:900;color:'+d.cor+';line-height:1">'+d.sessions+'×</div>';
+    hp+='<div style="font-size:10px;color:var(--text3);margin-top:2px">sessões/semana</div>';
+    hp+='<div style="margin-top:6px;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700;background:'+(d.pct>=76.5?'#dcfce7':d.pct>=50?'#fef9c3':'#fee2e2')+';color:'+(d.pct>=76.5?'#15803d':d.pct>=50?'#a16207':'#b91c1c')+'">'+d.nota.toFixed(1)+'/10 · '+d.pct.toFixed(0)+'%</div>';
+    if(urg) hp+='<div style="margin-top:4px;font-size:10px;font-weight:800;color:#dc2626">🔴 URGENTE</div>';
+    hp+='</div>';
+  });
+  hp+='</div>';
+  hp+='<div style="overflow-x:auto;margin-top:4px">';
+  hp+='<table style="width:100%;border-collapse:separate;border-spacing:0;border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow)">';
+  hp+='<thead><tr style="background:var(--navy)">';
+  hp+='<th style="color:white;padding:12px 14px;text-align:left;font-size:12px;font-weight:800;width:130px">Dia</th>';
+  hp+='<th style="color:white;padding:12px 10px;text-align:center;font-size:12px;font-weight:800">Sessão 1 · 2h</th>';
+  hp+='<th style="color:white;padding:12px 10px;text-align:center;font-size:12px;font-weight:800">Sessão 2 · 2h</th>';
+  hp+='<th style="color:white;padding:12px 10px;text-align:center;font-size:12px;font-weight:800">Sessão 3 · 2h</th>';
+  hp+='<th style="color:white;padding:12px 10px;text-align:center;font-size:12px;font-weight:800">Total</th>';
+  hp+='</tr></thead><tbody>';
+  gradeP.forEach(function(mats,di){
+    var bg2=di%2===0?'var(--white)':'var(--bg)';
+    hp+='<tr style="background:'+bg2+'">';
+    hp+='<td style="padding:12px 14px;font-weight:800;color:var(--navy);font-size:13px;border-bottom:1px solid var(--border)">'+diasP[di]+'</td>';
+    mats.forEach(function(m){
+      hp+='<td style="padding:10px;text-align:center;border-bottom:1px solid var(--border)"><span style="display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:800;background:'+m.bg+';color:'+m.cor+';border:1px solid '+m.border+'">'+m.emoji+' '+m.n+'</span></td>';
+    });
+    hp+='<td style="padding:10px;text-align:center;font-weight:900;color:var(--navy);font-size:14px;border-bottom:1px solid var(--border)">6h</td>';
+    hp+='</tr>';
+  });
+  hp+='</tbody><tfoot><tr style="background:#f0fdf4">';
+  hp+='<td style="padding:12px 14px;font-weight:900;color:#14532d;font-size:13px">Total Semanal</td>';
+  hp+='<td colspan="3" style="text-align:center;font-weight:700;color:#15803d;font-size:13px">15 sessões de 2h cada</td>';
+  hp+='<td style="text-align:center;font-weight:900;color:#14532d;font-size:16px">30h</td>';
+  hp+='</tr></tfoot></table></div>';
+  hp+='<div style="margin-top:20px"><div style="font-size:14px;font-weight:800;color:var(--navy);margin-bottom:12px">💡 Orientações por Matéria</div>';
+  planD.forEach(function(d){
+    var dica='';
+    if(d.cod==='POR'){
+      if(d.pct<50) dica='<strong>⚠️ Crítico!</strong> Interpretação de texto, tipologia textual, gramática normativa (concordância, regência, crase) e figuras de linguagem.';
+      else if(d.pct<76.5) dica='Trabalhe interpretação literária e jornalística. Revise análise sintática e literatura brasileira. Use provas anteriores do EPCAr.';
+      else dica='✅ Acima do corte. Mantenha com textos complexos. Revise pontos de erro das últimas provas.';
+    } else if(d.cod==='MAT'){
+      if(d.pct<50) dica='<strong>⚠️ Crítico!</strong> Foque em equações, funções, geometria plana, razão e proporção. Resolva 20+ questões por sessão.';
+      else if(d.pct<76.5) dica='Trabalhe trigonometria, progressões, probabilidade e estatística. Use gabaritos comentados do EPCAr.';
+      else dica='✅ Sólido em Matemática. Questões difíceis. Revise os erros pontuais.';
+    } else {
+      if(d.pct<50) dica='<strong>⚠️ Crítico!</strong> Interpretação de texto em inglês, vocabulário contextual, tempos verbais e gramática básica. 2 textos em inglês por sessão.';
+      else if(d.pct<76.5) dica='Textos autênticos em inglês. Pratique vocabulário e gramática com questões do EPCAr.';
+      else dica='✅ Sólido em Inglês. Textos complexos e questões avançadas.';
+    }
+    hp+='<div style="margin-bottom:10px;padding:14px 16px;background:'+d.bg+';border:1px solid '+d.border+';border-left:4px solid '+d.cor+';border-radius:10px">';
+    hp+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">';
+    hp+='<span style="font-size:18px">'+d.emoji+'</span>';
+    hp+='<span style="font-size:14px;font-weight:800;color:'+d.cor+'">'+d.n+'</span>';
+    hp+='<span style="font-size:11px;padding:2px 10px;border-radius:20px;background:'+d.cor+';color:white;font-weight:700">'+d.sessions+'× por semana</span>';
+    hp+='</div><div style="font-size:13px;color:#374151;line-height:1.8">'+dica+'</div></div>';
+  });
+  hp+='</div>';
+  hp+='<div class="info-box" style="margin-top:12px"><h5>📌 Como aproveitar cada sessão de 2h</h5><ul>';
+  hp+='<li><strong>30 min</strong> — Revisão teórica (fórmulas, regras, conceitos)</li>';
+  hp+='<li><strong>60 min</strong> — Questões de provas anteriores do EPCAr (2015–2024)</li>';
+  hp+='<li><strong>30 min</strong> — Revisão dos erros: anote e refaça</li>';
+  hp+='<li><strong>Sábado</strong> — Simulado completo (POR + MAT + ING) cronometrado</li>';
+  hp+='<li><strong>Domingo</strong> — Revisão geral e resolução de dúvidas</li>';
+  hp+='</ul></div></div>';
+  document.getElementById('pPlano').innerHTML=hp;
 }
 
 function buildNotasEPCAr2(){
