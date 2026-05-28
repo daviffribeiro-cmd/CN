@@ -3708,10 +3708,10 @@ function buildRelatorio(){
     var failMin=d.min!=null&&d.v<d.min;
     var icon=failMin?'🔴':diff>=0?'🟢':'🟡';
     var msg=failMin
-      ?'<strong>'+d.l+'</strong>: '+d.v+'/'+d.max+' — abaixo do mínimo ('+d.min+'). Faltam <strong>'+(d.min-d.v)+' acertos</strong>. Atenção prioritária.'
+      ?'<strong>'+d.l+'</strong>: '+d.v+'/'+d.max+' — abaixo do mínimo ('+d.min+'). Faltam <strong>'+((d.min-d.v).toFixed(1))+' acertos</strong>. Atenção prioritária.'
       :diff>=0
       ?'<strong>'+d.l+'</strong>: '+d.v+'/'+d.max+' — <strong>+'+diff+' acima da média</strong>. Ponto forte!'
-      :'<strong>'+d.l+'</strong>: '+d.v+'/'+d.max+' — <strong>'+diff+' em relação à média</strong> ('+d.avg+').';
+      :'<strong>'+d.l+'</strong>: '+d.v+'/'+d.max+' — <strong>'+diff+' em relação à média</strong> ('+(+d.avg).toFixed(1)+')';
     return'<li style="padding:8px 12px;border-radius:8px;background:#f9fafb;border-left:3px solid '+(failMin?'#dc2626':diff>=0?'#16a34a':'#d97706')+'">'+icon+' '+msg+'</li>';
   }
   function banner(aprovado,simLabel,ptsTxt,pTotal){
